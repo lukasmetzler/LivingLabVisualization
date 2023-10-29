@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  api:
+    build: ./api
+    ports:
+      - "6000:6000"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: lukasmetzler
+      POSTGRES_DB: lukasmetzler
+      POSTGRES_PASSWORD: ""
+
+  kafka:
+    build: ./kafka
+    depends_on:
+      - zookeeper
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
