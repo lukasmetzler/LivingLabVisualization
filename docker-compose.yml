@@ -24,7 +24,7 @@ services:
     image: wurstmeister/zookeeper
 
   grafana:
-    image: grafana/grafana
+    build: ./grafana
     ports:
       - "3000:3000"
     depends_on:
