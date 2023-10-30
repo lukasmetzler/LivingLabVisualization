@@ -5,9 +5,14 @@ stages:
 variables:
   IMAGE_NAME: my_image
 
+before_script:
+  - apt-get update -qy
+  - apt-get install -y docker-ce
+
 build:
   stage: build
   script:
+    - docker --version
     - docker build -t $IMAGE_NAME .
 
 deploy:
