@@ -1,16 +1,17 @@
-image: docker:stable
-
 stages:
   - build
   - deploy
 
 variables:
-  IMAGE_NAME: latest
-
-before_script:
-  - docker --version
+  IMAGE_NAME: my_image
+  IMAGE_TAG: latest
 
 build:
   stage: build
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:$IMAGE_TAG .
+    - docker-compose -f docker-compose.yml build
+
+deploy:
+  stage: deploy
+  script:
+    - ssh user@your_server_ip "cd /projects/echtzeitvisualisierung-von-gebaeudeindustriedaten && docker-compose -f docker-compose.yml pull && docker-compose -f docker-compose.yml up -d"
