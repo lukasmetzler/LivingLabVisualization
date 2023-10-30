@@ -14,4 +14,4 @@ build:
 deploy:
   stage: deploy
   script:
-    - ssh user@your_server_ip "cd /projects/echtzeitvisualisierung-von-gebaeudeindustriedaten && docker-compose -f docker-compose.yml pull && docker-compose -f docker-compose.yml up -d"
+    - ssh root@85.215.59.47 "cd /projects/echtzeitvisualisierung-von-gebaeudeindustriedaten && docker-compose -f docker-compose.yml pull && docker-compose -f docker-compose.yml up -d"
