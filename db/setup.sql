@@ -5,7 +5,7 @@ CREATE TABLE sources (
 );
 
 -- Insert source data
-INSERT intO sources (source_name)
+INSERT INTO sources (source_name)
 VALUES 
     ('Beckhoff'),
     ('ONYX'),
@@ -26,7 +26,7 @@ CREATE TABLE parameters (
 );
 
 -- Insert parameter data
-INSERT intO parameters (parameter_name, description, data_type, unit, range_min, range_max)
+INSERT INTO parameters (parameter_name, description, data_type, unit, range_min, range_max)
 VALUES 
     ('GlobIrrVerAct', 'Globalstrahlung vertikal aktuell gemessen', 'int', 'W/m2', 0, 1300),
     ('GlobalIrrHorAct', 'Globalstrahlung horizontal aktuell gemessen', 'int', 'W/m2', 0, 2000),
