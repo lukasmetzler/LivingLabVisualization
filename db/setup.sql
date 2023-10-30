@@ -152,32 +152,6 @@ VALUES
     ('headpose_roll_4', 'Kopfwinkel Roll Person 4', 'float', '°', NULL, NULL);
 
 
-CREATE OR REPLACE FUNCTION get_parameter_value(parameter_id INT) 
-RETURNS JSONB AS $$
-DECLARE
-    param_data_type VARCHAR(255);
-    result_value JSONB;
-BEGIN
-    SELECT data_type INTO param_data_type
-    FROM parameters
-    WHERE parameter_id = get_parameter_value.parameter_id;
-
-    CASE param_data_type
-        WHEN 'int' THEN
-            result_value := '{"value": 10, "type": "int"}';
-        WHEN 'float' THEN
-            result_value := '{"value": 10.5, "type": "float"}';
-        WHEN 'boolean' THEN
-            result_value := '{"value": true, "type": "boolean"}';
-        ELSE
-            RAISE EXCEPTION 'Unbekannter data_type: %', param_data_type;
-    END CASE;
-
-    RETURN result_value;
-END;
-$$ LANGUAGE plpgsql;
-
-
 -- Create measurements table
 CREATE TABLE measurements (
     timestamp TIMESTAMP,
