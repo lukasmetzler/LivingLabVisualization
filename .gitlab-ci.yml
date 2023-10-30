@@ -1,22 +1,16 @@
+image: docker:stable
+
 stages:
   - build
   - deploy
 
 variables:
-  IMAGE_NAME: my_image
+  IMAGE_NAME: latest
 
 before_script:
-  - apt-get update -qy
-  - apt-get install -y docker-ce
+  - docker --version
 
 build:
   stage: build
   script:
-    - docker --version
-    - docker build -t $IMAGE_NAME .
-
-deploy:
-  stage: deploy
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    - docker build -t $CI_REGISTRY_IMAGE:$IMAGE_TAG .
