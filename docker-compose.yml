@@ -10,10 +10,12 @@ services:
 
   postgres:
     image: postgres
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: lukasmetzler
       POSTGRES_DB: lukasmetzler
-      POSTGRES_PASSWORD: ""
+      POSTGRES_PASSWORD: "lukasmetzler"
 
   kafka:
     build: ./kafka
