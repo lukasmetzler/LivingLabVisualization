@@ -19,7 +19,6 @@ CREATE TABLE parameters (
     parameter_id SERIAL PRIMARY KEY,
     parameter_name VARCHAR(255),
     description VARCHAR(255),
-    data_type NUMERIC,
     unit VARCHAR(255),
     range_min float,
     range_max float
@@ -157,7 +156,7 @@ CREATE TABLE measurements (
     timestamp TIMESTAMP,
     source_id int,
     parameter_id int,
-    value JSONB,
+    value NUMERIC,
     FOREIGN KEY (source_id) REFERENCES sources(source_id),
     FOREIGN KEY (parameter_id) REFERENCES parameters(parameter_id),
 );
