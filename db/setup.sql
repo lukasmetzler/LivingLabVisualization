@@ -1,167 +1,316 @@
--- Create sources table
-CREATE TABLE sources (
-    source_id SERIAL PRIMARY KEY,
-    source_name VARCHAR(255)
+-- Dimension Tables
+CREATE TABLE metrological_data (
+    metrological_data_id int SERIAL PRIMARY KEY,
+    GlobIrrVerAct Numeric,
+    GlobalIrrHorAct Numeric,
+    DifflrrHorAct Numeric,
+    WindSpeedAct_ms Numeric,
+    SunElevationAct Numeric,
+    SunAzimuthAct Numeric,
+    Longitude Numeric,
+    Latitude Numeric,
+    WindSpeedAct_kmh Numeric,
+    WindDirectionAct Numeric,
+    BrightnessNorthAct Numeric,
+    BrightnessSouthAct Numeric,
+    BrightnessWestAct Numeric,
+    TwilightAct Numeric,
+    GlobalIrrHorAct_2 Numeric,
+    PrecipitationAct Numeric,
+    AbsolutAirPressureAct Numeric,
+    RelativeAirPressureAct Numeric,
+    AbsoluteHumidityAct Numeric,
+    RelativeHumidityAct Numeric,
+    DewPointTempAct Numeric,
+    HousingTemAct Numeric,
+    RoomTempAct Numeric
 );
 
--- Insert source data
-INSERT INTO sources (source_name)
-VALUES 
-    ('Beckhoff'),
-    ('ONYX'),
-    ('indiHELLA'),
-    ('Frogcast'),
-    ('E3D');
-
-
--- Create parameters table
-CREATE TABLE parameters (
-    parameter_id SERIAL PRIMARY KEY,
-    parameter_name VARCHAR(255),
-    description VARCHAR(255),
-    unit VARCHAR(255),
-    range_min float,
-    range_max float
+CREATE TABLE pv_modul_data (
+    pv_modul_data_id int SERIAL PRIMARY KEY,
+    VoltMeasActModule1 Numeric,
+    CurrMeasActModule1 Numeric,
+    VoltMeasActModule2 Numeric,
+    CurrMeasActModule2 Numeric
 );
 
--- Insert parameter data
-INSERT INTO parameters (parameter_name, description, unit, range_min, range_max)
-VALUES 
-    ('GlobIrrVerAct', 'Globalstrahlung vertikal aktuell gemessen', 'W/m2', 0, 1300),
-    ('GlobalIrrHorAct', 'Globalstrahlung horizontal aktuell gemessen', 'W/m2', 0, 2000),
-    ('DiffIrrHorAct', 'Diffuse Strahlung horizontal aktuell gemessen', 'W/m2', 0, 2000),
-    ('AirTempAct', 'Lufttemperatur aktuell gemessen', '°C', -30, 40),
-    ('WindSpeedAct_ms', 'Windgeschwindigkeit [m/s] aktuell gemessen', 'm/s', 0, 40),
-    ('SunElevationAct', 'Sonnen Elevation aktuell gemessen', '°', -90, 90),
-    ('SunAzimuthAct', 'Sonne Azimut aktuell gemessen', '°', NULL, NULL),
-    ('Longitude', 'Längengrad', '°', -180, 180),
-    ('Latitude', 'Breitengrad', '°', -90, 90),
-    ('WindSpeedAct_kmh', 'Windgeschwindigkeit [km/h] aktuell gemessen', 'km/h', 0, 100),
-    ('WindDirectionAct', 'Windrichtung aktuell gemessen', '°', 0, 360),
-    ('BrightnessNorthAct', 'Helligkeit Norden aktuell gemessen', 'klx', 0, 150),
-    ('BrightnessEastAct', 'Helligkeit Osten aktuell gemessen', 'klx', 0, 150),
-    ('BrightnessSouthAct', 'Helligkeit Süden aktuell gemessen', 'klx', 0, 150),
-    ('BrightnessWestAct', 'Helligkeit Westen aktuell gemessen', 'klx', 0, 150),
-    ('TwilightAct', 'Dämmerung aktuell gemessen', 'lx', 0, 500),
-    ('GlobalIrrHorAct_2', 'Globalstrahlung horizontal aktuell gemessen', 'W/m2', 0, 1300),
-    ('PrecipitationAct', 'Niederschlag aktuell gemessen', NULL, NULL),
-    ('AbsolutAirPressureAct', 'Absoluter Luftdruck aktuell gemessen', 'hPa', 300, 1100),
-    ('RelativeAirPressureAct', 'Relativer Luftdruck aktuell gemessen', 'hPa', 300, 1100),
-    ('AbsoluteHumidityAct', 'Absolute Luftfeuchtigkeit aktuell gemessen', 'g/m3', NULL, NULL),
-    ('RelativeHumidityAct', 'Relative Luftfeuchtigkeit aktuell gemessen', '%', 0, 100),
-    ('DewPointTempAct', 'Taupunkt aktuell gemessen', '°C', NULL, NULL),
-    ('HousingTemAct', 'Sensorgehäusetemperatur aktuell gemessen', '°C', NULL, NULL),
-    ('VoltMeasActModule1', 'Spannung PV-Modul 1 aktuell gemessen', 'V', NULL, NULL),
-    ('CurrMeasActModule1', 'Strom PV-Modul 1 aktuell gemessen', 'A', NULL, NULL),
-    ('VoltMeasActModule2', 'Spannung PV-Modul 2 aktuell gemessen', 'V', NULL, NULL),
-    ('CurrMeasActModule2', 'Strom PV-Modul 2 aktuell gemessen', 'A', NULL, NULL),
-    ('IllumMP1Act', 'Helligkeit Messpunkt 1 aktuell gemessen', 'lx', 0, 1000),
-    ('IllumMP2Act', 'Helligkeit Messpunkt 2 aktuell gemessen', 'lx', 0, 1000),
-    ('IllumMP3Act', 'Helligkeit Messpunkt 3 aktuell gemessen', 'lx', 0, 1000),
-    ('IllumMP4Act', 'Helligkeit Messpunkt 4 aktuell gemessen', 'lx', 0, 10000),
-    ('RoomTempAct', 'Raumtemperatur aktuell gemessen', '°C', 15, 35),
-    ('SlatAng1Act_1OG_R1', 'Lamellenwinkel Motor 1 aktuell gemessen Raum 1 1.OG', '°', 0, 85),
-    ('SlatPos1Act_1OG_R1', 'Raffstoreposition Motor 1 Höhe aktuell gemessen Raum 1 1.OG', '%', 0, 100),
-    ('Light1Act_1OG_R1', 'Lichtreihe 1 aktuell Raum 1 1.OG', NULL, NULL),
-    ('Light2Act_1OG_R1', 'Lichtreihe 2 aktuell Raum 1 1.OG', NULL, NULL),
-    ('SlatAng1Act_1OG_R2', 'Lamellenwinkel Motor 1 aktuell gemessen Raum 2 1.OG', '°', 0, 85),
-    ('SlatPos1Act_1OG_R2', 'Raffstoreposition Motor 1 Höhe aktuell gemessen Raum 2 1.OG', '%', 0, 100),
-    ('Light1Act_1OG_R2', 'Lichtreihe 1 aktuell Raum 2 1.OG', NULL, NULL),
-    ('SlatAng1Act_1OG_R3', 'Lamellenwinkel Motor 1 aktuell gemessen Raum 3 1.OG', '°', 0, 85),
-    ('SlatPos1Act_1OG_R3', 'Raffstoreposition Motor 1 Höhe aktuell gemessen Raum 3 1.OG', '%', 0, 100),
-    ('Light1Act_1OG_R3', 'Lichtreihe 1 aktuell Raum 3 1.OG', NULL, NULL),
-    ('SlatAng1Act_1OG_R4', 'Lamellenwinkel Motor 1 aktuell gemessen Raum 4 1.OG', '°', 0, 85),
-    ('SlatPos1Act_1OG_R4', 'Raffstoreposition Motor 1 Höhe aktuell gemessen Raum 4 1.OG', '%', 0, 100),
-    ('SlatAng2Act_1OG_R4', 'Lamellenwinkel Motor 2 aktuell gemessen Raum 4 1.OG', '°', 0, 85),
-    ('SlatPos2Act_1OG_R4', 'Raffstoreposition Motor 2 Höhe aktuell gemessen Raum 4 1.OG', '%', 0, 100),
-    ('SlatAng3Act_1OG_R4', 'Lamellenwinkel Motor 3 aktuell gemessen Raum 4 1.OG', '°', 0, 85),
-    ('SlatPos3Act_1OG_R4', 'Raffstoreposition Motor 3 Höhe aktuell gemessen Raum 4 1.OG', '%', 0, 100),
-    ('SlatAng4Act_1OG_R4', 'Lamellenwinkel Motor 4 aktuell gemessen Raum 4 1.OG', '°', 0, 85),
-    ('SlatPo4Act_1OG_R4', 'Raffstoreposition Motor 4 Höhe aktuell gemessen Raum 4 1.OG', '%', 0, 100),
-    ('SlatAng5Act_1OG_R4', 'Lamellenwinkel Motor 5 aktuell gemessen Raum 4 1.OG', '°', 0, 85),
-    ('SlatPos5Act_1OG_R4', 'Raffstoreposition Motor 5 Höhe aktuell gemessen Raum 4 1.OG', '%', 0, 100),
-    ('Light1Act_1OG_R4', 'Lichtreihe 1 aktuell Raum 4 1.OG', NULL, NULL),
-    ('Light2Act_1OG_R4', 'Lichtreihe 1 aktuell Raum 4 1.OG', NULL, NULL),
-    ('MP1GlareLimit', 'Benutzer-Input Schwellwert Blendung Messpunkt 1', 'DGP', NULL, NULL),
-    ('MP1ReqIllum', 'Benutzer-Input gewünschte Helligkeit Messpunkt 1', 'lx', NULL, NULL),
-    ('MP1ReqRoomTemp', 'Benutzer-Input gewünschte Raumtemperatur Messpunkt 1', '°C', NULL, NULL),
-    ('MP2GlareLimit', 'Benutzer-Input Blendung Messpunkt 2', 'DGP', NULL, NULL),
-    ('MP2ReqIllum', 'Benutzer-Input gewünschte Helligkeit Messpunkt 2', 'lx', NULL, NULL),
-    ('MP2ReqRoomTemp', 'Benutzer-Input gewünschte Raumtemperatur Messpunkt 2', '°C', NULL, NULL),
-    ('MP3GlareLimit', 'Benutzer-Input Blendung Messpunkt 3', 'DGP', NULL, NULL),
-    ('MP3ReqIllum', 'Benutzer-Input gewünschte Helligkeit Messpunkt 3', 'lx', NULL, NULL),
-    ('MP3ReqRoomTemp', 'Benutzer-Input gewünschte Raumtemperatur Messpunkt 3', '°C', NULL, NULL),
-    ('MP4GlareLimit', 'Benutzer-Input Blendung Messpunkt 4', 'DGP', NULL, NULL),
-    ('MP4ReqIllum', 'Benutzer-Input gewünschte Helligkeit Messpunkt 4', 'lx', NULL, NULL),
-    ('MP4ReqRoomTemp', 'Benutzer-Input gewünschte Raumtemperatur Messpunkt 4', '°C', NULL, NULL),
-    ('altitudeRadianceIH', 'Berechnungsvariable indiHELLA', '°', NULL, NULL),
-    ('azimutRadianceIH', 'Berechnungsvariable indiHELLA', '°', NULL, NULL),
-    ('xdirRadianceIH', 'Berechnungsvariable indiHELLA', NULL, NULL, NULL),
-    ('ydirRadianceIH', 'Berechnungsvariable indiHELLA', NULL, NULL, NULL),
-    ('zdirRadianceIH', 'Berechnungsvariable indiHELLA', NULL, NULL, NULL),
-    ('irrDirNorRadianceIH', 'Berechnungsvariable indiHELLA', 'W/m2', NULL, NULL),
-    ('profileangleRadianceIH', 'Berechnungsvariable indiHELLA', '°', NULL, NULL),
-    ('epsilonRadianceIH', 'Berechnungsvariable indiHELLA', NULL, NULL, NULL),
-    ('deltaRadianceIH', 'Berechnungsvariable indiHELLA', NULL, NULL, NULL),
-    ('waterPrecipitableRadianceIH', 'Berechnungsvariable indiHELLA', NULL, NULL, NULL),
-    ('sunynRadianceIH', 'Berechnungsvariable indiHELLA', NULL, NULL),
-    ('cutofftiltRadianceIH', 'Berechnungsvariable indiHELLA', '°', NULL, NULL),
-    ('SlatAngTarIH', 'Berechnungsvariable indiHELLA: Soll Lamellenwinkel', '°', NULL, NULL),
-    ('SlatPosTarIH', 'Berechnungsvariable indiHELLA: Soll Raffstorehöhe', '%', NULL, NULL),
-    ('Light1TarIH', 'Berechnungsvariable indiHELLA: Soll Licht 1', NULL, NULL),
-    ('Light2TarIH', 'Berechnungsvariable indiHELLA: Soll Licht 2', NULL, NULL),
-    ('DGPMP1_XX_XXX_IH', 'Berechnungsvariable indiHELLA: Daylight Glare Probability für Messpunkt 1', 'DGP', NULL, NULL),
-    ('DGPMP2_XX_XXX_IH', 'Berechnungsvariable indiHELLA: Daylight Glare Probability für Messpunkt 2', 'DGP', NULL, NULL),
-    ('DGPMP3_XX_XXX_IH', 'Berechnungsvariable indiHELLA: Daylight Glare Probability für Messpunkt 3', 'DGP', NULL, NULL),
-    ('DGPMP4_XX_XXX_IH', 'Berechnungsvariable indiHELLA: Daylight Glare Probability für Messpunkt 4', 'DGP', NULL, NULL),
-    ('DillumMP1Hor_XX_XXX_IH', 'Berechnungsvariable indiHELLA: Helligkeit vertikal für Messpunkt 1', 'lx', NULL, NULL),
-    ('DillumMP2Hor_XX_XXX_IH', 'Berechnungsvariable indiHELLA: Helligkeit vertikal für Messpunkt 2', 'lx', NULL, NULL),
-    ('DillumMP3Hor_XX_XXX_IH', 'Berechnungsvariable indiHELLA: Helligkeit vertikal für Messpunkt 3', 'lx', NULL, NULL),
-    ('DillumMP4Hor_XX_XXX_IH', 'Berechnungsvariable indiHELLA: Helligkeit vertikal für Messpunkt 4', 'lx', NULL, NULL),
-    ('DillumMP1Ver_XX_XXX_IH', 'Berechnungsvariable indiHELLA: Helligkeit horizontal für Messpunkt 1', 'lx', NULL, NULL),
-    ('DillumMP2Ver_XX_XXX_IH', 'Berechnungsvariable indiHELLA: Helligkeit horizontal für Messpunkt 2', 'lx', NULL, NULL),
-    ('DillumMP3Ver_XX_XXX_IH', 'Berechnungsvariable indiHELLA: Helligkeit horizontal für Messpunkt 3', 'lx', NULL, NULL),
-    ('DillumMP4Ver_XX_XXX_IH', 'Berechnungsvariable indiHELLA: Helligkeit horizontal für Messpunkt 4', 'lx', NULL, NULL),
-    ('GlobalIrrHor_approx', 'Globalstrahlung horizontal Vorhersage', 'W/m2', 0, 2000),
-    ('DiffIrrHorAct_approx', 'Diffuse Strahlung horizontal aktuell Vorhersage', 'W/m2', 0, 2000),
-    ('num_headpose', 'Anzahl der detektierten Köpfe im Raum', NULL, 0, 4),
-    ('headpose_x_1', 'Kopfposition X Person 1', 'm', NULL, NULL),
-    ('headpose_y_1', 'Kopfposition Y Person 1', 'm', NULL, NULL),
-    ('headpose_z_1', 'Kopfposition Z Person 1', 'm', NULL, NULL),
-    ('headpose_pitch_1', 'Kopfwinkel Pitch Person 1', '°', NULL, NULL),
-    ('headpose_yaw_1', 'Kopfwinkel Yaw Person 1', '°', NULL, NULL),
-    ('headpose_roll_1', 'Kopfwinkel Roll Person 1', '°', NULL, NULL),
-    ('headpose_x_2', 'Kopfposition X Person 2', 'm', NULL, NULL),
-    ('headpose_y_2', 'Kopfposition Y Person 2', 'm', NULL, NULL),
-    ('headpose_z_2', 'Kopfposition Z Person 2', 'm', NULL, NULL),
-    ('headpose_pitch_2', 'Kopfwinkel Pitch Person 2', '°', NULL, NULL),
-    ('headpose_yaw_2', 'Kopfwinkel Yaw Person 2', '°', NULL, NULL),
-    ('headpose_roll_2', 'Kopfwinkel Roll Person 2', '°', NULL, NULL),
-    ('headpose_x_3', 'Kopfposition X Person 3', 'm', NULL, NULL),
-    ('headpose_y_3', 'Kopfposition Y Person 3', 'm', NULL, NULL),
-    ('headpose_z_3', 'Kopfposition Z Person 3', 'm', NULL, NULL),
-    ('headpose_pitch_3', 'Kopfwinkel Pitch Person 3', '°', NULL, NULL),
-    ('headpose_yaw_3', 'Kopfwinkel Yaw Person 3', '°', NULL, NULL),
-    ('headpose_roll_3', 'Kopfwinkel Roll Person 3', '°', NULL, NULL),
-    ('headpose_x_4', 'Kopfposition X Person 4', 'm', NULL, NULL),
-    ('headpose_y_4', 'Kopfposition Y Person 4', 'm', NULL, NULL),
-    ('headpose_z_4', 'Kopfposition Z Person 4', 'm', NULL, NULL),
-    ('headpose_pitch_4', 'Kopfwinkel Pitch Person 4', '°', NULL, NULL),
-    ('headpose_yaw_4', 'Kopfwinkel Yaw Person 4', '°', NULL, NULL),
-    ('headpose_roll_4', 'Kopfwinkel Roll Person 4', '°', NULL, NULL);
-
-
--- Create measurements table
-CREATE TABLE measurements (
-    timestamp TIMESTAMP,
-    source_id int,
-    parameter_id int,
-    value NUMERIC,
-    FOREIGN KEY (source_id) REFERENCES sources(source_id),
-    FOREIGN KEY (parameter_id) REFERENCES parameters(parameter_id),
+CREATE TABLE illumination_datapoints (
+    illumination_datapoints_id int SERIAL PRIMARY KEY,
+    IllumMP1Act Numeric,
+    IllumMP2Act Numeric,
+    IllumMP3Act Numeric,
+    IllumMP4Act Numeric
 );
 
--- Create indexes
-CREATE INDEX idx_measurements ON measurements (timestamp, source_id, parameter_id);
-CREATE INDEX idx_sources ON sources (source_name);
-CREATE INDEX idx_parameters ON parameters (parameter_name);
+CREATE TABLE raffstore_light_data_1og_r1 (
+    raffstore_light_data_1og_r1_id int SERIAL PRIMARY KEY,
+    SlatAng1Act_1OG_R1 Numeric,
+    SlatPos1Act_1OG_R1 Numeric,
+    Light1Act_1OG_R1 Numeric,
+    Light2Act_1OG_R1 Numeric
+);
+
+CREATE TABLE raffstore_light_data_1og_r2 (
+    raffstore_light_data_1og_r2_id int SERIAL PRIMARY KEY,
+    SlatAng1Act_1OG_R2 Numeric,
+    SlatPos1Act_1OG_R2 Numeric,
+    Light1Act_1OG_R2 Numeric
+);
+
+CREATE TABLE raffstore_light_data_1og_r3 (
+    raffstore_light_data_1og_r3_id int SERIAL PRIMARY KEY,
+    SlatAng1Act_1OG_R3 Numeric,
+    SlatPos1Act_1OG_R3 Numeric,
+    Light1Act_1OG_R3 Numeric
+);
+
+CREATE TABLE raffstore_light_data_1og_r4 (
+    raffstore_light_data_1og_r4_id int SERIAL PRIMARY KEY,
+    SlatAng1Act_1OG_R4 Numeric,
+    SlatPos1Act_1OG_R4 Numeric,
+    SlatAng2Act_1OG_R4 Numeric,
+    SlatPos2Act_1OG_R4 Numeric,
+    SlatAng3Act_1OG_R4 Numeric,
+    SlatPos3Act_1OG_R4 Numeric,
+    SlatAng4Act_1OG_R4 Numeric,
+    SlatPos4Act_1OG_R4 Numeric,
+    SlatAng5Act_1OG_R4 Numeric,
+    SlatPos5Act_1OG_R4 Numeric,
+    Light1Act_1OG_R4 Numeric,
+    Light2Act_1OG_R4 Numeric
+);
+
+CREATE TABLE user_input_mp1 (
+    user_input_mp1_id int SERIAL PRIMARY KEY,
+    MP1GlareLimit Numeric,
+    MP1ReqIllum Numeric,
+    MP1ReqRoomTemp Numeric
+);
+
+CREATE TABLE user_input_mp2 (
+    user_input_mp2_id int SERIAL PRIMARY KEY,
+    MP2GlareLimit Numeric,
+    MP2ReqIllum Numeric,
+    MP2ReqRoomTemp Numeric
+);
+
+CREATE TABLE user_input_mp3 (
+    user_input_mp3_id int SERIAL PRIMARY KEY,
+    MP3GlareLimit Numeric,
+    MP3ReqIllum Numeric,
+    MP3ReqRoomTemp Numeric
+);
+
+CREATE TABLE user_input_mp4 (
+    user_input_mp4_id int SERIAL PRIMARY KEY,
+    MP4GlareLimit Numeric,
+    MP4ReqIllum Numeric,
+    MP4ReqRoomTemp Numeric
+);
+
+CREATE TABLE indi_hella_calc_var_radiance_ih (
+    indi_hella_calc_var_radiance_ih_id int SERIAL PRIMARY KEY,
+    altitudeRadianceIH Numeric,
+    azimutRadianceIH Numeric,
+    xdirRadianceIH Numeric,
+    ydirRadianceIH Numeric,
+    zdirRadianceIH Numeric,
+    irrDirNorRadianceIH Numeric,
+    profileangleRadianceIH Numeric,
+    epsilonRadianceIH Numeric,
+    deltaRadianceIH Numeric,
+    waterPrecipitableRadianceIH Numeric,
+    sunnyRadianceIH Numeric,
+    cutofftiltRadianceIH Numeric
+);
+
+CREATE TABLE indi_hella_tar_var_ih (
+    indi_hella_tar_var_ih_id int SERIAL PRIMARY KEY,
+    SlatAngTarIH Numeric,
+    SlatPosTarIH Numeric,
+    Light1TarIH Numeric,
+    Light2TarIH Numeric
+);
+
+CREATE TABLE indie_hella_dgp_var_ih (
+    indie_hella_dgp_var_ih_id int SERIAL PRIMARY KEY,
+    DGPMP1_0_100_IH Numeric,
+    DGPMP1_5_100_IH Numeric,
+    DGPMP1_10_100_IH Numeric,
+    DGPMP1_15_100_IH Numeric,
+    DGPMP1_20_100_IH Numeric,
+    DGPMP1_25_100_IH Numeric,
+    DGPMP1_30_100_IH Numeric,
+    DGPMP1_35_100_IH Numeric,
+    DGPMP1_40_100_IH Numeric,
+    DGPMP1_45_100_IH Numeric,
+    DGPMP1_50_100_IH Numeric,
+    DGPMP1_55_100_IH Numeric,
+    DGPMP1_60_100_IH Numeric,
+    DGPMP1_65_100_IH Numeric,
+    DGPMP1_70_100_IH Numeric,
+    DGPMP1_75_100_IH Numeric,
+    DGPMP1_80_100_IH Numeric,
+    DGPMP1_85_100_IH Numeric,
+    DGPMP1_0_0_IH Numeric,
+    DGPMP2_0_100_IH Numeric,
+    DGPMP2_5_100_IH Numeric,
+    DGPMP2_10_100_IH Numeric,
+    DGPMP2_15_100_IH Numeric,
+    DGPMP2_20_100_IH Numeric,
+    DGPMP2_25_100_IH Numeric,
+    DGPMP2_30_100_IH Numeric,
+    DGPMP2_35_100_IH Numeric,
+    DGPMP2_40_100_IH Numeric,
+    DGPMP2_45_100_IH Numeric,
+    DGPMP2_50_100_IH Numeric,
+    DGPMP2_55_100_IH Numeric,
+    DGPMP2_60_100_IH Numeric,
+    DGPMP2_65_100_IH Numeric,
+    DGPMP2_70_100_IH Numeric,
+    DGPMP2_75_100_IH Numeric,
+    DGPMP2_80_100_IH Numeric,
+    DGPMP2_85_100_IH Numeric,
+    DGPMP2_0_0_IH Numeric,
+    DGPMP3_0_100_IH Numeric,
+    DGPMP3_5_100_IH Numeric,
+    DGPMP3_10_100_IH Numeric,
+    DGPMP3_15_100_IH Numeric,
+    DGPMP3_20_100_IH Numeric,
+    DGPMP3_25_100_IH Numeric,
+    DGPMP3_30_100_IH Numeric,
+    DGPMP3_35_100_IH Numeric,
+    DGPMP3_40_100_IH Numeric,
+    DGPMP3_45_100_IH Numeric,
+    DGPMP3_50_100_IH Numeric,
+    DGPMP3_55_100_IH Numeric,
+    DGPMP3_60_100_IH Numeric,
+    DGPMP3_65_100_IH Numeric,
+    DGPMP3_70_100_IH Numeric,
+    DGPMP3_75_100_IH Numeric,
+    DGPMP3_80_100_IH Numeric,
+    DGPMP3_85_100_IH Numeric,
+    DGPMP3_0_0_IH Numeric,
+    DGPMP4_0_100_IH Numeric,
+    DGPMP4_5_100_IH Numeric,
+    DGPMP4_10_100_IH Numeric,
+    DGPMP4_15_100_IH Numeric,
+    DGPMP4_20_100_IH Numeric,
+    DGPMP4_25_100_IH Numeric,
+    DGPMP4_30_100_IH Numeric,
+    DGPMP4_35_100_IH Numeric,
+    DGPMP4_40_100_IH Numeric,
+    DGPMP4_45_100_IH Numeric,
+    DGPMP4_50_100_IH Numeric,
+    DGPMP4_55_100_IH Numeric,
+    DGPMP4_60_100_IH Numeric,
+    DGPMP4_65_100_IH Numeric,
+    DGPMP4_70_100_IH Numeric,
+    DGPMP4_75_100_IH Numeric,
+    DGPMP4_80_100_IH Numeric,
+    DGPMP4_85_100_IH Numeric,
+    DGPMP4_0_0_IH Numeric    
+);
+
+CREATE TABLE indie_hella_dillum_var_ih (
+    indi_hella_dillum_var_ih_id int SERIAL PRIMARY KEY,
+    DillumMP1Hor_XX_XXX_IH Numeric,
+    DillumMP2Hor_XX_XXX_IH Numeric,
+    DillumMP3Hor_XX_XXX_IH Numeric,
+    DillumMP4Hor_XX_XXX_IH Numeric,
+    DillumMP1Ver_XX_XXX_IH Numeric,
+    DillumMP2Ver_XX_XXX_IH Numeric,
+    DillumMP3Ver_XX_XXX_IH Numeric,
+    DillumMP4Ver_XX_XXX_IH Numeric
+);
+
+CREATE TABLE radiation_forecast (
+    radiation_forecast_id int,
+    GlobalIrrHor_approx Numeric,
+    DiffIrrHorAct_approx Numeric
+);
+
+CREATE TABLE head_positions (
+    head_positions_id int SERIAL PRIMARY KEY,
+    headpose_x_1 Numeric,
+    headpose_y_1 Numeric,
+    headpose_z_1 Numeric,
+    headpose_pitch_1 Numeric,
+    headpose_yaw_1 Numeric,
+    headpose_roll_1 Numeric,
+    headpose_x_2 Numeric,
+    headpose_y_2 Numeric,
+    headpose_z_2 Numeric,
+    headpose_pitch_2 Numeric,
+    headpose_yaw_2 Numeric,
+    headpose_roll_2 Numeric,
+    headpose_x_3 Numeric,
+    headpose_y_3 Numeric,
+    headpose_z_3 Numeric,
+    headpose_pitch_3 Numeric,
+    headpose_yaw_3 Numeric,
+    headpose_roll_3 Numeric,
+    headpose_x_4 Numeric,
+    headpose_y_4 Numeric,
+    headpose_z_4 Numeric,
+    headpose_pitch_4 Numeric,
+    headpose_yaw_4 Numeric,
+    headpose_roll_4 Numeric
+);
+
+-- Fact table
+CREATE TABLE fact_table (
+    fact_table_id SERIAL PRIMARY KEY,
+    timestamp timestamp,
+    metrological_data_id int,
+    pv_modul_data_id int,
+    illumination_datapoints_id int,
+    raffstore_light_data_1og_r1_id int,
+    raffstore_light_data_1og_r2_id int,
+    raffstore_light_data_1og_r3_id int,
+    raffstore_light_data_1og_r4_id int,
+    user_input_mp1_id int,
+    user_input_mp2_id int,
+    user_input_mp3_id int,
+    user_input_mp4_id int,
+    indi_hella_calc_var_radiance_ih_id int,
+    indi_hella_tar_var_ih_id int,
+    indie_hella_dgp_var_ih_id int,
+    indie_hella_dillum_var_ih_id int,
+    radiation_forecast_id int,
+    head_positions_id int,
+    
+    FOREIGN KEY (metrological_data_id) REFERENCES metrological_data(metrological_data_id),
+    FOREIGN KEY (pv_modul_data_id) REFERENCES pv_modul_data(pv_modul_data_id),
+    FOREIGN KEY (illumination_datapoints_id) REFERENCES illumination_datapoints(illumination_datapoints_id),
+    FOREIGN KEY (raffstore_light_data_1og_r1_id) REFERENCES raffstore_light_data_1og_r1(raffstore_light_data_1og_r1_id),
+    FOREIGN KEY (raffstore_light_data_1og_r2_id) REFERENCES raffstore_light_data_1og_r2(raffstore_light_data_1og_r2_id),
+    FOREIGN KEY (raffstore_light_data_1og_r3_id) REFERENCES raffstore_light_data_1og_r3(raffstore_light_data_1og_r3_id),
+    FOREIGN KEY (raffstore_light_data_1og_r4_id) REFERENCES raffstore_light_data_1og_r4(raffstore_light_data_1og_r4_id),
+    FOREIGN KEY (user_input_mp1_id) REFERENCES user_input_mp1(user_input_mp1_id),
+    FOREIGN KEY (user_input_mp2_id) REFERENCES user_input_mp2(user_input_mp2_id),
+    FOREIGN KEY (user_input_mp3_id) REFERENCES user_input_mp3(user_input_mp3_id),
+    FOREIGN KEY (user_input_mp4_id) REFERENCES user_input_mp4(user_input_mp4_id),
+    FOREIGN KEY (indi_hella_calc_var_radiance_ih_id) REFERENCES indi_hella_calc_var_radiance_ih(indi_hella_calc_var_radiance_ih_id),
+    FOREIGN KEY (indi_hella_tar_var_ih_id) REFERENCES indi_hella_tar_var_ih(indi_hella_tar_var_ih_id),
+    FOREIGN KEY (indie_hella_dgp_var_ih_id) REFERENCES indie_hella_dgp_var_ih(indie_hella_dgp_var_ih_id),
+    FOREIGN KEY (indie_hella_dillum_var_ih_id) REFERENCES indie_hella_dillum_var_ih(indie_hella_dillum_var_ih_id),
+    FOREIGN KEY (radiation_forecast_id) REFERENCES radiation_forecast(radiation_forecast_id),
+    FOREIGN KEY (head_positions_id) REFERENCES head_positions(head_positions_id)
+);
+
+
+-- Indexe
+CREATE INDEX idx_metrological_data ON fact_table (metrological_data_id);
+CREATE INDEX idx_pv_modul_data ON fact_table (pv_modul_data_id);
+CREATE INDEX idx_illumination_datapoints ON fact_table (illumination_datapoints_id);
+CREATE INDEX idx_raffstore_light_data ON fact_table (raffstore_light_data_1og_r1_id, raffstore_light_data_1og_r2_id, raffstore_light_data_1og_r3_id, raffstore_light_data_1og_r4_id);
+CREATE INDEX idx_user_input_mp ON fact_table (user_input_mp1_id, user_input_mp2_id, user_input_mp3_id, user_input_mp4_id);
+CREATE INDEX idx_indi_hella_calc_var ON fact_table (indi_hella_calc_var_radiance_ih_id);
+CREATE INDEX idx_indi_hella_tar_var ON fact_table (indi_hella_tar_var_ih_id);
+CREATE INDEX idx_indie_hella_dgp_var ON fact_table (indie_hella_dgp_var_ih_id);
+CREATE INDEX idx_indie_hella_dillum_var ON fact_table (indie_hella_dillum_var_ih_id);
+CREATE INDEX idx_radiation_forecast ON fact_table (radiation_forecast_id);
+CREATE INDEX idx_head_positions ON fact_table (head_positions_id);
+
+
