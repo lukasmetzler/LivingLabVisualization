@@ -132,8 +132,8 @@ CREATE TABLE indi_hella_tar_var_ih (
     Light2TarIH Numeric
 );
 
-CREATE TABLE indie_hella_dgp_var_ih (
-    indie_hella_dgp_var_ih_id int SERIAL PRIMARY KEY,
+CREATE TABLE indi_hella_dgp_var_ih (
+    indi_hella_dgp_var_ih_id int SERIAL PRIMARY KEY,
     DGPMP1_0_100_IH Numeric,
     DGPMP1_5_100_IH Numeric,
     DGPMP1_10_100_IH Numeric,
@@ -212,17 +212,173 @@ CREATE TABLE indie_hella_dgp_var_ih (
     DGPMP4_0_0_IH Numeric    
 );
 
-CREATE TABLE indie_hella_dillum_var_ih (
-    indi_hella_dillum_var_ih_id int SERIAL PRIMARY KEY,
-    DillumMP1Hor_XX_XXX_IH Numeric,
-    DillumMP2Hor_XX_XXX_IH Numeric,
-    DillumMP3Hor_XX_XXX_IH Numeric,
-    DillumMP4Hor_XX_XXX_IH Numeric,
-    DillumMP1Ver_XX_XXX_IH Numeric,
-    DillumMP2Ver_XX_XXX_IH Numeric,
-    DillumMP3Ver_XX_XXX_IH Numeric,
-    DillumMP4Ver_XX_XXX_IH Numeric
+CREATE TABLE indi_hella_illum_var_mp1 (
+    indi_hella_illum_var_mp1_id int SERIAL PRIMARY KEY,
+    hor_illumMP1_0_100_IH Numeric,
+    hor_illumMP1_5_100_IH Numeric,
+    hor_illumMP1_10_100_IH Numeric,
+    hor_illumMP1_15_100_IH Numeric,
+    hor_illumMP1_20_100_IH Numeric,
+    hor_illumMP1_25_100_IH Numeric,
+    hor_illumMP1_30_100_IH Numeric,
+    hor_illumMP1_35_100_IH Numeric,
+    hor_illumMP1_40_100_IH Numeric,
+    hor_illumMP1_45_100_IH Numeric,
+    hor_illumMP1_50_100_IH Numeric,
+    hor_illumMP1_55_100_IH Numeric,
+    hor_illumMP1_60_100_IH Numeric,
+    hor_illumMP1_65_100_IH Numeric,
+    hor_illumMP1_70_100_IH Numeric,
+    hor_illumMP1_75_100_IH Numeric,
+    hor_illumMP1_80_100_IH Numeric,
+    hor_illumMP1_85_100_IH Numeric,
+    hor_illumMP1_0_0_IH Numeric,
+    ver_illumMP1_0_100_IH Numeric,
+    ver_illumMP1_5_100_IH Numeric,
+    ver_illumMP1_10_100_IH Numeric,
+    ver_illumMP1_15_100_IH Numeric,
+    ver_illumMP1_20_100_IH Numeric,
+    ver_illumMP1_25_100_IH Numeric,
+    ver_illumMP1_30_100_IH Numeric,
+    ver_illumMP1_35_100_IH Numeric,
+    ver_illumMP1_40_100_IH Numeric,
+    ver_illumMP1_45_100_IH Numeric,
+    ver_illumMP1_50_100_IH Numeric,
+    ver_illumMP1_55_100_IH Numeric,
+    ver_illumMP1_60_100_IH Numeric,
+    ver_illumMP1_65_100_IH Numeric,
+    ver_illumMP1_70_100_IH Numeric,
+    ver_illumMP1_75_100_IH Numeric,
+    ver_illumMP1_80_100_IH Numeric,
+    ver_illumMP1_85_100_IH Numeric,
+    ver_illumMP1_0_0_IH Numeric
 );
+
+CREATE TABLE indi_hella_illum_var_mp2 (
+    indi_hella_illum_var_mp2_id int SERIAL PRIMARY KEY,
+    hor_illumMP2_0_100_IH Numeric,
+    hor_illumMP2_5_100_IH Numeric,
+    hor_illumMP2_10_100_IH Numeric,
+    hor_illumMP2_15_100_IH Numeric,
+    hor_illumMP2_20_100_IH Numeric,
+    hor_illumMP2_25_100_IH Numeric,
+    hor_illumMP2_30_100_IH Numeric,
+    hor_illumMP2_35_100_IH Numeric,
+    hor_illumMP2_40_100_IH Numeric,
+    hor_illumMP2_45_100_IH Numeric,
+    hor_illumMP2_50_100_IH Numeric,
+    hor_illumMP2_55_100_IH Numeric,
+    hor_illumMP2_60_100_IH Numeric,
+    hor_illumMP2_65_100_IH Numeric,
+    hor_illumMP2_70_100_IH Numeric,
+    hor_illumMP2_75_100_IH Numeric,
+    hor_illumMP2_80_100_IH Numeric,
+    hor_illumMP2_85_100_IH Numeric,
+    hor_illumMP2_0_0_IH Numeric,
+    ver_illumMP2_0_100_IH Numeric,
+    ver_illumMP2_5_100_IH Numeric,
+    ver_illumMP2_10_100_IH Numeric,
+    ver_illumMP2_15_100_IH Numeric,
+    ver_illumMP2_20_100_IH Numeric,
+    ver_illumMP2_25_100_IH Numeric,
+    ver_illumMP2_30_100_IH Numeric,
+    ver_illumMP2_35_100_IH Numeric,
+    ver_illumMP2_40_100_IH Numeric,
+    ver_illumMP2_45_100_IH Numeric,
+    ver_illumMP2_50_100_IH Numeric,
+    ver_illumMP2_55_100_IH Numeric,
+    ver_illumMP2_60_100_IH Numeric,
+    ver_illumMP2_65_100_IH Numeric,
+    ver_illumMP2_70_100_IH Numeric,
+    ver_illumMP2_75_100_IH Numeric,
+    ver_illumMP2_80_100_IH Numeric,
+    ver_illumMP2_85_100_IH Numeric,
+    ver_illumMP2_0_0_IH Numeric
+);
+
+
+CREATE TABLE indi_hella_illum_var_mp3 (
+    indi_hella_illum_var_mp3_id int SERIAL PRIMARY KEY,
+    hor_illumMP3_0_100_IH Numeric,
+    hor_illumMP3_5_100_IH Numeric,
+    hor_illumMP3_10_100_IH Numeric,
+    hor_illumMP3_15_100_IH Numeric,
+    hor_illumMP3_20_100_IH Numeric,
+    hor_illumMP3_25_100_IH Numeric,
+    hor_illumMP3_30_100_IH Numeric,
+    hor_illumMP3_35_100_IH Numeric,
+    hor_illumMP3_40_100_IH Numeric,
+    hor_illumMP3_45_100_IH Numeric,
+    hor_illumMP3_50_100_IH Numeric,
+    hor_illumMP3_55_100_IH Numeric,
+    hor_illumMP3_60_100_IH Numeric,
+    hor_illumMP3_65_100_IH Numeric,
+    hor_illumMP3_70_100_IH Numeric,
+    hor_illumMP3_75_100_IH Numeric,
+    hor_illumMP3_80_100_IH Numeric,
+    hor_illumMP3_85_100_IH Numeric,
+    hor_illumMP3_0_0_IH Numeric,
+    ver_illumMP3_0_100_IH Numeric,
+    ver_illumMP3_5_100_IH Numeric,
+    ver_illumMP3_10_100_IH Numeric,
+    ver_illumMP3_15_100_IH Numeric,
+    ver_illumMP3_20_100_IH Numeric,
+    ver_illumMP3_25_100_IH Numeric,
+    ver_illumMP3_30_100_IH Numeric,
+    ver_illumMP3_35_100_IH Numeric,
+    ver_illumMP3_40_100_IH Numeric,
+    ver_illumMP3_45_100_IH Numeric,
+    ver_illumMP3_50_100_IH Numeric,
+    ver_illumMP3_55_100_IH Numeric,
+    ver_illumMP3_60_100_IH Numeric,
+    ver_illumMP3_65_100_IH Numeric,
+    ver_illumMP3_70_100_IH Numeric,
+    ver_illumMP3_75_100_IH Numeric,
+    ver_illumMP3_80_100_IH Numeric,
+    ver_illumMP3_85_100_IH Numeric
+);
+
+CREATE TABLE indi_hella_illum_var_mp4 (
+    indi_hella_illum_var_mp4_id int SERIAL PRIMARY KEY,
+    hor_illumMP4_0_0_IH Numeric,
+    hor_illumMP4_0_100_IH Numeric,
+    hor_illumMP4_5_100_IH Numeric,
+    hor_illumMP4_10_100_IH Numeric,
+    hor_illumMP4_15_100_IH Numeric,
+    hor_illumMP4_20_100_IH Numeric,
+    hor_illumMP4_25_100_IH Numeric,
+    hor_illumMP4_30_100_IH Numeric,
+    hor_illumMP4_35_100_IH Numeric,
+    hor_illumMP4_40_100_IH Numeric,
+    hor_illumMP4_45_100_IH Numeric,
+    hor_illumMP4_50_100_IH Numeric,
+    hor_illumMP4_55_100_IH Numeric,
+    hor_illumMP4_60_100_IH Numeric,
+    hor_illumMP4_65_100_IH Numeric,
+    hor_illumMP4_70_100_IH Numeric,
+    hor_illumMP4_75_100_IH Numeric,
+    hor_illumMP4_80_100_IH Numeric,
+    hor_illumMP4_85_100_IH Numeric,
+    ver_illumMP4_0_0_IH Numeric,
+    ver_illumMP4_0_100_IH Numeric,
+    ver_illumMP4_5_100_IH Numeric,
+    ver_illumMP4_10_100_IH Numeric,
+    ver_illumMP4_15_100_IH Numeric,
+    ver_illumMP4_20_100_IH Numeric,
+    ver_illumMP4_25_100_IH Numeric,
+    ver_illumMP4_30_100_IH Numeric,
+    ver_illumMP4_35_100_IH Numeric,
+    ver_illumMP4_40_100_IH Numeric,
+    ver_illumMP4_45_100_IH Numeric,
+    ver_illumMP4_50_100_IH Numeric,
+    ver_illumMP4_55_100_IH Numeric,
+    ver_illumMP4_60_100_IH Numeric,
+    ver_illumMP4_65_100_IH Numeric,
+    ver_illumMP4_70_100_IH Numeric,
+    ver_illumMP4_75_100_IH Numeric,
+    ver_illumMP4_80_100_IH Numeric,
+    ver_illumMP4_85_100_IH Numeric
+)
 
 CREATE TABLE radiation_forecast (
     radiation_forecast_id int,
@@ -275,8 +431,11 @@ CREATE TABLE fact_table (
     user_input_mp4_id int,
     indi_hella_calc_var_radiance_ih_id int,
     indi_hella_tar_var_ih_id int,
-    indie_hella_dgp_var_ih_id int,
-    indie_hella_dillum_var_ih_id int,
+    indi_hella_dgp_var_ih_id int,
+    indi_hella_illum_var_mp1_id int,
+    indi_hella_illum_var_mp2_id int,
+    indi_hella_illum_var_mp3_id int,
+    indi_hella_illum_var_mp4_id int,
     radiation_forecast_id int,
     head_positions_id int,
     
@@ -293,8 +452,11 @@ CREATE TABLE fact_table (
     FOREIGN KEY (user_input_mp4_id) REFERENCES user_input_mp4(user_input_mp4_id),
     FOREIGN KEY (indi_hella_calc_var_radiance_ih_id) REFERENCES indi_hella_calc_var_radiance_ih(indi_hella_calc_var_radiance_ih_id),
     FOREIGN KEY (indi_hella_tar_var_ih_id) REFERENCES indi_hella_tar_var_ih(indi_hella_tar_var_ih_id),
-    FOREIGN KEY (indie_hella_dgp_var_ih_id) REFERENCES indie_hella_dgp_var_ih(indie_hella_dgp_var_ih_id),
-    FOREIGN KEY (indie_hella_dillum_var_ih_id) REFERENCES indie_hella_dillum_var_ih(indie_hella_dillum_var_ih_id),
+    FOREIGN KEY (indi_hella_dgp_var_ih_id) REFERENCES indi_hella_dgp_var_ih(indi_hella_dgp_var_ih_id),
+    FOREIGN KEY (indi_hella_illum_var_mp1_id) REFERENCES indi_hella_illum_var_mp1(indi_hella_illum_var_mp1_id),
+    FOREIGN KEY (indi_hella_illum_var_mp2_id) REFERENCES indi_hella_illum_var_mp2(indi_hella_illum_var_mp2_id),
+    FOREIGN KEY (indi_hella_illum_var_mp3_id) REFERENCES indi_hella_illum_var_mp3(indi_hella_illum_var_mp3_id),
+    FOREIGN KEY (indi_hella_illum_var_mp4_id) REFERENCES indi_hella_illum_var_mp4(indi_hella_illum_var_mp4_id),
     FOREIGN KEY (radiation_forecast_id) REFERENCES radiation_forecast(radiation_forecast_id),
     FOREIGN KEY (head_positions_id) REFERENCES head_positions(head_positions_id)
 );
@@ -308,8 +470,11 @@ CREATE INDEX idx_raffstore_light_data ON fact_table (raffstore_light_data_1og_r1
 CREATE INDEX idx_user_input_mp ON fact_table (user_input_mp1_id, user_input_mp2_id, user_input_mp3_id, user_input_mp4_id);
 CREATE INDEX idx_indi_hella_calc_var ON fact_table (indi_hella_calc_var_radiance_ih_id);
 CREATE INDEX idx_indi_hella_tar_var ON fact_table (indi_hella_tar_var_ih_id);
-CREATE INDEX idx_indie_hella_dgp_var ON fact_table (indie_hella_dgp_var_ih_id);
-CREATE INDEX idx_indie_hella_dillum_var ON fact_table (indie_hella_dillum_var_ih_id);
+CREATE INDEX idx_indi_hella_dgp_var ON fact_table (indi_hella_dgp_var_ih_id);
+CREATE INDEX idx_indi_hella_illum_var_mp1 ON fact_table (indi_hella_illum_var_mp1_id);
+CREATE INDEX idx_indi_hella_illum_var_mp2 ON fact_table (indi_hella_illum_var_mp2_id);
+CREATE INDEX idx_indi_hella_illum_var_mp3 ON fact_table (indi_hella_illum_var_mp3_id);
+CREATE INDEX idx_indi_hella_illum_var_mp4 ON fact_table (indi_hella_illum_var_mp4_id);
 CREATE INDEX idx_radiation_forecast ON fact_table (radiation_forecast_id);
 CREATE INDEX idx_head_positions ON fact_table (head_positions_id);
 
