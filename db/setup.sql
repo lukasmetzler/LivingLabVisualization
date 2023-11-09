@@ -26,7 +26,7 @@ CREATE TABLE metrological_data (
     RoomTempAct Numeric
 );
 
-CREATE TABLE pv_modul_data (
+CREATE TABLE pv_modul_data_1og_r1 (
     pv_modul_data_id int SERIAL PRIMARY KEY,
     VoltMeasActModule1 Numeric,
     CurrMeasActModule1 Numeric,
@@ -34,7 +34,7 @@ CREATE TABLE pv_modul_data (
     CurrMeasActModule2 Numeric
 );
 
-CREATE TABLE illumination_datapoints (
+CREATE TABLE illumination_datapoints_1og_r1 (
     illumination_datapoints_id int SERIAL PRIMARY KEY,
     IllumMP1Act Numeric,
     IllumMP2Act Numeric,
@@ -70,45 +70,51 @@ CREATE TABLE raffstore_light_data_1og_r4 (
     SlatPos1Act_1OG_R4 Numeric,
     SlatAng2Act_1OG_R4 Numeric,
     SlatPos2Act_1OG_R4 Numeric,
-    SlatAng3Act_1OG_R4 Numeric,
-    SlatPos3Act_1OG_R4 Numeric,
-    SlatAng4Act_1OG_R4 Numeric,
-    SlatPos4Act_1OG_R4 Numeric,
-    SlatAng5Act_1OG_R4 Numeric,
-    SlatPos5Act_1OG_R4 Numeric,
     Light1Act_1OG_R4 Numeric,
     Light2Act_1OG_R4 Numeric
 );
 
-CREATE TABLE user_input_mp1 (
+
+CREATE TABLE raffstore_light_data_1og_r5 (
+    raffstore_light_data_1og_r5_id int SERIAL PRIMARY KEY,
+    SlatAng1Act_1OG_R5 Numeric,
+    SlatPos1Act_1OG_R5 Numeric,
+    SlatAng2Act_1OG_R5 Numeric,
+    SlatPos2Act_1OG_R5 Numeric,
+    SlatAng3Act_1OG_R5 Numeric,
+    SlatPos3Act_1OG_R5 Numeric,
+    Light1Act_1OG_R5 Numeric,
+);
+
+CREATE TABLE user_input_mp1_1og_r1 (
     user_input_mp1_id int SERIAL PRIMARY KEY,
     MP1GlareLimit Numeric,
     MP1ReqIllum Numeric,
     MP1ReqRoomTemp Numeric
 );
 
-CREATE TABLE user_input_mp2 (
+CREATE TABLE user_input_mp2_1og_r1 (
     user_input_mp2_id int SERIAL PRIMARY KEY,
     MP2GlareLimit Numeric,
     MP2ReqIllum Numeric,
     MP2ReqRoomTemp Numeric
 );
 
-CREATE TABLE user_input_mp3 (
+CREATE TABLE user_input_mp3_1og_r1 (
     user_input_mp3_id int SERIAL PRIMARY KEY,
     MP3GlareLimit Numeric,
     MP3ReqIllum Numeric,
     MP3ReqRoomTemp Numeric
 );
 
-CREATE TABLE user_input_mp4 (
+CREATE TABLE user_input_mp4_1og_r1 (
     user_input_mp4_id int SERIAL PRIMARY KEY,
     MP4GlareLimit Numeric,
     MP4ReqIllum Numeric,
     MP4ReqRoomTemp Numeric
 );
 
-CREATE TABLE indi_hella_calc_var_radiance_ih (
+CREATE TABLE indihella_calc_var_radiance_1og_r1 (
     indi_hella_calc_var_radiance_ih_id int SERIAL PRIMARY KEY,
     altitudeRadianceIH Numeric,
     azimutRadianceIH Numeric,
@@ -124,7 +130,7 @@ CREATE TABLE indi_hella_calc_var_radiance_ih (
     cutofftiltRadianceIH Numeric
 );
 
-CREATE TABLE indi_hella_tar_var_ih (
+CREATE TABLE indihella_target_var_1og_r1 (
     indi_hella_tar_var_ih_id int SERIAL PRIMARY KEY,
     SlatAngTarIH Numeric,
     SlatPosTarIH Numeric,
@@ -132,7 +138,7 @@ CREATE TABLE indi_hella_tar_var_ih (
     Light2TarIH Numeric
 );
 
-CREATE TABLE indi_hella_dgp_var_ih (
+CREATE TABLE indihella_dgp_var_1og_r1 (
     indi_hella_dgp_var_ih_id int SERIAL PRIMARY KEY,
     DGPMP1_0_100_IH Numeric,
     DGPMP1_5_100_IH Numeric,
@@ -212,7 +218,7 @@ CREATE TABLE indi_hella_dgp_var_ih (
     DGPMP4_0_0_IH Numeric    
 );
 
-CREATE TABLE indi_hella_illum_var_mp1 (
+CREATE TABLE indihella_illum_var_mp1_1og_r1 (
     indi_hella_illum_var_mp1_id int SERIAL PRIMARY KEY,
     hor_illumMP1_0_100_IH Numeric,
     hor_illumMP1_5_100_IH Numeric,
@@ -254,7 +260,7 @@ CREATE TABLE indi_hella_illum_var_mp1 (
     ver_illumMP1_0_0_IH Numeric
 );
 
-CREATE TABLE indi_hella_illum_var_mp2 (
+CREATE TABLE indihella_illum_var_mp2_1og_r1 (
     indi_hella_illum_var_mp2_id int SERIAL PRIMARY KEY,
     hor_illumMP2_0_100_IH Numeric,
     hor_illumMP2_5_100_IH Numeric,
@@ -297,7 +303,7 @@ CREATE TABLE indi_hella_illum_var_mp2 (
 );
 
 
-CREATE TABLE indi_hella_illum_var_mp3 (
+CREATE TABLE indihella_illum_var_mp3_1og_r1 (
     indi_hella_illum_var_mp3_id int SERIAL PRIMARY KEY,
     hor_illumMP3_0_100_IH Numeric,
     hor_illumMP3_5_100_IH Numeric,
@@ -338,7 +344,7 @@ CREATE TABLE indi_hella_illum_var_mp3 (
     ver_illumMP3_85_100_IH Numeric
 );
 
-CREATE TABLE indi_hella_illum_var_mp4 (
+CREATE TABLE indihella_illum_var_mp4_1og_r1 (
     indi_hella_illum_var_mp4_id int SERIAL PRIMARY KEY,
     hor_illumMP4_0_0_IH Numeric,
     hor_illumMP4_0_100_IH Numeric,
@@ -386,7 +392,7 @@ CREATE TABLE radiation_forecast (
     DiffIrrHorAct_approx Numeric
 );
 
-CREATE TABLE head_positions (
+CREATE TABLE head_positions_1og_r1 (
     head_positions_id int SERIAL PRIMARY KEY,
     headpose_x_1 Numeric,
     headpose_y_1 Numeric,
