@@ -347,7 +347,6 @@ CREATE TABLE dim_indihella_illum_var_mp3_1og_r1 (
 
 CREATE TABLE dim_indihella_illum_var_mp4_1og_r1 (
     indi_hella_illum_var_mp4_id SERIAL PRIMARY KEY,
-    hor_illumMP4_0_0_IH Numeric,
     hor_illumMP4_0_100_IH Numeric,
     hor_illumMP4_5_100_IH Numeric,
     hor_illumMP4_10_100_IH Numeric,
@@ -366,7 +365,7 @@ CREATE TABLE dim_indihella_illum_var_mp4_1og_r1 (
     hor_illumMP4_75_100_IH Numeric,
     hor_illumMP4_80_100_IH Numeric,
     hor_illumMP4_85_100_IH Numeric,
-    ver_illumMP4_0_0_IH Numeric,
+    hor_illumMP4_0_0_IH Numeric,
     ver_illumMP4_0_100_IH Numeric,
     ver_illumMP4_5_100_IH Numeric,
     ver_illumMP4_10_100_IH Numeric,
