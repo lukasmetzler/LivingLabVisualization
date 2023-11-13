@@ -1,5 +1,5 @@
--- Dimension Tables
-CREATE TABLE metrological_data (
+--- Dimensionstabellen
+CREATE TABLE dim_metrological_data (
     metrological_data_id SERIAL PRIMARY KEY,
     GlobIrrVerAct Numeric,
     GlobalIrrHorAct Numeric,
@@ -26,7 +26,7 @@ CREATE TABLE metrological_data (
     RoomTempAct Numeric
 );
 
-CREATE TABLE pv_modul_data_1og_r1 (
+CREATE TABLE dim_pv_modul_data_1og_r1 (
     pv_modul_data_id SERIAL PRIMARY KEY,
     VoltMeasActModule1 Numeric,
     CurrMeasActModule1 Numeric,
@@ -34,7 +34,7 @@ CREATE TABLE pv_modul_data_1og_r1 (
     CurrMeasActModule2 Numeric
 );
 
-CREATE TABLE illumination_datapoints_1og_r1 (
+CREATE TABLE dim_illumination_datapoints_1og_r1 (
     illumination_datapoints_id SERIAL PRIMARY KEY,
     IllumMP1Act Numeric,
     IllumMP2Act Numeric,
@@ -42,7 +42,7 @@ CREATE TABLE illumination_datapoints_1og_r1 (
     IllumMP4Act Numeric
 );
 
-CREATE TABLE raffstore_light_data_1og_r1 (
+CREATE TABLE dim_raffstore_light_data_1og_r1 (
     raffstore_light_data_1og_r1_id SERIAL PRIMARY KEY,
     SlatAng1Act_1OG_R1 Numeric,
     SlatPos1Act_1OG_R1 Numeric,
@@ -50,21 +50,21 @@ CREATE TABLE raffstore_light_data_1og_r1 (
     Light2Act_1OG_R1 Numeric
 );
 
-CREATE TABLE raffstore_light_data_1og_r2 (
+CREATE TABLE dim_raffstore_light_data_1og_r2 (
     raffstore_light_data_1og_r2_id SERIAL PRIMARY KEY,
     SlatAng1Act_1OG_R2 Numeric,
     SlatPos1Act_1OG_R2 Numeric,
     Light1Act_1OG_R2 Numeric
 );
 
-CREATE TABLE raffstore_light_data_1og_r3 (
+CREATE TABLE dim_raffstore_light_data_1og_r3 (
     raffstore_light_data_1og_r3_id SERIAL PRIMARY KEY,
     SlatAng1Act_1OG_R3 Numeric,
     SlatPos1Act_1OG_R3 Numeric,
     Light1Act_1OG_R3 Numeric
 );
 
-CREATE TABLE raffstore_light_data_1og_r4 (
+CREATE TABLE dim_raffstore_light_data_1og_r4 (
     raffstore_light_data_1og_r4_id SERIAL PRIMARY KEY,
     SlatAng1Act_1OG_R4 Numeric,
     SlatPos1Act_1OG_R4 Numeric,
@@ -75,7 +75,7 @@ CREATE TABLE raffstore_light_data_1og_r4 (
 );
 
 
-CREATE TABLE raffstore_light_data_1og_r5 (
+CREATE TABLE dim_raffstore_light_data_1og_r5 (
     raffstore_light_data_1og_r5_id SERIAL PRIMARY KEY,
     SlatAng1Act_1OG_R5 Numeric,
     SlatPos1Act_1OG_R5 Numeric,
@@ -86,35 +86,35 @@ CREATE TABLE raffstore_light_data_1og_r5 (
     Light1Act_1OG_R5 Numeric
 );
 
-CREATE TABLE user_input_mp1_1og_r1 (
+CREATE TABLE dim_user_input_mp1_1og_r1 (
     user_input_mp1_id SERIAL PRIMARY KEY,
     MP1GlareLimit Numeric,
     MP1ReqIllum Numeric,
     MP1ReqRoomTemp Numeric
 );
 
-CREATE TABLE user_input_mp2_1og_r1 (
+CREATE TABLE dim_user_input_mp2_1og_r1 (
     user_input_mp2_id SERIAL PRIMARY KEY,
     MP2GlareLimit Numeric,
     MP2ReqIllum Numeric,
     MP2ReqRoomTemp Numeric
 );
 
-CREATE TABLE user_input_mp3_1og_r1 (
+CREATE TABLE dim_user_input_mp3_1og_r1 (
     user_input_mp3_id SERIAL PRIMARY KEY,
     MP3GlareLimit Numeric,
     MP3ReqIllum Numeric,
     MP3ReqRoomTemp Numeric
 );
 
-CREATE TABLE user_input_mp4_1og_r1 (
+CREATE TABLE dim_user_input_mp4_1og_r1 (
     user_input_mp4_id SERIAL PRIMARY KEY,
     MP4GlareLimit Numeric,
     MP4ReqIllum Numeric,
     MP4ReqRoomTemp Numeric
 );
 
-CREATE TABLE indihella_calc_var_radiance_1og_r1 (
+CREATE TABLE dim_indihella_calc_var_radiance_1og_r1 (
     indi_hella_calc_var_radiance_ih_id SERIAL PRIMARY KEY,
     altitudeRadianceIH Numeric,
     azimutRadianceIH Numeric,
@@ -130,7 +130,7 @@ CREATE TABLE indihella_calc_var_radiance_1og_r1 (
     cutofftiltRadianceIH Numeric
 );
 
-CREATE TABLE indihella_target_var_1og_r1 (
+CREATE TABLE dim_indihella_target_var_1og_r1 (
     indi_hella_tar_var_ih_id SERIAL PRIMARY KEY,
     SlatAngTarIH Numeric,
     SlatPosTarIH Numeric,
@@ -138,7 +138,7 @@ CREATE TABLE indihella_target_var_1og_r1 (
     Light2TarIH Numeric
 );
 
-CREATE TABLE indihella_dgp_var_1og_r1 (
+CREATE TABLE dim_indihella_dgp_var_1og_r1 (
     indi_hella_dgp_var_ih_id SERIAL PRIMARY KEY,
     DGPMP1_0_100_IH Numeric,
     DGPMP1_5_100_IH Numeric,
@@ -218,7 +218,7 @@ CREATE TABLE indihella_dgp_var_1og_r1 (
     DGPMP4_0_0_IH Numeric    
 );
 
-CREATE TABLE indihella_illum_var_mp1_1og_r1 (
+CREATE TABLE dim_indihella_illum_var_mp1_1og_r1 (
     indi_hella_illum_var_mp1_id SERIAL PRIMARY KEY,
     hor_illumMP1_0_100_IH Numeric,
     hor_illumMP1_5_100_IH Numeric,
@@ -260,7 +260,7 @@ CREATE TABLE indihella_illum_var_mp1_1og_r1 (
     ver_illumMP1_0_0_IH Numeric
 );
 
-CREATE TABLE indihella_illum_var_mp2_1og_r1 (
+CREATE TABLE dim_indihella_illum_var_mp2_1og_r1 (
     indi_hella_illum_var_mp2_id SERIAL PRIMARY KEY,
     hor_illumMP2_0_100_IH Numeric,
     hor_illumMP2_5_100_IH Numeric,
@@ -303,7 +303,7 @@ CREATE TABLE indihella_illum_var_mp2_1og_r1 (
 );
 
 
-CREATE TABLE indihella_illum_var_mp3_1og_r1 (
+CREATE TABLE dim_indihella_illum_var_mp3_1og_r1 (
     indi_hella_illum_var_mp3_id int SERIAL PRIMARY KEY,
     hor_illumMP3_0_100_IH Numeric,
     hor_illumMP3_5_100_IH Numeric,
@@ -345,7 +345,7 @@ CREATE TABLE indihella_illum_var_mp3_1og_r1 (
     ver_illumMP3_0_0_IH Numeric
 );
 
-CREATE TABLE indihella_illum_var_mp4_1og_r1 (
+CREATE TABLE dim_indihella_illum_var_mp4_1og_r1 (
     indi_hella_illum_var_mp4_id SERIAL PRIMARY KEY,
     hor_illumMP4_0_0_IH Numeric,
     hor_illumMP4_0_100_IH Numeric,
@@ -388,13 +388,13 @@ CREATE TABLE indihella_illum_var_mp4_1og_r1 (
     ver_illumMP4_0_0_IH Numeric
 )
 
-CREATE TABLE radiation_forecast (
+CREATE TABLE dim_radiation_forecast (
     radiation_forecast_id SERIAL primary KEY,
     GlobalIrrHor_approx Numeric,
     DiffIrrHorAct_approx Numeric
 );
 
-CREATE TABLE head_positions_1og_r1 (
+CREATE TABLE dim_head_positions_1og_r1 (
     head_positions_id SERIAL PRIMARY KEY,
     headpose_x_1 Numeric,
     headpose_y_1 Numeric,
@@ -422,70 +422,73 @@ CREATE TABLE head_positions_1og_r1 (
     headpose_roll_4 Numeric
 );
 
--- Fact table
-CREATE TABLE fact_table (
-    fact_table_id SERIAL PRIMARY KEY,
+--- Faktentabellen
+CREATE TABLE fact_user_input_facts (
+    user_input_facts_id SERIAL PRIMARY KEY,
     timestamp timestamp,
-    metrological_data_id int,
-    pv_modul_data_id int,
-    illumination_datapoints_id int,
+    user_input_mp1_id int,
+    user_input_mp2_id int,
+    user_input_mp3_id int,
+    user_input_mp4_id int,
+    FOREIGN KEY (user_input_mp1_id) REFERENCES dim_user_input_mp1_1og_r1(user_input_mp1_id),
+    FOREIGN KEY (user_input_mp2_id) REFERENCES dim_user_input_mp2_1og_r1(user_input_mp2_id),
+    FOREIGN KEY (user_input_mp3_id) REFERENCES dim_user_input_mp3_1og_r1(user_input_mp3_id),
+    FOREIGN KEY (user_input_mp4_id) REFERENCES dim_user_input_mp4_1og_r1(user_input_mp4_id)
+);
+
+CREATE TABLE fact_raffstore_light_facts (
+    raffstore_light_light_facts_id SERIAL PRIMARY KEY,
+    timestamp timestamp,
     raffstore_light_data_1og_r1_id int,
     raffstore_light_data_1og_r2_id int,
     raffstore_light_data_1og_r3_id int,
     raffstore_light_data_1og_r4_id int,
     raffstore_light_data_1og_r5_id int,
-    user_input_mp1_id int,
-    user_input_mp2_id int,
-    user_input_mp3_id int,
-    user_input_mp4_id int,
-    indi_hella_calc_var_radiance_ih_id int,
-    indi_hella_tar_var_ih_id int,
-    indi_hella_dgp_var_ih_id int,
+    FOREIGN KEY (raffstore_light_data_1og_r1_id) REFERENCES dim_raffstore_light_data_1og_r1(raffstore_light_data_1og_r1_id),
+    FOREIGN KEY (raffstore_light_data_1og_r2_id) REFERENCES dim_raffstore_light_data_1og_r2(raffstore_light_data_1og_r2_id),
+    FOREIGN KEY (raffstore_light_data_1og_r3_id) REFERENCES dim_raffstore_light_data_1og_r3(raffstore_light_data_1og_r3_id),
+    FOREIGN KEY (raffstore_light_data_1og_r4_id) REFERENCES dim_raffstore_light_data_1og_r4(raffstore_light_data_1og_r4_id),
+    FOREIGN KEY (raffstore_light_data_1og_r5_id) REFERENCES dim_raffstore_light_data_1og_r5(raffstore_light_data_1og_r5_id)
+);
+
+CREATE TABLE fact_indi_hella_illum_facts (
+    indi_hella_illum_var_facts_id SERIAL PRIMARY KEY,
+    timestamp timestamp,
     indi_hella_illum_var_mp1_id int,
     indi_hella_illum_var_mp2_id int,
     indi_hella_illum_var_mp3_id int,
     indi_hella_illum_var_mp4_id int,
+    FOREIGN KEY (indi_hella_illum_var_mp1_id) REFERENCES dim_indihella_illum_var_mp1_1og_r1(indi_hella_illum_var_mp1_id),
+    FOREIGN KEY (indi_hella_illum_var_mp2_id) REFERENCES dim_indihella_illum_var_mp2_1og_r1(indi_hella_illum_var_mp2_id),
+    FOREIGN KEY (indi_hella_illum_var_mp3_id) REFERENCES dim_indihella_illum_var_mp3_1og_r1(indi_hella_illum_var_mp3_id),
+    FOREIGN KEY (indi_hella_illum_var_mp4_id) REFERENCES dim_indihella_illum_var_mp4_1og_r1(indi_hella_illum_var_mp4_id)
+);
+
+CREATE TABLE fact_indi_hella_calc_vars_facts (
+    indi_hella_illum_var_facts_id SERIAL PRIMARY KEY,
+    timestamp timestamp,
+    indi_hella_calc_var_radiance_ih_id int,
+    indi_hella_tar_var_ih_id int,
+    indi_hella_dgp_var_ih_id int,
+    FOREIGN KEY (indi_hella_calc_var_radiance_ih_id) REFERENCES dim_indihella_calc_var_radiance_1og_r1(indi_hella_calc_var_radiance_ih_id),
+    FOREIGN KEY (indi_hella_tar_var_ih_id) REFERENCES dim_indihella_target_var_1og_r1(indi_hella_tar_var_ih_id),
+    FOREIGN KEY (indi_hella_dgp_var_ih_id) REFERENCES dim_indihella_dgp_var_1og_r1(indi_hella_dgp_var_ih_id),
+);
+
+CREATE TABLE fact_environmental_data_facts (
+    fact_table_id SERIAL PRIMARY KEY,
+    timestamp timestamp,
+    metrological_data_id int,
+    pv_modul_data_id int,
+    illumination_datapoints_id int,
     radiation_forecast_id int,
     head_positions_id int,
     
-    FOREIGN KEY (metrological_data_id) REFERENCES metrological_data(metrological_data_id),
-    FOREIGN KEY (pv_modul_data_id) REFERENCES pv_modul_data_1og_r1(pv_modul_data_id),
-    FOREIGN KEY (illumination_datapoints_id) REFERENCES illumination_datapoints_1og_r1(illumination_datapoints_id),
-    FOREIGN KEY (raffstore_light_data_1og_r1_id) REFERENCES raffstore_light_data_1og_r1(raffstore_light_data_1og_r1_id),
-    FOREIGN KEY (raffstore_light_data_1og_r2_id) REFERENCES raffstore_light_data_1og_r2(raffstore_light_data_1og_r2_id),
-    FOREIGN KEY (raffstore_light_data_1og_r3_id) REFERENCES raffstore_light_data_1og_r3(raffstore_light_data_1og_r3_id),
-    FOREIGN KEY (raffstore_light_data_1og_r4_id) REFERENCES raffstore_light_data_1og_r4(raffstore_light_data_1og_r4_id),
-    FOREIGN KEY (raffstore_light_data_1og_r5_id) REFERENCES raffstore_light_data_1og_r5(raffstore_light_data_1og_r5_id),
-    FOREIGN KEY (user_input_mp1_id) REFERENCES user_input_mp1_1og_r1(user_input_mp1_id),
-    FOREIGN KEY (user_input_mp2_id) REFERENCES user_input_mp2_1og_r1(user_input_mp2_id),
-    FOREIGN KEY (user_input_mp3_id) REFERENCES user_input_mp3_1og_r1(user_input_mp3_id),
-    FOREIGN KEY (user_input_mp4_id) REFERENCES user_input_mp4_1og_r1(user_input_mp4_id),
-    FOREIGN KEY (indi_hella_calc_var_radiance_ih_id) REFERENCES indihella_calc_var_radiance_1og_r1(indi_hella_calc_var_radiance_ih_id),
-    FOREIGN KEY (indi_hella_tar_var_ih_id) REFERENCES indihella_target_var_1og_r1(indi_hella_tar_var_ih_id),
-    FOREIGN KEY (indi_hella_dgp_var_ih_id) REFERENCES indihella_dgp_var_1og_r1(indi_hella_dgp_var_ih_id),
-    FOREIGN KEY (indi_hella_illum_var_mp1_id) REFERENCES indihella_illum_var_mp1_1og_r1(indi_hella_illum_var_mp1_id),
-    FOREIGN KEY (indi_hella_illum_var_mp2_id) REFERENCES indihella_illum_var_mp2_1og_r1(indi_hella_illum_var_mp2_id),
-    FOREIGN KEY (indi_hella_illum_var_mp3_id) REFERENCES indihella_illum_var_mp3_1og_r1(indi_hella_illum_var_mp3_id),
-    FOREIGN KEY (indi_hella_illum_var_mp4_id) REFERENCES indihella_illum_var_mp4_1og_r1(indi_hella_illum_var_mp4_id),
-    FOREIGN KEY (radiation_forecast_id) REFERENCES radiation_forecast(radiation_forecast_id),
-    FOREIGN KEY (head_positions_id) REFERENCES head_positions_1og_r1(head_positions_id)
+    FOREIGN KEY (metrological_data_id) REFERENCES dim_metrological_data(metrological_data_id),
+    FOREIGN KEY (pv_modul_data_id) REFERENCES dim_pv_modul_data_1og_r1(pv_modul_data_id),
+    FOREIGN KEY (illumination_datapoints_id) REFERENCES dim_illumination_datapoints_1og_r1(illumination_datapoints_id),
+    FOREIGN KEY (radiation_forecast_id) REFERENCES dim_radiation_forecast(radiation_forecast_id),
+    FOREIGN KEY (head_positions_id) REFERENCES dim_head_positions_1og_r1(head_positions_id)
 );
-
-
--- Indexe
-CREATE INDEX idx_metrological_data ON fact_table (metrological_data_id);
-CREATE INDEX idx_pv_modul_data ON fact_table (pv_modul_data_id);
-CREATE INDEX idx_illumination_datapoints ON fact_table (illumination_datapoints_id);
-CREATE INDEX idx_raffstore_light_data ON fact_table (raffstore_light_data_1og_r1_id, raffstore_light_data_1og_r2_id, raffstore_light_data_1og_r3_id, raffstore_light_data_1og_r4_id);
-CREATE INDEX idx_user_input_mp ON fact_table (user_input_mp1_id, user_input_mp2_id, user_input_mp3_id, user_input_mp4_id);
-CREATE INDEX idx_indi_hella_calc_var ON fact_table (indi_hella_calc_var_radiance_ih_id);
-CREATE INDEX idx_indi_hella_tar_var ON fact_table (indi_hella_tar_var_ih_id);
-CREATE INDEX idx_indi_hella_dgp_var ON fact_table (indi_hella_dgp_var_ih_id);
-CREATE INDEX idx_indi_hella_illum_var_mp1 ON fact_table (indi_hella_illum_var_mp1_id);
-CREATE INDEX idx_indi_hella_illum_var_mp2 ON fact_table (indi_hella_illum_var_mp2_id);
-CREATE INDEX idx_indi_hella_illum_var_mp3 ON fact_table (indi_hella_illum_var_mp3_id);
-CREATE INDEX idx_indi_hella_illum_var_mp4 ON fact_table (indi_hella_illum_var_mp4_id);
-CREATE INDEX idx_radiation_forecast ON fact_table (radiation_forecast_id);
-CREATE INDEX idx_head_positions ON fact_table (head_positions_id);
 
 
