@@ -1,45 +1,38 @@
+from time import sleep  
+from json import dumps 
 from kafka import KafkaProducer
-import json
 
-# Kafka Producer
 producer = KafkaProducer(
-    bootstrap_servers=["localhost:9092"],
-    value_serializer=lambda v: json.dumps(v).encode("utf-8"),
+    bootstrap_servers = ['localhost:9092'],
+    value_serializer = lambda x:dumps(x).encode('utf8')
 )
 
-topic = "metrological-topic"
-
-try:
-    while True:
-        data = {
-            "GlobIrrVerAct": 42, 
-            "GlobalIrrHorAct": 56,
-            "DifflrrHorAct": 12,
-            "WindSpeedAct_ms": 23,
-            "SunElevationAct": 45,
-            "SunAzimuthAct": 90,
-            "Longitude": 10.123456,
-            "Latitude": 45.678901,
-            "WindSpeedAct_kmh": 83,
-            "WindDirectionAct": 180,
-            "BrightnessNorthAct": 75,
-            "BrightnessSouthAct": 80,
-            "BrightnessWestAct": 70,
-            "TwilightAct": 6,
-            "GlobalIrrHorAct_2": 55,
-            "PrecipitationAct": 2,
-            "AbsolutAirPressureAct": 1013,
-            "RelativeAirPressureAct": 50,
-            "AbsoluteHumidityAct": 10,
-            "RelativeHumidityAct": 65,
-            "DewPointTempAct": 8,
-            "HousingTemAct": 22,
-            "RoomTempAct": 20
-        }
-
-        # Senden an Kafka
-        producer.send(topic, value=data)
-        print("Data sent to Kafka")
-
-except KeyboardInterrupt:
-    producer.close()
+while True:
+    sleep(60)
+    metrological_data = {
+        'GlobalIrrVerAct': 121,
+        'GlobIrrVerAct': 121,
+        'GlobalIrrHorAct': 121,
+        'DifflrrHorAct': 121,
+        'WindSpeedAct_ms': 121,
+        'SunElevationAct': 121,
+        'SunAzimuthAct': 121,
+        'Longitude': 121,
+        'Latitude': 121,
+        'WindSpeedAct_kmh': 121,
+        'WindDirectionAct': 121,
+        'BrightnessNorthAct': 121,
+        'BrightnessSouthAct': 121,
+        'BrightnessWestAct': 121,
+        'TwilightAct': 121,
+        'GlobalIrrHorAct_2': 121,
+        'PrecipitationAct': 121,
+        'AbsolutAirPressureAct': 121,
+        'RelativeAirPressureAct': 121,
+        'AbsoluteHumidityAct': 121,
+        'RelativeHumidityAct': 121,
+        'DewPointTempAct': 121,
+        'HousingTemAct': 121,
+        'RoomTempAct': 121
+    }
+    producer.send('dim_metrological_data_topic', value=metrological_data)

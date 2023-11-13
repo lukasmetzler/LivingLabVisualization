@@ -1,30 +1,51 @@
-from kafka import KafkaConsumer
-import json
+from json import loads  
+from kafka import KafkaConsumer  
 import psycopg2
 
-consumer = KafkaConsumer('metrological-topic',
-                         bootstrap_servers=['localhost:9092'],
-                         auto_offset_reset='earliest',
-                         value_deserializer=lambda m: json.loads(m.decode('utf-8')))
+db_params = {
+    'dbname': 'EVI',
+    'user': 'lukasmetzler',
+    'password': 'lukasmetzler',
+    'host': 'localhost',
+    'port': '5432'
+}
 
-# PostgreSQL Connection
-conn = psycopg2.connect(
-    host="localhost",
-    database="EVI",
-    user="lukasmetzler",
-    password="lukasmetzler",
+consumer = KafkaConsumer(
+    'dim_metrological_data_topic',  # Specify the Kafka topic
+    bootstrap_servers=['localhost:9092'],
+    auto_offset_reset='earliest',
+    enable_auto_commit=True,
+    group_id='my-group',
+    value_deserializer=lambda x: loads(x.decode('utf-8'))
 )
 
+conn = psycopg2.connect(**db_params)
+cursor = conn.cursor()
+
 for message in consumer:
-    data = message.value
+    metrological_data = message.value
+    cursor.execute("""
+        INSERT INTO dim_metrological_data (
+            GlobalIrrVerAct, GlobIrrVerAct, GlobalIrrHorAct, DifflrrHorAct, WindSpeedAct_ms,
+            SunElevationAct, SunAzimuthAct, Longitude, Latitude, WindSpeedAct_kmh,
+            WindDirectionAct, BrightnessNorthAct, BrightnessSouthAct, BrightnessWestAct,
+            TwilightAct, GlobalIrrHorAct_2, PrecipitationAct, AbsolutAirPressureAct,
+            RelativeAirPressureAct, AbsoluteHumidityAct, RelativeHumidityAct, DewPointTempAct,
+            HousingTemAct, RoomTempAct
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    """, (
+        metrological_data['GlobalIrrVerAct'], metrological_data['GlobIrrVerAct'],
+        metrological_data['GlobalIrrHorAct'], metrological_data['DifflrrHorAct'],
+        metrological_data['WindSpeedAct_ms'], metrological_data['SunElevationAct'],
+        metrological_data['SunAzimuthAct'], metrological_data['Longitude'],
+        metrological_data['Latitude'], metrological_data['WindSpeedAct_kmh'],
+        metrological_data['WindDirectionAct'], metrological_data['BrightnessNorthAct'],
+        metrological_data['BrightnessSouthAct'], metrological_data['BrightnessWestAct'],
+        metrological_data['TwilightAct'], metrological_data['GlobalIrrHorAct_2'],
+        metrological_data['PrecipitationAct'], metrological_data['AbsolutAirPressureAct'],
+        metrological_data['RelativeAirPressureAct'], metrological_data['AbsoluteHumidityAct'],
+        metrological_data['RelativeHumidityAct'], metrological_data['DewPointTempAct'],
+        metrological_data['HousingTemAct'], metrological_data['RoomTempAct']
+    ))
 
-    # Speichern in PostgreSQL
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO metrological_data (GlobIrrVerAct, GlobalIrrHorAct, DifflrrHorAct, WindSpeedAct_ms, SunElevationAct, SunAzimuthAct, Longitude, Latitude, WindSpeedAct_kmh, WindDirectionAct, BrightnessNorthAct, BrightnessSouthAct, BrightnessWestAct, TwilightAct, GlobalIrrHorAct_2, PrecipitationAct, AbsolutAirPressureAct, RelativeAirPressureAct, AbsoluteHumidityAct, RelativeHumidityAct, DewPointTempAct, HousingTemAct, RoomTempAct) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-        (data["GlobIrrVerAct"], data["GlobalIrrHorAct"], data["DifflrrHorAct"], data["WindSpeedAct_ms"], data["SunElevationAct"], data["SunAzimuthAct"], data["Longitude"], data["Latitude"], data["WindSpeedAct_kmh"], data["WindDirectionAct"], data["BrightnessNorthAct"], data["BrightnessSouthAct"], data["BrightnessWestAct"], data["TwilightAct"], data["GlobalIrrHorAct_2"], data["PrecipitationAct"], data["AbsolutAirPressureAct"], data["RelativeAirPressureAct"], data["AbsoluteHumidityAct"], data["RelativeHumidityAct"], data["DewPointTempAct"], data["HousingTemAct"], data["RoomTempAct"])
-    )
     conn.commit()
-    cursor.close()
-
-    print("Data saved to PostgreSQL")

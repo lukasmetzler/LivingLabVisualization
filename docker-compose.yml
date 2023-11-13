@@ -29,11 +29,5 @@ services:
     volumes:
       - ./grafana-config:/etc/grafana
 
-  jmeter:
-    image: justb4/jmeter:latest
-    volumes:
-      - ./jmeter-scripts:/jmeter/scripts
-    command: -n -t /jmeter/scripts/script.jmx -l /jmeter/scripts/results.jtl
-
 volumes:
   postgres-data:
