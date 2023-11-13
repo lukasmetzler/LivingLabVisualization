@@ -1,13 +1,6 @@
 version: "3"
 
 services:
-  api:
-    build: ./api
-    ports:
-      - "5000:5000"
-    depends_on:
-      - postgres
-
   postgres:
     image: postgres
     ports:
@@ -16,6 +9,8 @@ services:
       POSTGRES_USER: lukasmetzler
       POSTGRES_DB: EVI
       POSTGRES_PASSWORD: "lukasmetzler"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
   kafka:
     build: ./kafka
@@ -31,3 +26,14 @@ services:
       - "3000:3000"
     depends_on:
       - postgres
+    volumes:
+      - ./grafana-config:/etc/grafana
+
+  jmeter:
+    image: justb4/jmeter:latest
+    volumes:
+      - ./jmeter-scripts:/jmeter/scripts
+    command: -n -t /jmeter/scripts/script.jmx -l /jmeter/scripts/results.jtl
+
+volumes:
+  postgres-data:
