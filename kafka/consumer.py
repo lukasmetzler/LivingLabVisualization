@@ -21,7 +21,7 @@ metrological_column_names = [
 ]
 
 consumer = KafkaConsumer(
-    'dim_metrological_data_topic',  # Specify the Kafka topic
+    'dim_metrological_data_topic', 
     bootstrap_servers=['localhost:9092'],
     auto_offset_reset='earliest',
     enable_auto_commit=True,
