@@ -14,7 +14,7 @@ db_params = {
     "dbname": "evi",
     "user": "lukasmetzler",
     "password": "lukasmetzler",
-    "host": "localhost",
+    "host": "postgres",
     "port": "5432",
 }
 
@@ -48,11 +48,12 @@ metrological_column_names = [
 
 consumer = KafkaConsumer(
     "dim_metrological_data_topic",
-    bootstrap_servers=["localhost:9092"],
+    bootstrap_servers=["kafka:9092"],
     auto_offset_reset="earliest",
     enable_auto_commit=True,
     group_id="my-group",
     value_deserializer=lambda x: loads(x.decode("utf-8")),
+    api_version=(2,6,0),
 )
 
 sleep(10)
