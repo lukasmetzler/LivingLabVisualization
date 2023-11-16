@@ -4,18 +4,13 @@ import psycopg2
 import logging
 from time import sleep
 
-logging.basicConfig(
-    filename="consumer.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
 
 db_params = {
-    'host': 'postgres',
-    'port': 5432,
-    'user': 'lukasmetzler',
-    'password': 'lukasmetzler',
-    'database': 'evi',
+    "host": "postgres",
+    "port": 5432,
+    "user": "lukasmetzler",
+    "password": "lukasmetzler",
+    "database": "evi",
 }
 
 metrological_column_names = [
@@ -53,7 +48,7 @@ consumer = KafkaConsumer(
     enable_auto_commit=True,
     group_id="my-group",
     value_deserializer=lambda x: loads(x.decode("utf-8")),
-    api_version=(2,6,0),
+    api_version=(2, 6, 0),
 )
 
 sleep(10)

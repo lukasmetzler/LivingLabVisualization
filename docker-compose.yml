@@ -1,11 +1,12 @@
 version: "3"
 
+networks:
+  app-tier:
+    driver: bridge
+
 services:
   kafka:
-    image: bitnami/kafka
-    build:
-      context: ./kafka
-      dockerfile: Dockerfile
+    image: bitnami/kafka:latest
     ports:
       - "9092:9092"
     environment:
@@ -14,15 +15,36 @@ services:
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - app-tier
     depends_on:
       - postgres
+    healthcheck:
+      test: ["CMD", "echo", "exit"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  kafka-init:
+    image: bitnami/kafka:latest
+    command: ["/bin/bash", "-c", "/create_topic.sh"]
+    depends_on:
+      kafka:
+        condition: service_healthy
+    volumes:
+      - type: bind
+        source: ./create_topic.sh
+        target: /create_topic.sh
+    init: true
 
   zookeeper:
-    image: bitnami/zookeeper
+    image: bitnami/zookeeper:latest
     ports:
       - "2181:2181"
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+    networks:
+      - app-tier
 
   postgres:
     image: postgres
@@ -37,7 +59,8 @@ services:
     command: ["postgres", "-c", "log_statement=all"]
     depends_on:
       - zookeeper
-
+    networks:
+      - app-tier
 
   pgadmin:
     image: dpage/pgadmin4
@@ -48,6 +71,8 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
       - postgres
+    networks:
+      - app-tier
 
   grafana:
     build: ./grafana-config
@@ -55,6 +80,8 @@ services:
       - "3000:3000"
     depends_on:
       - postgres
+    networks:
+      - app-tier
 
   kafka-ui:
     image: landoop/fast-data-dev
@@ -64,6 +91,28 @@ services:
       ADV_HOST: localhost
     depends_on:
       - kafka
+    networks:
+      - app-tier
+
+  producer:
+    build:
+      context: ./kafka
+      dockerfile: Dockerfile
+    command: ["python", "producer.py"]
+    depends_on:
+      - kafka
+    networks:
+      - app-tier
+
+  consumer:
+    build:
+      context: ./kafka
+      dockerfile: Dockerfile
+    command: ["python", "consumer.py"]
+    depends_on:
+      - kafka
+    networks:
+      - app-tier
 
 volumes:
   postgres-data:
