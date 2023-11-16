@@ -11,11 +11,11 @@ logging.basicConfig(
 )
 
 db_params = {
-    "dbname": "evi",
-    "user": "lukasmetzler",
-    "password": "lukasmetzler",
-    "host": "postgres",
-    "port": "5432",
+    'host': 'postgres',
+    'port': 5432,
+    'user': 'lukasmetzler',
+    'password': 'lukasmetzler',
+    'database': 'evi',
 }
 
 metrological_column_names = [
