@@ -1,12 +1,13 @@
-from json import loads
+import json
 from kafka import KafkaConsumer
 import psycopg2
 import logging
 from time import sleep
 
 
+kafka_server = ["192.168.1.22"]
 db_params = {
-    "host": "postgres",
+    "host": "localhost",
     "port": 5432,
     "user": "lukasmetzler",
     "password": "lukasmetzler",
@@ -43,11 +44,9 @@ metrological_column_names = [
 
 consumer = KafkaConsumer(
     "dim_metrological_data_topic",
-    bootstrap_servers=["kafka:9092"],
-    auto_offset_reset="earliest",
-    enable_auto_commit=True,
-    group_id="my-group",
-    value_deserializer=lambda x: loads(x.decode("utf-8")),
+    bootstrap_servers=kafka_server,
+    auto_offset_reset="latest",
+    value_deserializer=json.loads,
     api_version=(2, 6, 0),
 )
 

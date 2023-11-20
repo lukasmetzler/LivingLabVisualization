@@ -1,14 +1,16 @@
 from time import sleep
-from json import dumps
+import json
 from kafka import KafkaProducer
 
+topic = "dim_metrological_data_topic"
+kafka_server = ["192.168.1.22"]
 sleep(10)
 producer = KafkaProducer(
-    bootstrap_servers=["kafka:9092"],
+    bootstrap_servers=kafka_server,
     api_version=(2, 6, 0),
     request_timeout_ms=1000000,
     api_version_auto_timeout_ms=1000000,
-    value_serializer=lambda x: dumps(x).encode("utf-8"),
+    value_serializer=lambda v: json.dumps(v).encode("utf-8"),
 )
 
 
@@ -40,5 +42,6 @@ while True:
         "HousingTemAct": 121,
         "RoomTempAct": 121,
     }
-    producer.send("dim_metrological_data_topic", value=metrological_data)
-    sleep(0.5)
+    producer.send(topic, value=metrological_data)
+    producer.flush()
+    sleep(3)
