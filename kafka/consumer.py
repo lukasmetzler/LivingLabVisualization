@@ -1,79 +1,63 @@
 import json
 from kafka import KafkaConsumer
-import psycopg2
 import logging
-from time import sleep
+from . import config
+from . import postgres as pg
 
 
-kafka_server = ["192.168.1.22"]
-db_params = {
-    "host": "localhost",
-    "port": 5432,
-    "user": "lukasmetzler",
-    "password": "lukasmetzler",
-    "database": "evi",
-}
+def main():
+    c = config.load_config();
+    consumer = KafkaConsumer(
+        c.KAFKA_TOPIC,
+        bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],
+        auto_offset_reset='earliest',
+        enable_auto_commit=True,
+        group_id='consumer',
+        value_deserializer=lambda x: json.loads(x.decode('utf-8')),
+    )
+    handler(consumer)
 
-metrological_column_names = [
-    "GlobalIrrVerAct",
-    "GlobIrrVerAct",
-    "GlobalIrrHorAct",
-    "DifflrrHorAct",
-    "WindSpeedAct_ms",
-    "SunElevationAct",
-    "SunAzimuthAct",
-    "Longitude",
-    "Latitude",
-    "WindSpeedAct_kmh",
-    "WindDirectionAct",
-    "BrightnessNorthAct",
-    "BrightnessSouthAct",
-    "BrightnessWestAct",
-    "TwilightAct",
-    "GlobalIrrHorAct_2",
-    "PrecipitationAct",
-    "AbsolutAirPressureAct",
-    "RelativeAirPressureAct",
-    "AbsoluteHumidityAct",
-    "RelativeHumidityAct",
-    "DewPointTempAct",
-    "HousingTemAct",
-    "RoomTempAct",
-]
+def handler(consumer):
+    metrological_column_names = [
+        "GlobalIrrVerAct",
+        "GlobIrrVerAct",
+        "GlobalIrrHorAct",
+        "DifflrrHorAct",
+        "WindSpeedAct_ms",
+        "SunElevationAct",
+        "SunAzimuthAct",
+        "Longitude",
+        "Latitude",
+        "WindSpeedAct_kmh",
+        "WindDirectionAct",
+        "BrightnessNorthAct",
+        "BrightnessSouthAct",
+        "BrightnessWestAct",
+        "TwilightAct",
+        "GlobalIrrHorAct_2",
+        "PrecipitationAct",
+        "AbsolutAirPressureAct",
+        "RelativeAirPressureAct",
+        "AbsoluteHumidityAct",
+        "RelativeHumidityAct",
+        "DewPointTempAct",
+        "HousingTemAct",
+        "RoomTempAct",
+    ]
 
+    with pg.postgres_cursor_context() as cursor:
+        try:
+            for message in consumer:
+                metrological_data = message.value
 
-consumer = KafkaConsumer(
-    "dim_metrological_data_topic",
-    bootstrap_servers=kafka_server,
-    auto_offset_reset="latest",
-    value_deserializer=json.loads,
-    api_version=(2, 6, 0),
-)
+                columns_placeholder = ", ".join(metrological_column_names)
+                values_placeholder = ", ".join(["%s"] * len(metrological_column_names))
 
-sleep(10)
+                query = f"INSERT INTO dim_metrological_data ({columns_placeholder}) VALUES ({values_placeholder})"
+                values = [metrological_data[column] for column in metrological_column_names]
 
-conn = psycopg2.connect(**db_params)
-cursor = conn.cursor()
+                cursor.execute(query, values)
+                logging.info(f"Data inserted into database: {metrological_data}")
 
-try:
-    for message in consumer:
-        metrological_data = message.value
-
-        columns_placeholder = ", ".join(metrological_column_names)
-        values_placeholder = ", ".join(["%s"] * len(metrological_column_names))
-
-        query = f"INSERT INTO dim_metrological_data ({columns_placeholder}) VALUES ({values_placeholder})"
-        values = [metrological_data[column] for column in metrological_column_names]
-
-        cursor.execute(query, values)
-        conn.commit()
-
-        logging.info(f"Data inserted into database: {metrological_data}")
-
-except Exception as e:
-    logging.error(f"An error occurred: {e}")
-
-finally:
-    cursor.close()
-    conn.close()
-    logging.info("Database connection closed.")
+        except Exception as e:
+            logging.error(f"An error occured: {e}")
