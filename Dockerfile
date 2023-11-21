@@ -13,8 +13,8 @@ RUN true \
     && pip install --upgrade pip \
     && pip install --no-cache-dir  -r requirements.txt
 
-USER checkweb
+USER kafka
 
 # start by default as producer
-ENTRYPOINT ["python3", "-m", "checkweb"]
+ENTRYPOINT ["python3", "-m", "kafka"]
 CMD ["producer"]
