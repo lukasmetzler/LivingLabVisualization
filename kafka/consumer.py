@@ -52,6 +52,41 @@ def handler(consumer):
 
     with pg.postgres_cursor_context() as cursor:
         try:
+            cursor.execute(
+                """
+            CREATE SCHEMA IF NOT EXISTS evi;"""
+            )
+
+            cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS evi.dim_metrological_data (
+                    metrological_data_id SERIAL PRIMARY KEY,
+                    GlobIrrVerAct Numeric,
+                    GlobalIrrHorAct Numeric,
+                    DifflrrHorAct Numeric,
+                    WindSpeedAct_ms Numeric,
+                    SunElevationAct Numeric,
+                    SunAzimuthAct Numeric,
+                    Longitude Numeric,
+                    Latitude Numeric,
+                    WindSpeedAct_kmh Numeric,
+                    WindDirectionAct Numeric,
+                    BrightnessNorthAct Numeric,
+                    BrightnessSouthAct Numeric,
+                    BrightnessWestAct Numeric,
+                    TwilightAct Numeric,
+                    GlobalIrrHorAct_2 Numeric,
+                    PrecipitationAct Numeric,
+                    AbsolutAirPressureAct Numeric,
+                    RelativeAirPressureAct Numeric,
+                    AbsoluteHumidityAct Numeric,
+                    RelativeHumidityAct Numeric,
+                    DewPointTempAct Numeric,
+                    HousingTemAct Numeric,
+                    RoomTempAct Numeric
+                );
+            """
+            )
             for message in consumer:
                 metrological_data = message.value
 

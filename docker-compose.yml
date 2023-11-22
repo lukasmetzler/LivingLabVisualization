@@ -69,6 +69,8 @@ services:
       KAFKA_BROKERCONNECT: "kafka:9093"
     depends_on:
       - kafka
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   postgres-data:
