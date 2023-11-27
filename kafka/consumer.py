@@ -2,8 +2,10 @@ import json
 from time import sleep
 from kafka import KafkaConsumer
 import logging
-from . import config
-from . import postgres as pg
+import config
+import postgres as pg
+
+logging.basicConfig(level=logging.INFO)
 
 
 def main():

@@ -2,12 +2,11 @@ from time import sleep
 import typing as t
 import json
 from kafka import KafkaProducer
-
-from . import config
+import config
 
 
 def main():
-    c = config.load_config();
+    c = config.load_config()
 
     producer = KafkaProducer(
         bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],
@@ -16,12 +15,12 @@ def main():
 
     kafka_topic = c.KAFKA_TOPIC
     wait_between_iterations = c.PRODUCER_INTERVAL_SECONDS
-    run_producer(producer,kafka_topic,wait_between_iterations)
+    run_producer(producer, kafka_topic, wait_between_iterations)
 
 
-def run_producer(kafka_producer: KafkaProducer,
-                 kafka_topic: str,
-                 wait_between_iterations: int):
+def run_producer(
+    kafka_producer: KafkaProducer, kafka_topic: str, wait_between_iterations: int
+):
     while True:
         metrological_data = {
             "GlobalIrrVerAct": 121,
