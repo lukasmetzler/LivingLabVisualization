@@ -9,10 +9,10 @@ run-local: start-infra-local
 run-all-local: install-dependencies run-producer-local run-consumer-local
 
 run-producer-local:
-	cd kafka && KAFKA_ENV_PATH=../local.env python3 -m producer
+	cd kafka && KAFKA_ENV_PATH=../local.env python3 -m producer &
 
 run-consumer-local:
-	cd kafka && KAFKA_ENV_PATH=../local.env python3 -m consumer
+	cd kafka && KAFKA_ENV_PATH=../local.env python3 -m consumer &
 
 build-docker:
 	docker build -t kafka:latest -f ./Dockerfile .

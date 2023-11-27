@@ -3,11 +3,14 @@ import typing as t
 import json
 from kafka import KafkaProducer
 import config
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 def main():
     c = config.load_config()
-
+    logging.info("Starte den Producer...")
     producer = KafkaProducer(
         bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],
         value_serializer=lambda v: json.dumps(v).encode("utf-8"),
