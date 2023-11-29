@@ -11,7 +11,6 @@ def postgres_cursor_context(
     host: str = None,
     port: int = None,
     database: str = None,
-    sslmode: str = None,
 ) -> "psycopg2.extensions.cursor":
     """Creates a context with a psycopg2 cursor for a database alias"""
     c = config.load_config()
@@ -20,15 +19,9 @@ def postgres_cursor_context(
     host = host if host is not None else c.CONSUMER_POSTGRES_HOST
     port = port if port is not None else c.CONSUMER_POSTGRES_PORT
     database = database if database is not None else c.CONSUMER_POSTGRES_DB
-    ssl_mode = sslmode if sslmode is not None else c.CONSUMER_POSTGRES_SSL_MODE
 
     connection = psycopg2.connect(
-        dbname=database,
-        user=user,
-        password=password,
-        host=host,
-        port=port,
-        sslmode=ssl_mode,
+        dbname=database, user=user, password=password, host=host, port=port
     )
     cursor = connection.cursor()
     try:

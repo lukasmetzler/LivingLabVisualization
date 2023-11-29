@@ -36,9 +36,6 @@ class ProducerConfig:
             self.CONSUMER_POSTGRES_PORT = int(
                 os.environ.get("CONSUMER_POSTGRES_PORT", "5432")
             )
-            self.CONSUMER_POSTGRES_SSL_MODE = os.environ.get(
-                "CONSUMER_POSTGRES_SSL_MODE"
-            )
         except KeyError as e:
             print(f"Missing configuration for CONSUMER: {e!r}")
 

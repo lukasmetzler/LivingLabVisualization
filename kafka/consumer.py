@@ -8,7 +8,6 @@ import postgres as pg
 logging.basicConfig(level=logging.INFO)
 
 c = config.load_config()
-sleep(60)
 logging.info("Creating KafkaConsumer...")
 consumer = KafkaConsumer(
     c.KAFKA_TOPIC,
@@ -21,37 +20,38 @@ consumer = KafkaConsumer(
 logging.info("KafkaConsumer created successfully.")
 
 metrological_column_names = [
-    "GlobalIrrVerAct",
-    "GlobIrrVerAct",
-    "GlobalIrrHorAct",
-    "DifflrrHorAct",
-    "WindSpeedAct_ms",
-    "SunElevationAct",
-    "SunAzimuthAct",
-    "Longitude",
-    "Latitude",
-    "WindSpeedAct_kmh",
-    "WindDirectionAct",
-    "BrightnessNorthAct",
-    "BrightnessSouthAct",
-    "BrightnessWestAct",
-    "TwilightAct",
-    "GlobalIrrHorAct_2",
-    "PrecipitationAct",
-    "AbsolutAirPressureAct",
-    "RelativeAirPressureAct",
-    "AbsoluteHumidityAct",
-    "RelativeHumidityAct",
-    "DewPointTempAct",
-    "HousingTemAct",
-    "RoomTempAct",
+    "globalirrveract",
+    "globirrveract",
+    "globalirrhoract",
+    "difflrrhoract",
+    "windspeedact_ms",
+    "sunelevationact",
+    "sunazimuthact",
+    "longitude",
+    "latitude",
+    "windspeedact_kmh",
+    "winddirectionact",
+    "brightnessnorthact",
+    "brightnesssouthact",
+    "brightnesswestact",
+    "twilightact",
+    "globalirrhoract_2",
+    "precipitationact",
+    "absolutairpressureact",
+    "relativeairpressureact",
+    "absolutehumidityact",
+    "relativehumidityact",
+    "dewpointtempact",
+    "housingtemact",
+    "roomtempact",
 ]
+
 
 with pg.postgres_cursor_context() as cursor:
     try:
         cursor.execute(
             """
-            CREATE TABLE IF NOT EXISTS public.dim_metrological_data (
+            CREATE TABLE IF NOT EXISTS dim_metrological_data (
                 metrological_data_id SERIAL PRIMARY KEY,
                 GlobIrrVerAct Numeric,
                 GlobalIrrHorAct Numeric,
