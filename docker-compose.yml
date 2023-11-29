@@ -62,17 +62,5 @@ services:
     depends_on:
       - postgres
 
-  kafdrop:
-    image: obsidiandynamics/kafdrop
-    restart: "no"
-    ports:
-      - "9000:9000"
-    environment:
-      KAFKA_BROKERCONNECT: "kafka:9092"
-    depends_on:
-      - kafka
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-
 volumes:
   postgres-data:

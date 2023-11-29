@@ -20,7 +20,6 @@ consumer = KafkaConsumer(
 logging.info("KafkaConsumer created successfully.")
 
 metrological_column_names = [
-    "globalirrveract",
     "globirrveract",
     "globalirrhoract",
     "difflrrhoract",
@@ -46,50 +45,63 @@ metrological_column_names = [
     "roomtempact",
 ]
 
-
 with pg.postgres_cursor_context() as cursor:
     try:
         cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS dim_metrological_data (
                 metrological_data_id SERIAL PRIMARY KEY,
-                GlobIrrVerAct Numeric,
-                GlobalIrrHorAct Numeric,
-                DifflrrHorAct Numeric,
-                WindSpeedAct_ms Numeric,
-                SunElevationAct Numeric,
-                SunAzimuthAct Numeric,
-                Longitude Numeric,
-                Latitude Numeric,
-                WindSpeedAct_kmh Numeric,
-                WindDirectionAct Numeric,
-                BrightnessNorthAct Numeric,
-                BrightnessSouthAct Numeric,
-                BrightnessWestAct Numeric,
-                TwilightAct Numeric,
-                GlobalIrrHorAct_2 Numeric,
-                PrecipitationAct Numeric,
-                AbsolutAirPressureAct Numeric,
-                RelativeAirPressureAct Numeric,
-                AbsoluteHumidityAct Numeric,
-                RelativeHumidityAct Numeric,
-                DewPointTempAct Numeric,
-                HousingTemAct Numeric,
-                RoomTempAct Numeric
+                globirrveract Numeric,
+                globalirrhoract Numeric,
+                difflrrhoract Numeric,
+                windspeedact_ms Numeric,
+                sunelevationact Numeric,
+                sunazimuthact Numeric,
+                longitude Numeric,
+                latitude Numeric,
+                windspeedact_kmh Numeric,
+                winddirectionact Numeric,
+                brightnessnorthact Numeric,
+                brightnesssouthact Numeric,
+                brightnesswestact Numeric,
+                twilightact Numeric,
+                globalirrhoract_2 Numeric,
+                precipitationact Numeric,
+                absolutairpressureact Numeric,
+                relativeairpressureact Numeric,
+                absolutehumidityact Numeric,
+                relativehumidityact Numeric,
+                dewpointtempact Numeric,
+                housingtemact Numeric,
+                roomtempact Numeric
             );
         """
         )
         for message in consumer:
             metrological_data = message.value
 
-            columns_placeholder = ", ".join(metrological_column_names)
-            values_placeholder = ", ".join(["%s"] * len(metrological_column_names))
+            # Überprüfen, ob alle erforderlichen Schlüssel vorhanden sind
+            if all(key in metrological_data for key in metrological_column_names):
+                values = [
+                    metrological_data[column] for column in metrological_column_names
+                ]
 
-            query = f"INSERT INTO dim_metrological_data ({columns_placeholder}) VALUES ({values_placeholder})"
-            values = [metrological_data[column] for column in metrological_column_names]
+                columns_placeholder = ", ".join(metrological_column_names)
+                values_placeholder = ", ".join(["%s"] * len(metrological_column_names))
 
-            cursor.execute(query, values)
-            logging.info(f"Data inserted into database: {metrological_data}")
+                query = f"INSERT INTO dim_metrological_data ({columns_placeholder}) VALUES ({values_placeholder})"
+                print("QUERY: " + query)
+                print("VALUES TEST: ", values)
+
+                try:
+                    cursor.execute(query, values)
+                    logging.info(f"Data inserted into database: {metrological_data}")
+                except Exception as e:
+                    logging.error(f"An error occurred: {e}")
+            else:
+                logging.error(
+                    "Not all required keys present in metrological_data. Skipping message."
+                )
 
     except Exception as e:
         logging.error(f"An error occurred: {e}")
