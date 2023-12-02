@@ -54,13 +54,15 @@ services:
     depends_on:
       - postgres
 
+  # host.docker.internal:5432
   grafana:
-    build: ./grafana-config
+    image: grafana/grafana:latest
     container_name: grafana
     ports:
       - "3000:3000"
-    depends_on:
-      - postgres
+    volumes:
+      - grafana_data:/var/lib/grafana
 
 volumes:
   postgres-data:
+  grafana_data:

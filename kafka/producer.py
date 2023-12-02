@@ -3,6 +3,7 @@ import json
 from kafka import KafkaProducer
 import config
 import logging
+import random
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -21,29 +22,29 @@ print("Starting producer loop...")
 
 while True:
     metrological_data = {
-        "globirrveract": 121,
-        "globalirrhoract": 121,
-        "difflrrhoract": 121,
-        "windspeedact_ms": 121,
-        "sunelevationact": 121,
-        "sunazimuthact": 121,
-        "longitude": 121,
-        "latitude": 121,
-        "windspeedact_kmh": 121,
-        "winddirectionact": 121,
-        "brightnessnorthact": 121,
-        "brightnesssouthact": 121,
-        "brightnesswestact": 121,
-        "twilightact": 121,
-        "globalirrhoract_2": 121,
-        "precipitationact": 121,
-        "absolutairpressureact": 121,
-        "relativeairpressureact": 121,
-        "absolutehumidityact": 121,
-        "relativehumidityact": 121,
-        "dewpointtempact": 121,
-        "housingtemact": 121,
-        "roomtempact": 121,
+        "globirrveract": random.uniform(100, 200),
+        "globalirrhoract": random.uniform(100, 200),
+        "difflrrhoract": random.uniform(100, 200),
+        "windspeedact_ms": random.uniform(0, 10),
+        "sunelevationact": random.uniform(0, 90),
+        "sunazimuthact": random.uniform(0, 360),
+        "longitude": random.uniform(-180, 180),
+        "latitude": random.uniform(-90, 90),
+        "windspeedact_kmh": random.uniform(0, 36),
+        "winddirectionact": random.uniform(0, 360),
+        "brightnessnorthact": random.uniform(0, 100),
+        "brightnesssouthact": random.uniform(0, 100),
+        "brightnesswestact": random.uniform(0, 100),
+        "twilightact": random.uniform(0, 1),
+        "globalirrhoract_2": random.uniform(100, 200),
+        "precipitationact": random.uniform(0, 10),
+        "absolutairpressureact": random.uniform(900, 1100),
+        "relativeairpressureact": random.uniform(0, 100),
+        "absolutehumidityact": random.uniform(0, 100),
+        "relativehumidityact": random.uniform(0, 100),
+        "dewpointtempact": random.uniform(-20, 40),
+        "housingtemact": random.uniform(-20, 40),
+        "roomtempact": random.uniform(-20, 40),
     }
     producer.send(kafka_topic, value=metrological_data)
     sleep(wait_between_iterations)
