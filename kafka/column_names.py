@@ -417,3 +417,27 @@ dim_head_positions_1og_r1_column_names = [
     "headpose_yaw_4",
     "headpose_roll_4",
 ]
+
+table_column_names = {
+    "dim_metrological_data": metrological_column_names,
+    "dim_pv_modul_data_1og_r1": dim_pv_modul_data_1og_r1_column_names,
+    "dim_illumination_datapoints_1og_r1": dim_illumination_datapoints_1og_r1_column_names,
+    "dim_raffstore_light_data_1og_r1": dim_raffstore_light_data_1og_r1_column_names,
+    "dim_raffstore_light_data_1og_r2": dim_raffstore_light_data_1og_r2_column_names,
+    "dim_raffstore_light_data_1og_r3": dim_raffstore_light_data_1og_r3_column_names,
+    "dim_raffstore_light_data_1og_r4": dim_raffstore_light_data_1og_r4_column_names,
+    "dim_raffstore_light_data_1og_r5": dim_raffstore_light_data_1og_r5_column_names,
+    "dim_user_input_mp1_1og_r1": dim_user_input_mp1_1og_r1_column_names,
+    "dim_user_input_mp2_1og_r1": dim_user_input_mp2_1og_r1_column_names,
+    "dim_user_input_mp3_1og_r1": dim_user_input_mp3_1og_r1_column_names,
+    "dim_user_input_mp4_1og_r1": dim_user_input_mp4_1og_r1_column_names,
+    "dim_indihella_calc_var_radiance_1og_r1": dim_indihella_calc_var_radiance_1og_r1_column_names,
+    "dim_indihella_target_var_1og_r1": dim_indihella_target_var_1og_r1_column_names,
+    "dim_indihella_dgp_var_1og_r1": dim_indihella_dgp_var_1og_r1_column_names,
+    "dim_indihella_illum_var_mp1_1og_r1": dim_indihella_illum_var_mp1_1og_r1_column_names,
+    "dim_indihella_illum_var_mp2_1og_r1": dim_indihella_illum_var_mp2_1og_r1_column_names,
+    "dim_indihella_illum_var_mp3_1og_r1": dim_indihella_illum_var_mp3_1og_r1_column_names,
+    "dim_indihella_illum_var_mp4_1og_r1": dim_indihella_illum_var_mp4_1og_r1_column_names,
+    "dim_radiation_forecast": dim_radiation_forecast_column_names,
+    "dim_head_positions_1og_r1": dim_head_positions_1og_r1_column_names,
+}

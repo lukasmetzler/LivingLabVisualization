@@ -4,7 +4,8 @@ from kafka import KafkaConsumer
 import logging
 import config
 import postgres as pg
-from column_names import metrological_column_names
+from psycopg2 import sql
+from column_names import table_column_names
 
 # logging.basicConfig(level=logging.DEBUG)
 
@@ -21,6 +22,33 @@ consumer = KafkaConsumer(
 logging.info("KafkaConsumer created successfully.")
 
 
+def insert_data_into_table(connection, cursor, table_name, column_names, data):
+    if all(key in data for key in column_names):
+        values = [data[column] for column in column_names]
+
+        columns_placeholder = sql.SQL(", ").join(
+            sql.Identifier(column) for column in column_names
+        )
+        values_placeholder = sql.SQL(", ").join(sql.Placeholder() for _ in column_names)
+
+        query = sql.SQL(
+            f"INSERT INTO {table_name} ({columns_placeholder}) VALUES ({values_placeholder})"
+        )
+
+        try:
+            cursor.execute(query, values)
+            connection.commit()
+            logging.info(f"Data inserted into database: {data}")
+            print(f"Data inserted into {table_name}:", data)
+        except Exception as e:
+            logging.error(f"An error occurred: {e}")
+            print(f"Error inserting data into {table_name}:", e)
+    else:
+        logging.error(
+            f"Not all required keys present in {table_name}. Skipping message."
+        )
+
+
 with pg.postgres_connection() as connection:
     try:
         with connection.cursor() as cursor:
@@ -28,34 +56,9 @@ with pg.postgres_connection() as connection:
                 print("Received message:", message.value)
                 metrological_data = message.value
 
-                if all(key in metrological_data for key in metrological_column_names):
-                    values = [
-                        metrological_data[column]
-                        for column in metrological_column_names
-                    ]
-
-                    columns_placeholder = ", ".join(metrological_column_names)
-                    values_placeholder = ", ".join(
-                        ["%s"] * len(metrological_column_names)
-                    )
-
-                    query = f"INSERT INTO dim_metrological_data ({columns_placeholder}) VALUES ({values_placeholder})"
-                    print("QUERY: " + query)
-                    print("VALUES TEST: ", values)
-
-                    try:
-                        cursor.execute(query, values)
-                        connection.commit()
-                        logging.info(
-                            f"Data inserted into database: {metrological_data}"
-                        )
-                        print("Data inserted into database:", metrological_data)
-                    except Exception as e:
-                        logging.error(f"An error occurred: {e}")
-                        print("Error inserting data into database:", e)
-                else:
-                    logging.error(
-                        "Not all required keys present in metrological_data. Skipping message."
+                for table_name, column_names in table_column_names.items():
+                    insert_data_into_table(
+                        connection, cursor, table_name, column_names, metrological_data
                     )
 
     except Exception as e:

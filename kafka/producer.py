@@ -46,5 +46,11 @@ while True:
         "housingtemact": random.uniform(-20, 40),
         "roomtempact": random.uniform(-20, 40),
     }
+    dim_pv_modul_data_1og_r1_data = {
+        "volt_meas_act_module1": random.uniform(100, 200),
+        "curr_meas_act_module1": random.uniform(100, 200),
+        "volt_meas_act_module2": random.uniform(100, 200),
+        "curr_meas_act_module2": random.uniform(100, 200),
+    }
     producer.send(kafka_topic, value=metrological_data)
     sleep(wait_between_iterations)
