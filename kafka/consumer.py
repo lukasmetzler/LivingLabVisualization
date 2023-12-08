@@ -4,6 +4,7 @@ from kafka import KafkaConsumer
 import logging
 import config
 import postgres as pg
+from column_names import metrological_column_names
 
 # logging.basicConfig(level=logging.DEBUG)
 
@@ -19,66 +20,10 @@ consumer = KafkaConsumer(
 )
 logging.info("KafkaConsumer created successfully.")
 
-metrological_column_names = [
-    "globirrveract",
-    "globalirrhoract",
-    "difflrrhoract",
-    "windspeedact_ms",
-    "sunelevationact",
-    "sunazimuthact",
-    "longitude",
-    "latitude",
-    "windspeedact_kmh",
-    "winddirectionact",
-    "brightnessnorthact",
-    "brightnesssouthact",
-    "brightnesswestact",
-    "twilightact",
-    "globalirrhoract_2",
-    "precipitationact",
-    "absolutairpressureact",
-    "relativeairpressureact",
-    "absolutehumidityact",
-    "relativehumidityact",
-    "dewpointtempact",
-    "housingtemact",
-    "roomtempact",
-]
 
 with pg.postgres_connection() as connection:
     try:
         with connection.cursor() as cursor:
-            cursor.execute(
-                """
-                CREATE TABLE IF NOT EXISTS dim_metrological_data (
-                    metrological_data_id SERIAL PRIMARY KEY,
-                    globirrveract Numeric,
-                    globalirrhoract Numeric,
-                    difflrrhoract Numeric,
-                    windspeedact_ms Numeric,
-                    sunelevationact Numeric,
-                    sunazimuthact Numeric,
-                    longitude Numeric,
-                    latitude Numeric,
-                    windspeedact_kmh Numeric,
-                    winddirectionact Numeric,
-                    brightnessnorthact Numeric,
-                    brightnesssouthact Numeric,
-                    brightnesswestact Numeric,
-                    twilightact Numeric,
-                    globalirrhoract_2 Numeric,
-                    precipitationact Numeric,
-                    absolutairpressureact Numeric,
-                    relativeairpressureact Numeric,
-                    absolutehumidityact Numeric,
-                    relativehumidityact Numeric,
-                    dewpointtempact Numeric,
-                    housingtemact Numeric,
-                    roomtempact Numeric
-                );
-            """
-            )
-
             for message in consumer:
                 print("Received message:", message.value)
                 metrological_data = message.value

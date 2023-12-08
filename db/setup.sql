@@ -304,7 +304,7 @@ CREATE TABLE dim_indihella_illum_var_mp2_1og_r1 (
 
 
 CREATE TABLE dim_indihella_illum_var_mp3_1og_r1 (
-    indi_hella_illum_var_mp3_id int SERIAL PRIMARY KEY,
+    indi_hella_illum_var_mp3_id SERIAL PRIMARY KEY,
     hor_illumMP3_0_100_IH Numeric,
     hor_illumMP3_5_100_IH Numeric,
     hor_illumMP3_10_100_IH Numeric,
