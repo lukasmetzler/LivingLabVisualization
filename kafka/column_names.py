@@ -25,7 +25,6 @@ metrological_column_names = [
 ]
 
 dim_pv_modul_data_1og_r1_column_names = [
-    "pv_modul_data_id",
     "volt_meas_act_module1",
     "curr_meas_act_module1",
     "volt_meas_act_module2",
@@ -33,7 +32,6 @@ dim_pv_modul_data_1og_r1_column_names = [
 ]
 
 dim_illumination_datapoints_1og_r1_column_names = [
-    "illumination_datapoints_id",
     "illum_mp1_act",
     "illum_mp2_act",
     "illum_mp3_act",
@@ -41,7 +39,6 @@ dim_illumination_datapoints_1og_r1_column_names = [
 ]
 
 dim_raffstore_light_data_1og_r1_column_names = [
-    "raffstore_light_data_1og_r1_id",
     "slat_ang1_act_1og_r1",
     "slat_pos1_act_1og_r1",
     "light1_act_1og_r1",
@@ -49,21 +46,18 @@ dim_raffstore_light_data_1og_r1_column_names = [
 ]
 
 dim_raffstore_light_data_1og_r2_column_names = [
-    "raffstore_light_data_1og_r2_id",
     "slat_ang1_act_1og_r2",
     "slat_pos1_act_1og_r2",
     "light1_act_1og_r2",
 ]
 
 dim_raffstore_light_data_1og_r3_column_names = [
-    "raffstore_light_data_1og_r3_id",
     "slat_ang1_act_1og_r3",
     "slat_pos1_act_1og_r3",
     "light1_act_1og_r3",
 ]
 
 dim_raffstore_light_data_1og_r4_column_names = [
-    "raffstore_light_data_1og_r4_id",
     "slat_ang1_act_1og_r4",
     "slat_pos1_act_1og_r4",
     "slat_ang2_act_1og_r4",
@@ -73,7 +67,6 @@ dim_raffstore_light_data_1og_r4_column_names = [
 ]
 
 dim_raffstore_light_data_1og_r5_column_names = [
-    "raffstore_light_data_1og_r5_id",
     "slat_ang1_act_1og_r5",
     "slat_pos1_act_1og_r5",
     "slat_ang2_act_1og_r5",
@@ -84,35 +77,30 @@ dim_raffstore_light_data_1og_r5_column_names = [
 ]
 
 dim_user_input_mp1_1og_r1_column_names = [
-    "user_input_mp1_id",
     "mp1_glare_limit",
     "mp1_req_illum",
     "mp1_req_room_temp",
 ]
 
 dim_user_input_mp2_1og_r1_column_names = [
-    "user_input_mp2_id",
     "mp2_glare_limit",
     "mp2_req_illum",
     "mp2_req_room_temp",
 ]
 
 dim_user_input_mp3_1og_r1_column_names = [
-    "user_input_mp3_id",
     "mp3_glare_limit",
     "mp3_req_illum",
     "mp3_req_room_temp",
 ]
 
 dim_user_input_mp4_1og_r1_column_names = [
-    "user_input_mp4_id",
     "mp4_glare_limit",
     "mp4_req_illum",
     "mp4_req_room_temp",
 ]
 
 dim_indihella_calc_var_radiance_1og_r1_column_names = [
-    "indi_hella_calc_var_radiance_ih_id",
     "altitude_radiance_ih",
     "azimut_radiance_ih",
     "xdir_radiance_ih",
@@ -128,7 +116,6 @@ dim_indihella_calc_var_radiance_1og_r1_column_names = [
 ]
 
 dim_indihella_target_var_1og_r1_column_names = [
-    "indi_hella_tar_var_ih_id",
     "slat_ang_tar_ih",
     "slat_pos_tar_ih",
     "light1_tar_ih",
@@ -136,7 +123,6 @@ dim_indihella_target_var_1og_r1_column_names = [
 ]
 
 dim_indihella_dgp_var_1og_r1_column_names = [
-    "indi_hella_dgp_var_ih_id",
     "dgpmp1_0_100_ih",
     "dgpmp1_5_100_ih",
     "dgpmp1_10_100_ih",
@@ -216,7 +202,6 @@ dim_indihella_dgp_var_1og_r1_column_names = [
 ]
 
 dim_indihella_illum_var_mp1_1og_r1_column_names = [
-    "indi_hella_illum_var_mp1_id",
     "hor_illummp1_0_100_ih",
     "hor_illummp1_5_100_ih",
     "hor_illummp1_10_100_ih",
@@ -258,7 +243,6 @@ dim_indihella_illum_var_mp1_1og_r1_column_names = [
 ]
 
 dim_indihella_illum_var_mp2_1og_r1_column_names = [
-    "indi_hella_illum_var_mp2_id",
     "hor_illummp2_0_100_ih",
     "hor_illummp2_5_100_ih",
     "hor_illummp2_10_100_ih",
@@ -301,7 +285,6 @@ dim_indihella_illum_var_mp2_1og_r1_column_names = [
 
 
 dim_indihella_illum_var_mp3_1og_r1_column_names = [
-    "indi_hella_illum_var_mp3_id",
     "hor_illummp3_0_100_ih",
     "hor_illummp3_5_100_ih",
     "hor_illummp3_10_100_ih",
@@ -343,7 +326,6 @@ dim_indihella_illum_var_mp3_1og_r1_column_names = [
 ]
 
 dim_indihella_illum_var_mp4_1og_r1_column_names = [
-    "indi_hella_illum_var_mp4_id",
     "hor_illummp4_0_100_ih",
     "hor_illummp4_5_100_ih",
     "hor_illummp4_10_100_ih",
@@ -385,13 +367,11 @@ dim_indihella_illum_var_mp4_1og_r1_column_names = [
 ]
 
 dim_radiation_forecast_column_names = [
-    "radiation_forecast_id",
-    "GlobalIrrHor_approx",
-    "DiffIrrHorAct_approx",
+    "global_irr_hor_approx",
+    "diff_irr_hor_act_approx",
 ]
 
 dim_head_positions_1og_r1_column_names = [
-    "head_positions_id",
     "headpose_x_1",
     "headpose_y_1",
     "headpose_z_1",

@@ -7,6 +7,8 @@ import random
 from typing import Dict, List
 import column_names as cn
 
+logging.basicConfig(level=logging.DEBUG)
+
 
 def generate_random_data(column_names: List[str]) -> Dict[str, float]:
     return {column: random.uniform(0, 100) for column in column_names}
@@ -26,7 +28,9 @@ wait_between_iterations = c.PRODUCER_INTERVAL_SECONDS
 print("Starting producer loop...")
 
 while True:
-    for table_name in cn.table_column_names:
-        data_for_table = generate_random_data(table_name)
-        producer.send(kafka_topic, value={table_name: data_for_table})
+    data_for_tables = {
+        table: generate_random_data(columns)
+        for table, columns in cn.table_column_names.items()
+    }
+    producer.send(kafka_topic, value=data_for_tables)
     sleep(wait_between_iterations)

@@ -7,7 +7,7 @@ import postgres as pg
 from psycopg2 import sql
 from column_names import table_column_names
 
-# logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 c = config.load_config()
 logging.info("Creating KafkaConsumer...")
@@ -23,8 +23,15 @@ logging.info("KafkaConsumer created successfully.")
 
 
 def insert_data_into_table(connection, cursor, table_name, column_names, data):
-    if all(key in data for key in column_names):
-        values = [data[column] for column in column_names]
+    if isinstance(data, list):
+        for item in data:
+            insert_data_into_table(connection, cursor, table_name, column_names, item)
+    else:
+        values = [data.get(column, None) for column in column_names]
+
+        if None in values:
+            logging.error(f"Missing required keys in {table_name}. Skipping message.")
+            return
 
         columns_placeholder = sql.SQL(", ").join(
             sql.Identifier(column) for column in column_names
@@ -36,6 +43,7 @@ def insert_data_into_table(connection, cursor, table_name, column_names, data):
         )
 
         try:
+            print("Generated SQL Query:", query.as_string(connection))
             cursor.execute(query, values)
             connection.commit()
             logging.info(f"Data inserted into database: {data}")
@@ -43,10 +51,6 @@ def insert_data_into_table(connection, cursor, table_name, column_names, data):
         except Exception as e:
             logging.error(f"An error occurred: {e}")
             print(f"Error inserting data into {table_name}:", e)
-    else:
-        logging.error(
-            f"Not all required keys present in {table_name}. Skipping message."
-        )
 
 
 with pg.postgres_connection() as connection:
@@ -54,11 +58,13 @@ with pg.postgres_connection() as connection:
         with connection.cursor() as cursor:
             for message in consumer:
                 print("Received message:", message.value)
-                metrological_data = message.value
-
                 for table_name, column_names in table_column_names.items():
                     insert_data_into_table(
-                        connection, cursor, table_name, column_names, metrological_data
+                        connection,
+                        cursor,
+                        table_name,
+                        column_names,
+                        message.value[table_name],
                     )
 
     except Exception as e:
