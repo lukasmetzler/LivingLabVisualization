@@ -1,7 +1,6 @@
 import json
-from time import sleep
-from kafka import KafkaConsumer
 import logging
+from kafka import KafkaConsumer
 import config
 import postgres as pg
 from psycopg2 import sql
@@ -23,11 +22,16 @@ logging.info("KafkaConsumer created successfully.")
 
 
 def insert_data_into_table(connection, cursor, table_name, column_names, data):
-    if isinstance(data, list):
-        for item in data:
-            insert_data_into_table(connection, cursor, table_name, column_names, item)
-    else:
-        values = [data.get(column, None) for column in column_names]
+    if isinstance(data, dict):
+        try:
+            table_data = data[table_name]
+        except KeyError:
+            logging.error(
+                f"KeyError: '{table_name}' not found in the message. Skipping message."
+            )
+            return
+
+        values = [table_data.get(column, None) for column in column_names]
 
         if None in values:
             logging.error(f"Missing required keys in {table_name}. Skipping message.")
@@ -36,14 +40,17 @@ def insert_data_into_table(connection, cursor, table_name, column_names, data):
         columns_placeholder = sql.SQL(", ").join(
             sql.Identifier(column) for column in column_names
         )
-        values_placeholder = sql.SQL(", ").join(sql.Placeholder() for _ in column_names)
+
+        values_placeholder = sql.SQL(", ").join(
+            [sql.Identifier(column) for column in column_names]
+        )
 
         query = sql.SQL(
             f"INSERT INTO {table_name} ({columns_placeholder}) VALUES ({values_placeholder})"
         )
 
         try:
-            print("Generated SQL Query:", query.as_string(connection))
+            print("Generated SQL Query:", query)
             cursor.execute(query, values)
             connection.commit()
             logging.info(f"Data inserted into database: {data}")
@@ -64,7 +71,7 @@ with pg.postgres_connection() as connection:
                         cursor,
                         table_name,
                         column_names,
-                        message.value[table_name],
+                        message.value,
                     )
 
     except Exception as e:

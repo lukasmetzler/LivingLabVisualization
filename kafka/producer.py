@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 def generate_random_data(column_names: List[str]) -> Dict[str, float]:
+    print({column: random.uniform(0, 100) for column in column_names})
     return {column: random.uniform(0, 100) for column in column_names}
 
 

@@ -26,6 +26,16 @@ CREATE TABLE dim_metrological_data (
     RoomTempAct Numeric
 )
 
+CREATE TABLE dim_zed_body_tracking_1og_r1 (
+    zed_body_tracking_id SERIAL PRIMARY KEY,
+    is_new Boolean,
+    is_tracked Boolean,
+    camera_pitch Float,
+    camera_roll Float,
+    camera_yaw Float,
+    body_list JSON
+);
+
 CREATE TABLE dim_pv_modul_data_1og_r1 (
     pv_modul_data_id SERIAL PRIMARY KEY,
     volt_meas_act_module1 Numeric,
@@ -435,6 +445,13 @@ CREATE TABLE fact_user_input_facts (
     FOREIGN KEY (user_input_mp3_id) REFERENCES dim_user_input_mp3_1og_r1(user_input_mp3_id),
     FOREIGN KEY (user_input_mp4_id) REFERENCES dim_user_input_mp4_1og_r1(user_input_mp4_id)
 )
+
+CREATE TABLE fact_sensory {
+    sensory_id,
+    timestamp timestamp,
+    zed_body_tracking_id int,
+    FOREIGN KEY (zed_body_tracking_id) REFERENCES dim_zed_body_tracking_1og_r1(zed_body_tracking_id)
+}
 
 CREATE TABLE fact_raffstore_light_facts (
     raffstore_light_light_facts_id SERIAL PRIMARY KEY,
