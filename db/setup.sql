@@ -28,12 +28,12 @@ CREATE TABLE dim_metrological_data (
 
 CREATE TABLE dim_zed_body_tracking_1og_r1 (
     zed_body_tracking_id SERIAL PRIMARY KEY,
-    is_new Boolean,
-    is_tracked Boolean,
-    camera_pitch Float,
-    camera_roll Float,
-    camera_yaw Float,
-    body_list JSON
+    is_new BOOLEAN DEFAULT FALSE,
+    is_tracked BOOLEAN DEFAULT FALSE,
+    camera_pitch NUMERIC,
+    camera_roll NUMERIC,
+    camera_yaw NUMERIC,
+    body_list JSON DEFAULT '[]'::JSON
 );
 
 CREATE TABLE dim_pv_modul_data_1og_r1 (

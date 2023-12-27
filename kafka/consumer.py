@@ -5,7 +5,6 @@ import config
 import postgres as pg
 from psycopg2 import sql
 from column_names import table_column_names
-import time
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -20,7 +19,6 @@ consumer = KafkaConsumer(
     value_deserializer=lambda x: json.loads(x.decode("utf-8")),
 )
 logging.info("KafkaConsumer created successfully.")
-last_insert_time = 0
 
 
 def insert_data_into_table(connection, cursor, table_name, column_names, data):
@@ -47,28 +45,20 @@ def insert_data_into_table(connection, cursor, table_name, column_names, data):
             logging.debug(f"Vor dem Ausführen von execute für {table_name}")
             cursor.execute(query, values)
             logging.debug(f"Nach dem Ausführen von execute für {table_name}")
-            connection.commit()
-            logging.info(f"Data inserted into database: {data}")
+
+            # Hier Commit erst nach Verarbeitung aller Tabellen
         except Exception as e:
             logging.error(f"An error occurred: {e}")
             print(f"Error inserting data into {table_name}:", e)
             connection.rollback()
-        finally:
-            logging.debug(f"Vor dem Schließen des Cursors für {table_name}")
-            if not cursor.closed:
-                cursor.close()
-            logging.debug(f"Nach dem Schließen des Cursors für {table_name}")
 
 
-try:
-    with pg.postgres_connection() as connection:
-        logging.debug("Verbindung erfolgreich hergestellt")
+def process_messages():
+    try:
+        with pg.postgres_connection() as connection:
+            logging.debug("Verbindung erfolgreich hergestellt")
 
-        for message in consumer:
-            current_time = time.time()
-            elapsed_time = current_time - last_insert_time
-
-            if elapsed_time >= 60:  # Process only if at least 60 seconds have passed
+            for message in consumer:
                 with connection.cursor() as cursor:
                     for table_name, column_names in table_column_names.items():
                         insert_data_into_table(
@@ -79,9 +69,14 @@ try:
                             message.value,
                         )
 
-                last_insert_time = current_time  # Update the last insert time
+                # Commit erst nach Verarbeitung aller Tabellen
+                connection.commit()
 
-except Exception as e:
-    logging.error(f"An error occurred: {e}")
-finally:
-    consumer.close()
+    except Exception as e:
+        logging.error(f"An error occurred: {e}")
+    finally:
+        consumer.close()
+
+
+# Nachrichten verarbeiten
+process_messages()

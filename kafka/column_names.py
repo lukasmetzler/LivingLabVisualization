@@ -25,12 +25,9 @@ dim_metrological_column_names = [
 ]
 
 dim_zed_body_tracking_1og_r1_column_names = [
-    "is_new",
-    "is_tracked",
     "camera_pitch",
     "camera_roll",
     "camera_yaw",
-    "body_list",
 ]
 
 dim_pv_modul_data_1og_r1_column_names = [
@@ -116,7 +113,7 @@ dim_indihella_calc_var_radiance_1og_r1_column_names = [
     "ydir_radiance_ih",
     "zdir_radiance_ih",
     "irr_dir_nor_radiance_ih",
-    "profileangle_radiance_ih",
+    "profile_angle_radiance_ih",
     "epsilon_radiance_ih",
     "delta_radiance_ih",
     "water_precipitable_radiance_ih",
@@ -409,7 +406,7 @@ dim_head_positions_1og_r1_column_names = [
 
 table_column_names = {
     "dim_metrological_data": dim_metrological_column_names,
-    "dim_zed_body_tracking_1og_r1_column_names": dim_zed_body_tracking_1og_r1_column_names,
+    "dim_zed_body_tracking_1og_r1": dim_zed_body_tracking_1og_r1_column_names,
     "dim_pv_modul_data_1og_r1": dim_pv_modul_data_1og_r1_column_names,
     "dim_illumination_datapoints_1og_r1": dim_illumination_datapoints_1og_r1_column_names,
     "dim_raffstore_light_data_1og_r1": dim_raffstore_light_data_1og_r1_column_names,

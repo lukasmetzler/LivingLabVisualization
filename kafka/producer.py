@@ -7,12 +7,11 @@ import random
 from typing import Dict, List
 import column_names as cn
 
-logging.basicConfig(level=logging.DEBUG)
-
 
 def generate_random_data(column_names: List[str]) -> Dict[str, float]:
-    print({column: random.uniform(0, 100) for column in column_names})
-    return {column: random.uniform(0, 100) for column in column_names}
+    data = {column: random.uniform(0, 100) for column in column_names}
+    logging.debug("Generated data: %s", data)
+    return data
 
 
 c = config.load_config()
@@ -33,5 +32,6 @@ while True:
         table: generate_random_data(columns)
         for table, columns in cn.table_column_names.items()
     }
+    logging.debug("Data for tables: %s", data_for_tables)
     producer.send(kafka_topic, value=data_for_tables)
     sleep(wait_between_iterations)
