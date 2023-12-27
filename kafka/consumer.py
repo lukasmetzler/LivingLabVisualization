@@ -6,15 +6,13 @@ import postgres as pg
 from psycopg2 import sql
 from column_names import table_column_names
 
-logging.basicConfig(level=logging.DEBUG)
-
 c = config.load_config()
 logging.info("Creating KafkaConsumer...")
 consumer = KafkaConsumer(
     c.KAFKA_TOPIC,
     bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],
     auto_offset_reset="earliest",
-    enable_auto_commit=False,
+    enable_auto_commit=True,
     group_id="consumer",
     value_deserializer=lambda x: json.loads(x.decode("utf-8")),
 )
@@ -46,7 +44,8 @@ def insert_data_into_table(connection, cursor, table_name, column_names, data):
             cursor.execute(query, values)
             logging.debug(f"Nach dem Ausführen von execute für {table_name}")
 
-            # Hier Commit erst nach Verarbeitung aller Tabellen
+            logging.info(f"Data inserted into database: {data}")
+
         except Exception as e:
             logging.error(f"An error occurred: {e}")
             print(f"Error inserting data into {table_name}:", e)
@@ -68,8 +67,6 @@ def process_messages():
                             column_names,
                             message.value,
                         )
-
-                # Commit erst nach Verarbeitung aller Tabellen
                 connection.commit()
 
     except Exception as e:
@@ -78,5 +75,4 @@ def process_messages():
         consumer.close()
 
 
-# Nachrichten verarbeiten
 process_messages()
