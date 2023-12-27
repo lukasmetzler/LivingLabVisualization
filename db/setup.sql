@@ -446,12 +446,12 @@ CREATE TABLE fact_user_input_facts (
     FOREIGN KEY (user_input_mp4_id) REFERENCES dim_user_input_mp4_1og_r1(user_input_mp4_id)
 )
 
-CREATE TABLE fact_sensory {
-    sensory_id,
+CREATE TABLE fact_sensory (
+    sensory_id SERIAL PRIMARY KEY,
     timestamp timestamp,
     zed_body_tracking_id int,
     FOREIGN KEY (zed_body_tracking_id) REFERENCES dim_zed_body_tracking_1og_r1(zed_body_tracking_id)
-}
+)
 
 CREATE TABLE fact_raffstore_light_facts (
     raffstore_light_light_facts_id SERIAL PRIMARY KEY,
