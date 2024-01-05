@@ -23,7 +23,7 @@ Before running this project, ensure you have the following installed:
 
 ## Getting Started
 ### Stack
-![](https://gitlab.com/lukasmetzler/echtzeitvisualisierung-von-gebaeudeindustriedaten/-/raw/main/docs/Finaler_Aufbau.png?ref_type=heads)
+![](https://gitlab.com/lukasmetzler/echtzeitvisualisierung-von-gebaeudeindustriedaten/-/blob/main/docs/Finaler_Aufbau.png)
 
 ### Installation
 
