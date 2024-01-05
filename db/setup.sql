@@ -1,6 +1,7 @@
 --- Dimensionstabellen
 CREATE TABLE dim_metrological_data (
     metrological_data_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     GlobIrrVerAct Numeric,
     GlobalIrrHorAct Numeric,
     DifflrrHorAct Numeric,
@@ -28,6 +29,7 @@ CREATE TABLE dim_metrological_data (
 
 CREATE TABLE dim_zed_body_tracking_1og_r1 (
     zed_body_tracking_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     is_new BOOLEAN DEFAULT FALSE,
     is_tracked BOOLEAN DEFAULT FALSE,
     camera_pitch NUMERIC,
@@ -38,6 +40,7 @@ CREATE TABLE dim_zed_body_tracking_1og_r1 (
 
 CREATE TABLE dim_pv_modul_data_1og_r1 (
     pv_modul_data_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     volt_meas_act_module1 Numeric,
     curr_meas_act_module1 Numeric,
     volt_meas_act_module2 Numeric,
@@ -46,6 +49,7 @@ CREATE TABLE dim_pv_modul_data_1og_r1 (
 
 CREATE TABLE dim_illumination_datapoints_1og_r1 (
     illumination_datapoints_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     illum_mp1_act Numeric,
     illum_mp2_act Numeric,
     illum_mp3_act Numeric,
@@ -54,6 +58,7 @@ CREATE TABLE dim_illumination_datapoints_1og_r1 (
 
 CREATE TABLE dim_raffstore_light_data_1og_r1 (
     raffstore_light_data_1og_r1_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     slat_ang1_act_1og_r1 Numeric,
     slat_pos1_act_1og_r1 Numeric,
     light1_act_1og_r1 Numeric,
@@ -62,6 +67,7 @@ CREATE TABLE dim_raffstore_light_data_1og_r1 (
 
 CREATE TABLE dim_raffstore_light_data_1og_r2 (
     raffstore_light_data_1og_r2_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     slat_ang1_act_1og_r2 Numeric,
     slat_pos1_act_1og_r2 Numeric,
     light1_act_1og_r2 Numeric
@@ -69,6 +75,7 @@ CREATE TABLE dim_raffstore_light_data_1og_r2 (
 
 CREATE TABLE dim_raffstore_light_data_1og_r3 (
     raffstore_light_data_1og_r3_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     slat_ang1_act_1og_r3 Numeric,
     slat_pos1_act_1og_r3 Numeric,
     light1_act_1og_r3 Numeric
@@ -76,6 +83,7 @@ CREATE TABLE dim_raffstore_light_data_1og_r3 (
 
 CREATE TABLE dim_raffstore_light_data_1og_r4 (
     raffstore_light_data_1og_r4_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     slat_ang1_act_1og_r4 Numeric,
     slat_pos1_act_1og_r4 Numeric,
     slat_ang2_act_1og_r4 Numeric,
@@ -87,6 +95,7 @@ CREATE TABLE dim_raffstore_light_data_1og_r4 (
 
 CREATE TABLE dim_raffstore_light_data_1og_r5 (
     raffstore_light_data_1og_r5_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     slat_ang1_act_1og_r5 Numeric,
     slat_pos1_act_1og_r5 Numeric,
     slat_ang2_act_1og_r5 Numeric,
@@ -99,6 +108,7 @@ CREATE TABLE dim_raffstore_light_data_1og_r5 (
 
 CREATE TABLE dim_user_input_mp1_1og_r1 (
     user_input_mp1_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     mp1_glare_limit Numeric,
     mp1_req_illum Numeric,
     mp1_req_room_temp Numeric
@@ -106,6 +116,7 @@ CREATE TABLE dim_user_input_mp1_1og_r1 (
 
 CREATE TABLE dim_user_input_mp2_1og_r1 (
     user_input_mp2_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     mp2_glare_limit Numeric,
     mp2_req_illum Numeric,
     mp2_req_room_temp Numeric
@@ -113,6 +124,7 @@ CREATE TABLE dim_user_input_mp2_1og_r1 (
 
 CREATE TABLE dim_user_input_mp3_1og_r1 (
     user_input_mp3_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     mp3_glare_limit Numeric,
     mp3_req_illum Numeric,
     mp3_req_room_temp Numeric
@@ -120,6 +132,7 @@ CREATE TABLE dim_user_input_mp3_1og_r1 (
 
 CREATE TABLE dim_user_input_mp4_1og_r1 (
     user_input_mp4_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     mp4_glare_limit Numeric,
     mp4_req_illum Numeric,
     mp4_req_room_temp Numeric
@@ -127,6 +140,7 @@ CREATE TABLE dim_user_input_mp4_1og_r1 (
 
 CREATE TABLE dim_indihella_calc_var_radiance_1og_r1 (
     indi_hella_calc_var_radiance_ih_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     altitude_radiance_ih Numeric,
     azimut_radiance_ih Numeric,
     xdir_radiance_ih Numeric,
@@ -143,6 +157,7 @@ CREATE TABLE dim_indihella_calc_var_radiance_1og_r1 (
 
 CREATE TABLE dim_indihella_target_var_1og_r1 (
     indi_hella_tar_var_ih_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     slat_ang_tar_ih Numeric,
     slat_pos_tar_ih Numeric,
     light1_tar_ih Numeric,
@@ -151,6 +166,7 @@ CREATE TABLE dim_indihella_target_var_1og_r1 (
 
 CREATE TABLE dim_indihella_dgp_var_1og_r1 (
     indi_hella_dgp_var_ih_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     dgpmp1_0_100_ih Numeric,
     dgpmp1_5_100_ih Numeric,
     dgpmp1_10_100_ih Numeric,
@@ -231,6 +247,7 @@ CREATE TABLE dim_indihella_dgp_var_1og_r1 (
 
 CREATE TABLE dim_indihella_illum_var_mp1_1og_r1 (
     indi_hella_illum_var_mp1_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     hor_illummp1_0_100_ih Numeric,
     hor_illummp1_5_100_ih Numeric,
     hor_illummp1_10_100_ih Numeric,
@@ -273,6 +290,7 @@ CREATE TABLE dim_indihella_illum_var_mp1_1og_r1 (
 
 CREATE TABLE dim_indihella_illum_var_mp2_1og_r1 (
     indi_hella_illum_var_mp2_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     hor_illummp2_0_100_ih Numeric,
     hor_illummp2_5_100_ih Numeric,
     hor_illummp2_10_100_ih Numeric,
@@ -316,6 +334,7 @@ CREATE TABLE dim_indihella_illum_var_mp2_1og_r1 (
 
 CREATE TABLE dim_indihella_illum_var_mp3_1og_r1 (
     indi_hella_illum_var_mp3_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     hor_illummp3_0_100_ih Numeric,
     hor_illummp3_5_100_ih Numeric,
     hor_illummp3_10_100_ih Numeric,
@@ -358,6 +377,7 @@ CREATE TABLE dim_indihella_illum_var_mp3_1og_r1 (
 
 CREATE TABLE dim_indihella_illum_var_mp4_1og_r1 (
     indi_hella_illum_var_mp4_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     hor_illummp4_0_100_ih Numeric,
     hor_illummp4_5_100_ih Numeric,
     hor_illummp4_10_100_ih Numeric,
@@ -400,12 +420,14 @@ CREATE TABLE dim_indihella_illum_var_mp4_1og_r1 (
 
 CREATE TABLE dim_radiation_forecast (
     radiation_forecast_id SERIAL primary KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     global_irr_hor_approx Numeric,
     diff_irr_hor_act_approx Numeric
 )
 
 CREATE TABLE dim_head_positions_1og_r1 (
     head_positions_id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     headpose_x_1 Numeric,
     headpose_y_1 Numeric,
     headpose_z_1 Numeric,
