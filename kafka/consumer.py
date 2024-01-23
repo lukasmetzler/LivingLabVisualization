@@ -5,6 +5,7 @@ import config
 import postgres as pg
 from psycopg2 import sql
 from column_names import table_column_names
+import fact_column_names as fcn
 
 c = config.load_config()
 logging.info("Creating KafkaConsumer...")
@@ -67,6 +68,16 @@ def process_messages():
                             column_names,
                             message.value,
                         )
+                    
+                    for table_name, column_names in fcn.fact_column_names.items():
+                        insert_data_into_table(
+                            connection,
+                            cursor,
+                            table_name,
+                            column_names,
+                            message.value,
+                        )
+                        
                 connection.commit()
 
     except Exception as e:
