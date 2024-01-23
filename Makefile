@@ -3,16 +3,18 @@ SHELL := /bin/bash
 run: run-local
 
 run-local: start-infra-local
-	make -j run-all-local
+	make run-consumer-local
+	make run-producer-local
 
 # python3 -m pip install kafka-python - on local system or server and  python3 -m pip install psycopg2 !!
 run-all-local: install-dependencies run-producer-local run-consumer-local
 
+run-consumer-local:
+	cd kafka && KAFKA_ENV_PATH=../local.env python3 -m consumer &
+
 run-producer-local:
 	cd kafka && KAFKA_ENV_PATH=../local.env python3 -m producer &
 
-run-consumer-local:
-	cd kafka && KAFKA_ENV_PATH=../local.env python3 -m consumer &
 
 build-docker:
 	docker build -t kafka:latest -f ./Dockerfile .
