@@ -448,14 +448,14 @@ CREATE TABLE fact_user_input_facts (
 
 CREATE TABLE fact_sensory (
     sensory_id SERIAL PRIMARY KEY,
-    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     zed_body_tracking_id int,
     FOREIGN KEY (zed_body_tracking_id) REFERENCES dim_zed_body_tracking_1og_r1(zed_body_tracking_id)
 )
 
 CREATE TABLE fact_raffstore_light_facts (
     raffstore_light_light_facts_id SERIAL PRIMARY KEY,
-    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     raffstore_light_data_1og_r1_id int,
     raffstore_light_data_1og_r2_id int,
     raffstore_light_data_1og_r3_id int,
@@ -470,7 +470,7 @@ CREATE TABLE fact_raffstore_light_facts (
 
 CREATE TABLE fact_indi_hella_illum_facts (
     indi_hella_illum_var_facts_id SERIAL PRIMARY KEY,
-    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     indi_hella_illum_var_mp1_id int,
     indi_hella_illum_var_mp2_id int,
     indi_hella_illum_var_mp3_id int,
@@ -483,18 +483,18 @@ CREATE TABLE fact_indi_hella_illum_facts (
 
 CREATE TABLE fact_indi_hella_calc_vars_facts (
     indi_hella_illum_var_facts_id SERIAL PRIMARY KEY,
-    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     indi_hella_calc_var_radiance_ih_id int,
     indi_hella_tar_var_ih_id int,
     indi_hella_dgp_var_ih_id int,
     FOREIGN KEY (indi_hella_calc_var_radiance_ih_id) REFERENCES dim_indihella_calc_var_radiance_1og_r1(indi_hella_calc_var_radiance_ih_id),
     FOREIGN KEY (indi_hella_tar_var_ih_id) REFERENCES dim_indihella_target_var_1og_r1(indi_hella_tar_var_ih_id),
-    FOREIGN KEY (indi_hella_dgp_var_ih_id) REFERENCES dim_indihella_dgp_var_1og_r1(indi_hella_dgp_var_ih_id),
+    FOREIGN KEY (indi_hella_dgp_var_ih_id) REFERENCES dim_indihella_dgp_var_1og_r1(indi_hella_dgp_var_ih_id)
 )
 
 CREATE TABLE fact_environmental_data_facts (
     fact_table_id SERIAL PRIMARY KEY,
-    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     metrological_data_id int,
     pv_modul_data_id int,
     illumination_datapoints_id int,
