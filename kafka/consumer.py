@@ -58,7 +58,11 @@ def insert_into_fact_table(
 ):
     if isinstance(data, dict):
         # Extract only the values for the fact table
-        fact_values = [data.get(column, None) for column in fact_column_names]
+        fact_values = [data[column] for column in fact_column_names]
+        for column in fact_column_names:
+            print(column)
+        print(fact_values)
+        print("Available keys in data:", data.keys())
 
         if None in fact_values:
             missing_keys = [
@@ -99,8 +103,23 @@ def process_messages():
         with pg.postgres_connection() as connection:
             logging.debug("Verbindung erfolgreich hergestellt")
 
+            dimension_tables_processed = 0
+
             for message in consumer:
                 with connection.cursor() as cursor:
+                    # Check if all required keys are present in the message
+                    required_keys_present = all(
+                        key in message.value
+                        for keys in table_column_names.values()
+                        for key in keys
+                    )
+
+                    if not required_keys_present:
+                        logging.error(
+                            "Missing required keys in message. Skipping message."
+                        )
+                        continue
+
                     # Process Dimension Tables
                     for table_name, column_names in table_column_names.items():
                         insert_data_into_table(
@@ -110,19 +129,25 @@ def process_messages():
                             column_names,
                             message.value,
                         )
+                        dimension_tables_processed += 1
 
-                    # Process Fact Table
-                    for (
-                        fact_table_name,
-                        fact_column_names,
-                    ) in fcn.fact_table_column_names.items():
-                        insert_into_fact_table(
-                            connection,
-                            cursor,
+                    # Check if all dimension tables are processed
+                    if dimension_tables_processed == len(table_column_names):
+                        # Process Fact Table
+                        for (
                             fact_table_name,
                             fact_column_names,
-                            message.value,
-                        )
+                        ) in fcn.fact_table_column_names.items():
+                            insert_into_fact_table(
+                                connection,
+                                cursor,
+                                fact_table_name,
+                                fact_column_names,
+                                message.value,
+                            )
+
+                        # Reset the counter for the next message
+                        dimension_tables_processed = 0
 
                 connection.commit()
 
