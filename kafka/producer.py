@@ -16,6 +16,7 @@ import psycopg2
 def stop_producer(signum, frame):
     logging.info("Stopping producer...")
     producer.close()
+    db_connection.close()
     sys.exit(0)
 
 
