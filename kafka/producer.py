@@ -54,6 +54,7 @@ def generate_random_data(column_names: List[str], connection) -> Dict[str, float
                     table, first_column, connection
                 )
 
+        # Verwenden Sie die generierte UUID direkt ohne Umwandlung in einen numerischen Wert
         data.update(
             {
                 column: generated_id

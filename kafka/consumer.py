@@ -45,21 +45,38 @@ def insert_data_into_table(
         values = [table_data.get(column, None) for column in column_names]
         id_columns = [column for column in column_names if column.endswith("_id")]
         ids = [(column, values[column_names.index(column)]) for column in id_columns]
+        values_only = [value[1] for value in ids]
+        column_names_only = [value[0] for value in ids]
 
         print("ID columns:", ids)
 
-        if None in values:
-            logging.error(f"Missing required keys in {table_name}. Skipping message.")
+        zed_body_tracking_value = None  # Vor dem if-Block initialisieren
+
+        for value, column_name in zip(values_only, column_names_only):
+            if "zed_body_tracking_id" in column_name:
+                zed_body_tracking_value = value
+                break  # Beende die Schleife, sobald die zed_body_tracking_id gefunden wurde
+
+        if zed_body_tracking_value is None:
+            print(f"No zed_body_tracking_id found in ID columns: {ids}")
+            return
+
+        if None in values or zed_body_tracking_value is None:
+            logging.error(
+                f"Missing required keys or zed_body_tracking_value is None in {table_name}. Skipping message."
+            )
             return
 
         columns_placeholder = (", ").join(column for column in column_names)
         values_placeholder = (", ").join(["%s" for _ in column_names])
 
         query = f"INSERT INTO {table_name} ({columns_placeholder}) VALUES ({values_placeholder})"
+        insert_sql = f"INSERT INTO fact_sensory (zed_body_tracking_id) VALUES ('{zed_body_tracking_value}');"
 
         try:
             logging.debug(f"Vor dem Ausführen von execute für {table_name}")
             cursor.execute(query, values)
+            cursor.execute(insert_sql)
             logging.debug(f"Nach dem Ausführen von execute für {table_name}")
 
             logging.info(f"Data inserted into database: {data}")
