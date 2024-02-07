@@ -25,6 +25,33 @@ consumer = KafkaConsumer(
 logging.info("KafkaConsumer created successfully.")
 
 
+def get_last_inserted_ids(connection, cursor):
+    last_inserted_ids = {}
+    try:
+        for table_name, column_names in table_column_names.items():
+            if table_name.startswith("dim_"):
+                # Get the name of the ID column
+                id_column_name = None
+                for column_name in column_names:
+                    if column_name.endswith("_id"):
+                        id_column_name = column_name
+                        break
+
+                if id_column_name is None:
+                    logging.error(f"No ID column found for table {table_name}")
+                    continue
+
+                # Query to get the max value of the ID column
+                query = f"SELECT max({id_column_name}) FROM {table_name}"
+                cursor.execute(query)
+                result = cursor.fetchone()[0]
+                last_inserted_ids[id_column_name] = result
+        return last_inserted_ids
+    except Exception as e:
+        logging.error(f"An error occurred while retrieving last inserted IDs: {e}")
+        return None
+
+
 def insert_data_into_table(connection, cursor, table_name, column_names, data):
     try:
         if table_name.startswith("dim_") and isinstance(data, dict):
@@ -37,10 +64,16 @@ def insert_data_into_table(connection, cursor, table_name, column_names, data):
                 return None
 
             # Filter out ID columns from the data
-            filtered_values = [table_data.get(column, None) for column in column_names if not column.endswith('_id')]
+            filtered_values = [
+                table_data.get(column, None)
+                for column in column_names
+                if not column.endswith("_id")
+            ]
 
             # Filter out ID columns from the column names
-            filtered_columns = [column for column in column_names if not column.endswith('_id')]
+            filtered_columns = [
+                column for column in column_names if not column.endswith("_id")
+            ]
 
             columns_placeholder = (", ").join(column for column in filtered_columns)
             values_placeholder = (", ").join(["%s" for _ in filtered_columns])
@@ -53,54 +86,6 @@ def insert_data_into_table(connection, cursor, table_name, column_names, data):
         logging.error(f"An error occurred while inserting data into {table_name}: {e}")
         connection.rollback()
         return None
-
-
-def insert_data_into_fact_table(connection, cursor, table_name, column_names, data, dimension_ids):
-    try:
-        if isinstance(data, dict):
-            # Abrufen der Daten aus der entsprechenden Dimensionstabelle
-            dimension_data = data.get(table_name)
-            print(dimension_data)
-
-            if dimension_data is None:
-                logging.error(
-                    f"Dimension data for '{table_name}' not found in the message. Skipping message."
-                )
-                return
-
-            # Erstellen der Liste von Werten für die Spalten der Faktentabelle
-            values = [dimension_data.get(column) for column in column_names]
-            print(column_names)
-            print(values)
-
-            # Ersetzen der Fremdschlüssel in den Faktentabellendaten durch die entsprechenden IDs aus den Dimensionstabellen
-            for i, value in enumerate(values):
-                if column_names[i] in dimension_ids:
-                    dimension_id = dimension_ids[column_names[i]]
-                    if dimension_id:
-                        values[i] = dimension_id
-                    else:
-                        logging.error(
-                            f"Failed to retrieve the last inserted ID for column '{column_names[i]}' in dimension table '{table_name}'. Skipping message."
-                        )
-                        return
-                else:
-                    logging.error(
-                        f"No dimension ID found for column '{column_names[i]}' in dimension table '{table_name}'. Skipping message."
-                    )
-                    return
-
-            columns_placeholder = (", ").join(column for column in column_names)
-            values_placeholder = (", ").join(["%s" for _ in column_names])
-
-            query = f"INSERT INTO {table_name} ({columns_placeholder}) VALUES ({values_placeholder})"
-            cursor.execute(query, values)
-            logging.info(f"Data inserted into {table_name}")
-    except Exception as e:
-        logging.error(f"An error occurred while inserting data into {table_name}: {e}")
-        connection.rollback()
-
-
 
 
 def process_messages():
@@ -122,18 +107,66 @@ def process_messages():
                         )
                         dimension_ids[table_name] = inserted_id
 
-                    # Insert into fact tables using foreign keys from dimension tables
-                    for table_name, column_names in fact_table_column_names.items():
-                        insert_data_into_fact_table(
-                            connection,
-                            cursor,
-                            table_name,
-                            column_names,
-                            message.value,
-                            dimension_ids,
-                        )
+                    # Get last inserted IDs
+                    last_inserted_ids = get_last_inserted_ids(connection, cursor)
+                    # print(last_inserted_ids)
+                    user_input_mp1_id = last_inserted_ids.get("user_input_mp1_id", None)
+                    # print(user_input_mp1_id)
+                    if user_input_mp1_id is not None:
+                        print("ID für 'user_input_mp1_id':", user_input_mp1_id)
+                    else:
+                        print("ID für 'user_input_mp1_id' nicht gefunden.")
+
+                    zed_body_tracking_id = last_inserted_ids.get(
+                        "zed_body_tracking_id", None
+                    )
+                    if zed_body_tracking_id is not None:
+                        print("ID für 'zed_body_tracking_id':", zed_body_tracking_id)
+                    else:
+                        print("ID für 'zed_body_tracking_id' nicht gefunden.")
+
+                    # print("Top: ", last_inserted_ids)
+
+                    # Insert into fact tables
+                    fact_tables = [
+                        "fact_user_input_facts",
+                        "fact_sensory",
+                        "fact_raffstore_light_facts",
+                        "fact_indi_hella_illum_facts",
+                        "fact_indi_hella_calc_vars_facts",
+                        "fact_environmental_data_facts",
+                    ]
+                    for table_name in fact_tables:
+                        column_names = table_column_names[table_name]
+                        if column_names:  # Überprüfen, ob die Liste nicht leer ist
+                            # Erstellen Sie eine Komma-getrennte Liste der Spaltennamen
+                            column_names_str = ", ".join(column_names)
+
+                            # Erstellen Sie eine Komma-getrennte Liste von Platzhaltern für die VALUES-Klausel basierend auf der Anzahl der Spalten
+                            placeholders = ", ".join(["%s" for _ in column_names])
+
+                            for column_name in column_names:
+                                # print("Column name: ", column_name)
+                                inserted_id = last_inserted_ids.get(column_name)
+                                # print("Inserted Ids: ", inserted_id)
+                                if inserted_id is not None:
+                                    print(f"ID für '{column_name}':", inserted_id)
+                                else:
+                                    print(f"ID für '{column_name}' nicht gefunden.")
+
+                            # Die INSERT-Anweisung mit den Spaltennamen und Platzhaltern für die Werte
+                            query = f"INSERT INTO {table_name} ({column_names_str}) VALUES ({placeholders})"
+                            cursor.execute(
+                                query,
+                                tuple(last_inserted_ids[col] for col in column_names),
+                            )
+                        else:
+                            print(
+                                f"Spaltennamen für Tabelle '{table_name}' nicht gefunden."
+                            )
 
                     connection.commit()
+                    print("Dimension tables inserted successfully")
 
     except Exception as e:
         logging.error(f"An error occurred: {e}")
