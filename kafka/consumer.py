@@ -109,32 +109,12 @@ def process_messages():
 
                     # Get last inserted IDs
                     last_inserted_ids = get_last_inserted_ids(connection, cursor)
-                    # print(last_inserted_ids)
-                    user_input_mp1_id = last_inserted_ids.get("user_input_mp1_id", None)
-                    # print(user_input_mp1_id)
-                    if user_input_mp1_id is not None:
-                        print("ID für 'user_input_mp1_id':", user_input_mp1_id)
-                    else:
-                        print("ID für 'user_input_mp1_id' nicht gefunden.")
-
-                    zed_body_tracking_id = last_inserted_ids.get(
-                        "zed_body_tracking_id", None
-                    )
-                    if zed_body_tracking_id is not None:
-                        print("ID für 'zed_body_tracking_id':", zed_body_tracking_id)
-                    else:
-                        print("ID für 'zed_body_tracking_id' nicht gefunden.")
-
-                    # print("Top: ", last_inserted_ids)
 
                     # Insert into fact tables
                     fact_tables = [
-                        "fact_user_input_facts",
-                        "fact_sensory",
-                        "fact_raffstore_light_facts",
-                        "fact_indi_hella_illum_facts",
-                        "fact_indi_hella_calc_vars_facts",
-                        "fact_environmental_data_facts",
+                        table_name
+                        for table_name in table_column_names.keys()
+                        if table_name.startswith("fact_")
                     ]
                     for table_name in fact_tables:
                         column_names = table_column_names[table_name]
@@ -146,12 +126,8 @@ def process_messages():
                             placeholders = ", ".join(["%s" for _ in column_names])
 
                             for column_name in column_names:
-                                # print("Column name: ", column_name)
                                 inserted_id = last_inserted_ids.get(column_name)
-                                # print("Inserted Ids: ", inserted_id)
-                                if inserted_id is not None:
-                                    print(f"ID für '{column_name}':", inserted_id)
-                                else:
+                                if inserted_id is None:
                                     print(f"ID für '{column_name}' nicht gefunden.")
 
                             # Die INSERT-Anweisung mit den Spaltennamen und Platzhaltern für die Werte
