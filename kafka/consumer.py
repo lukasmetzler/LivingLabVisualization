@@ -54,39 +54,29 @@ def insert_data_into_table(connection, cursor, table_name, column_names, data):
         connection.rollback()
         return None
 
-def get_dimension_data(connection, cursor, table_name, key_column, key_value):
-    try:
-        query = f"SELECT * FROM {table_name} WHERE {key_column} = %s"
-        cursor.execute(query, (key_value,))
-        result = cursor.fetchone()
-        return result
-    except Exception as e:
-        logging.error(f"An error occurred while fetching data from {table_name}: {e}")
-        return None
-
-
 
 def insert_data_into_fact_table(connection, cursor, table_name, column_names, data, dimension_ids):
     try:
         if isinstance(data, dict):
-            table_data = data.get(table_name)
-            print(table_data)
+            # Abrufen der Daten aus der entsprechenden Dimensionstabelle
+            dimension_data = data.get(table_name)
+            print(dimension_data)
 
-            if table_data is None:
+            if dimension_data is None:
                 logging.error(
-                    f"Table data for '{table_name}' not found in the message. Skipping message."
+                    f"Dimension data for '{table_name}' not found in the message. Skipping message."
                 )
                 return
 
-            values = [table_data.get(column) for column in column_names]
+            # Erstellen der Liste von Werten für die Spalten der Faktentabelle
+            values = [dimension_data.get(column) for column in column_names]
             print(column_names)
             print(values)
-            #print(values)
-            # Replace foreign keys in the fact table data with the corresponding IDs from the dimension tables
-            for i, values in enumerate(values):
+
+            # Ersetzen der Fremdschlüssel in den Faktentabellendaten durch die entsprechenden IDs aus den Dimensionstabellen
+            for i, value in enumerate(values):
                 if column_names[i] in dimension_ids:
                     dimension_id = dimension_ids[column_names[i]]
-                    #print("DimensionIDs: ", dimension_id)
                     if dimension_id:
                         values[i] = dimension_id
                     else:
@@ -109,6 +99,7 @@ def insert_data_into_fact_table(connection, cursor, table_name, column_names, da
     except Exception as e:
         logging.error(f"An error occurred while inserting data into {table_name}: {e}")
         connection.rollback()
+
 
 
 
