@@ -3,10 +3,16 @@ import logging
 from kafka import KafkaConsumer
 import config
 import postgres as pg
-from psycopg2 import sql
 from column_names import table_column_names
+from fact_column_names import fact_table_column_names
 
+# Konfiguration laden
 c = config.load_config()
+
+# Protokollierung konfigurieren
+# logging.basicConfig(level=logging.INFO)
+
+# KafkaConsumer erstellen
 logging.info("Creating KafkaConsumer...")
 consumer = KafkaConsumer(
     c.KAFKA_TOPIC,
@@ -19,88 +25,91 @@ consumer = KafkaConsumer(
 logging.info("KafkaConsumer created successfully.")
 
 
-def insert_data_into_table(
-    connection,
-    cursor,
-    table_name,
-    column_names,
-    data,
-):
-    if isinstance(data, dict):
-        table_data = data.get(table_name, None)
+def insert_data_into_table(connection, cursor, table_name, column_names, data):
+    try:
+        if table_name.startswith("dim_") and isinstance(data, dict):
+            table_data = data.get(table_name, None)
 
-        if table_data is None:
-            logging.error(
-                f"Table data for '{table_name}' not found in the message. Skipping message."
-            )
-            return
-
-        values = [table_data.get(column, None) for column in column_names]
-        id_columns = [column for column in column_names if column.endswith("_id")]
-        ids = [(column, values[column_names.index(column)]) for column in id_columns]
-        values_only = [value[1] for value in ids]
-        column_names_only = [value[0] for value in ids]
-
-        if None in values_only:
-            logging.error(f"Missing required keys in {table_name}. Skipping message.")
-            return
-
-        columns_placeholder = (", ").join(column for column in column_names)
-        values_placeholder = (", ").join(["%s" for _ in column_names])
-
-        query = f"INSERT INTO {table_name} ({columns_placeholder}) VALUES ({values_placeholder})"
-        try:
-            logging.debug(f"Vor dem Ausführen von execute für {table_name}")
-            cursor.execute(query, values)
-            logging.debug(f"Nach dem Ausführen von execute für {table_name}")
-
-            logging.info(f"Data inserted into database: {data}")
-
-            # Zusätzlich Daten in fact_user_input_facts einfügen
-            if table_name == "fact_sensory":
-                desired_ids = [
-                    "user_input_mp1_id",
-                    "user_input_mp2_id",
-                    "user_input_mp3_id",
-                    "user_input_mp4_id",
-                ]
-                user_input_values = [
-                    table_data.get(desired_id) for desired_id in desired_ids
-                ]
-                if None in user_input_values:
-                    logging.error(
-                        "Missing required keys in fact_user_input_facts. Skipping insertion."
-                    )
-                else:
-                    user_input_columns = ", ".join(desired_ids)
-                    user_input_placeholders = ", ".join(["%s" for _ in desired_ids])
-                    user_input_query = f"INSERT INTO fact_user_input_facts ({user_input_columns}) VALUES ({user_input_placeholders})"
-                    cursor.execute(user_input_query, user_input_values)
-                    logging.info("Data inserted into fact_user_input_facts")
-
-        except Exception as e:
-            logging.error(f"An error occurred: {e}")
-            print(f"Error inserting data into {table_name}:", e)
-            connection.rollback()
-
-        zed_body_tracking_value = None
-        for value, column_name in zip(values_only, column_names_only):
-            if "zed_body_tracking_id" in column_name:
-                zed_body_tracking_value = value
-                break
-
-        if zed_body_tracking_value is not None:
-            print(zed_body_tracking_value)
-            insert_sql = "INSERT INTO fact_sensory (zed_body_tracking_id) VALUES (%s)"
-            try:
-                print(insert_sql)
-                print(zed_body_tracking_value)
-                cursor.execute(insert_sql, (zed_body_tracking_value,))
-                logging.info("Inserted into fact_sensory")
-            except Exception as e:
+            if table_data is None:
                 logging.error(
-                    f"An error occurred while inserting into fact_sensory: {e}"
+                    f"Table data for '{table_name}' not found in the message. Skipping message."
                 )
+                return None
+
+            # Filter out ID columns from the data
+            filtered_values = [table_data.get(column, None) for column in column_names if not column.endswith('_id')]
+
+            # Filter out ID columns from the column names
+            filtered_columns = [column for column in column_names if not column.endswith('_id')]
+
+            columns_placeholder = (", ").join(column for column in filtered_columns)
+            values_placeholder = (", ").join(["%s" for _ in filtered_columns])
+
+            query = f"INSERT INTO {table_name} ({columns_placeholder}) VALUES ({values_placeholder})"
+            cursor.execute(query, filtered_values)
+            logging.info(f"Data inserted into database: {data}")
+            return None
+    except Exception as e:
+        logging.error(f"An error occurred while inserting data into {table_name}: {e}")
+        connection.rollback()
+        return None
+
+def get_dimension_data(connection, cursor, table_name, key_column, key_value):
+    try:
+        query = f"SELECT * FROM {table_name} WHERE {key_column} = %s"
+        cursor.execute(query, (key_value,))
+        result = cursor.fetchone()
+        return result
+    except Exception as e:
+        logging.error(f"An error occurred while fetching data from {table_name}: {e}")
+        return None
+
+
+
+def insert_data_into_fact_table(connection, cursor, table_name, column_names, data, dimension_ids):
+    try:
+        if isinstance(data, dict):
+            table_data = data.get(table_name)
+            print(table_data)
+
+            if table_data is None:
+                logging.error(
+                    f"Table data for '{table_name}' not found in the message. Skipping message."
+                )
+                return
+
+            values = [table_data.get(column) for column in column_names]
+            print(column_names)
+            print(values)
+            #print(values)
+            # Replace foreign keys in the fact table data with the corresponding IDs from the dimension tables
+            for i, values in enumerate(values):
+                if column_names[i] in dimension_ids:
+                    dimension_id = dimension_ids[column_names[i]]
+                    #print("DimensionIDs: ", dimension_id)
+                    if dimension_id:
+                        values[i] = dimension_id
+                    else:
+                        logging.error(
+                            f"Failed to retrieve the last inserted ID for column '{column_names[i]}' in dimension table '{table_name}'. Skipping message."
+                        )
+                        return
+                else:
+                    logging.error(
+                        f"No dimension ID found for column '{column_names[i]}' in dimension table '{table_name}'. Skipping message."
+                    )
+                    return
+
+            columns_placeholder = (", ").join(column for column in column_names)
+            values_placeholder = (", ").join(["%s" for _ in column_names])
+
+            query = f"INSERT INTO {table_name} ({columns_placeholder}) VALUES ({values_placeholder})"
+            cursor.execute(query, values)
+            logging.info(f"Data inserted into {table_name}")
+    except Exception as e:
+        logging.error(f"An error occurred while inserting data into {table_name}: {e}")
+        connection.rollback()
+
 
 
 def process_messages():
@@ -110,14 +119,27 @@ def process_messages():
 
             for message in consumer:
                 with connection.cursor() as cursor:
-                    # Einfügen in Dimensionstabellen
+                    # Insert into dimension tables
+                    dimension_ids = {}
                     for table_name, column_names in table_column_names.items():
-                        insert_data_into_table(
+                        inserted_id = insert_data_into_table(
                             connection,
                             cursor,
                             table_name,
                             column_names,
                             message.value,
+                        )
+                        dimension_ids[table_name] = inserted_id
+
+                    # Insert into fact tables using foreign keys from dimension tables
+                    for table_name, column_names in fact_table_column_names.items():
+                        insert_data_into_fact_table(
+                            connection,
+                            cursor,
+                            table_name,
+                            column_names,
+                            message.value,
+                            dimension_ids,
                         )
 
                     connection.commit()

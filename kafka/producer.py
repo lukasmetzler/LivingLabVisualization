@@ -7,10 +7,8 @@ import random
 from typing import Dict, List
 import signal
 import sys
-import uuid
-import postgres as pg
-import column_names as cn
 import psycopg2
+import column_names as cn
 
 
 def stop_producer(signum, frame):
@@ -20,49 +18,15 @@ def stop_producer(signum, frame):
     sys.exit(0)
 
 
-def generate_uuid_from_database(
-    table_name: str, first_column_name: str, connection
-) -> str:
-    with connection.cursor() as cursor:
-        generated_id = str(uuid.uuid4())
-
-        while is_id_existing(table_name, generated_id, cursor):
-            generated_id = str(uuid.uuid4())
-
-    return generated_id
-
-
-def is_id_existing(table_name: str, id_to_check: str, cursor) -> bool:
-    first_column_name = cn.table_column_names[table_name][0]
-    query = f"SELECT COUNT(*) FROM {table_name} WHERE {first_column_name} = %s"
-    cursor.execute(query, (id_to_check,))
-    result = cursor.fetchone()
-
-    return result and result[0] > 0
-
-
-def generate_random_data(column_names: List[str], connection) -> Dict[str, float]:
+def generate_random_data(table_column_names: Dict[str, List[str]]) -> Dict[str, float]:
     data = {}
 
-    for table, columns in cn.table_column_names.items():
-        first_column = columns[0]
-        generated_id = generate_uuid_from_database(table, first_column, connection)
-
-        with connection.cursor() as cursor:
-            while is_id_existing(table, generated_id, cursor):
-                generated_id = generate_uuid_from_database(
-                    table, first_column, connection
-                )
-
-        # Verwenden Sie die generierte UUID direkt ohne Umwandlung in einen numerischen Wert
-        data.update(
-            {
-                column: generated_id
-                if column == first_column
-                else random.uniform(0, 100)
-                for column in columns
-            }
-        )
+    for table, columns in table_column_names.items():
+        # Exclude columns ending with '_id' (assuming these are the ID columns)
+        filtered_columns = [column for column in columns if not column.endswith('_id')]
+        
+        # Generate random data for each non-ID column
+        data[table] = {column: random.uniform(0, 100) for column in filtered_columns}
 
     logging.debug("Generated data: %s", data)
     return data
@@ -70,10 +34,10 @@ def generate_random_data(column_names: List[str], connection) -> Dict[str, float
 
 c = config.load_config()
 print("Configuration loaded.")
-logging.info("Starte den Producer...")
+logging.info("Starting the Producer...")
 print(f"KAFKA_BOOTSTRAP_SERVER: {c.KAFKA_BOOTSTRAP_SERVER}")
 
-# Stellen Sie die PostgreSQL-Verbindung her
+# Establish PostgreSQL connection
 db_connection = psycopg2.connect(
     dbname=c.CONSUMER_POSTGRES_DB,
     user=c.CONSUMER_POSTGRES_USER,
@@ -89,17 +53,12 @@ producer = KafkaProducer(
 
 kafka_topic = c.KAFKA_TOPIC
 wait_between_iterations = c.PRODUCER_INTERVAL_SECONDS
-print("Starting producer loop...")
-
+print("Starting the producer loop...")
 
 signal.signal(signal.SIGINT, stop_producer)
 
-
 while True:
-    data_for_tables = {
-        table: generate_random_data(columns, db_connection)
-        for table, columns in cn.table_column_names.items()
-    }
+    data_for_tables = generate_random_data(cn.table_column_names)
     logging.debug("Data for tables: %s", data_for_tables)
     producer.send(kafka_topic, value=data_for_tables)
     sleep(wait_between_iterations)
