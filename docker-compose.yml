@@ -62,7 +62,9 @@ services:
       - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
+      - ./defaults.ini:/usr/share/grafana/conf/defaults.ini
 
 volumes:
   postgres-data:
   grafana_data:
+    driver: local
