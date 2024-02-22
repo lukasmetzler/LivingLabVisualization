@@ -22,49 +22,58 @@ Before running this project, ensure you have the following installed:
 - Docker Compose: [Docker Compose Installation Guide](https://docs.docker.com/compose/install/)
 
 ## Getting Started
+
 ### Stack
+
 ![](https://gitlab.com/lukasmetzler/echtzeitvisualisierung-von-gebaeudeindustriedaten/-/raw/main/docs/Finaler_Aufbau.png?ref_type=heads)
 
 ### Installation
 
 #### 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/lukasmetzler/realtime-building-data.git
-   cd realtime-building-data
-   ```
+```bash
+git clone https://gitlab.com/lukasmetzler/echtzeitvisualisierung-von-gebaeudeindustriedaten.git
+cd echtzeitvisualisierung-von-gebaeudeindustriedaten
+```
 
 #### 2. Build the Docker images:
-   ```bash
-    docker-compose build
-   ```
+
+```bash
+ docker-compose build
+```
 
 ### Running the Application
 
 #### 1. Start the Docker containers:
 
-   ```bash
-    docker-compose up -d
-   ```
+```bash
+ docker-compose up -d
+```
 
 #### 2. Access the application:
-- API: http://localhost:6000
-- Grafana Dashboard: http://localhost:3000
+
+- Grafana Dashboard: http://localhost:8080
+- ReactJS: http://localhost:3000
+- PgAdmin4: http://localhost:5050
 
 ## Project Structure
-- `/api`: Contains the code for the data acquisition API.
+
 - `/grafana`: Contains the configuration files for Grafana.
 - `/kafka`: Configuration for Kafka message broker.
 - `/postgres`: Configuration for PostgreSQL database.
+- `/frontend`: Includes the ReactJS Application
+- `/db`: Includes relevant setup scripts for the Database
 
 ## Technologies used
+
 - Python
+- ReactJS
 - Docker
 - Kafka
 - PostgreSQL
 - Grafana
 - Apache JMeter (coming soon...)
 
-
 ## License
+
 This project is licensed under the [MIT License](https://opensource.org/license/mit/).
