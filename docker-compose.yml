@@ -31,7 +31,7 @@ services:
     image: postgres:12-alpine
     container_name: postgres
     ports:
-      - "${CONSUMER_POSTGRES_PORT}:5432"
+      - "5432:5432"
     env_file:
       - local.env
     volumes:
