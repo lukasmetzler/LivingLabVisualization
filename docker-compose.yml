@@ -55,12 +55,25 @@ services:
       - postgres
 
   grafana:
-    build: ./grafana-config
+    image: grafana/grafana:latest
     container_name: grafana
     ports:
+      - "8080:8080"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./defaults.ini:/usr/share/grafana/conf/defaults.ini
+
+  frontend:
+    image: node:latest
+    container_name: frontend
+    ports:
       - "3000:3000"
-    depends_on:
-      - postgres
+    volumes:
+      - ./frontend:/app
+    working_dir: /app
+    command: npm start
 
 volumes:
   postgres-data:
+  grafana_data:
+    driver: local
