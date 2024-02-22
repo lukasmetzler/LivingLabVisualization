@@ -1,32 +1,19 @@
-import "./App.css";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 import Layout from "./components/Layout";
-import { ThemeProvider } from "@mui/styles";
-import { createTheme } from "@mui/material/styles";
-import { blue } from "@mui/material/colors";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Wetterstation from "./pages/Wetterstation";
 import OGRaum1 from "./pages/1OGRaum1";
 
 const theme = createTheme({
   palette: {
+    mode: "dark", // Aktiviere den Dark Mode
     primary: {
       main: "#4d4949",
     },
-  },
-  typography: {
-    fontFamily: "Quicksand",
-    fontWeightLight: 400,
-    fontWeightRegular: 500,
-    fontWeightMedium: 600,
-    fontWeightBold: 700,
-  },
-  components: {
-    MuiIconButton: {
-      styleOverrides: {
-        root: {
-          color: "red", // Hier kannst du die Farbe für die Icons anpassen
-        },
-      },
+    background: {
+      default: "#121212", // Hintergrundfarbe für Dark Mode
+      paper: "#1E1E1E", // Hintergrundfarbe für Papier
     },
   },
 });
@@ -34,12 +21,14 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline /> {/* Fügt globale Styles für den Dark Mode hinzu */}
       <Router>
-        <Layout></Layout>
-        <Routes>
-          <Route exact path="/" element={<Wetterstation />} />
-          <Route exact path="/1OGRaum1" element={<OGRaum1 />} />
-        </Routes>
+        <Layout>
+          <Routes>
+            <Route exact path="/" element={<Wetterstation />} />
+            <Route exact path="/1OGRaum1" element={<OGRaum1 />} />
+          </Routes>
+        </Layout>
       </Router>
     </ThemeProvider>
   );
