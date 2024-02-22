@@ -32,11 +32,8 @@ services:
     container_name: postgres
     ports:
       - "${CONSUMER_POSTGRES_PORT}:5432"
-    environment:
-      POSTGRES_PASSWORD: ${CONSUMER_POSTGRES_PASSWORD}
-      POSTGRES_USER: ${CONSUMER_POSTGRES_USER}
-      POSTGRES_DB: ${CONSUMER_POSTGRES_DB}
-      POSTGRES_HOST_AUTH_METHOD: trust
+    env_file:
+      - local.env
     volumes:
       - postgres-data:/var/lib/postgresql/data
     command: ["postgres", "-c", "log_statement=all"]
