@@ -3,7 +3,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Layout from "./components/Layout";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Wetterstation from "./pages/Wetterstation";
-import OGRaum1 from "./pages/1OGRaum1";
+import OGRaum1 from "./pages/OGRaum1";
 
 const theme = createTheme({
   palette: {

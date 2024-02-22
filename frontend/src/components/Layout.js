@@ -30,7 +30,7 @@ const useStyles = makeStyles({
   },
   graph: {
     paddingLeft: 30,
-    paddingTop: 20,
+    paddingTop: 10,
   },
 });
 
@@ -49,6 +49,26 @@ export default function Layout({ children }) {
       text: "1.OG Raum 1",
       icon: <CameraIndoorIcon style={{ color: "yellow" }} />,
       path: "/1OGRaum1",
+    },
+    {
+      text: "1.OG Raum 2",
+      icon: <CameraIndoorIcon style={{ color: "yellow" }} />,
+      path: "/1OGRaum2",
+    },
+    {
+      text: "1.OG Raum 3",
+      icon: <CameraIndoorIcon style={{ color: "yellow" }} />,
+      path: "/1OGRaum3",
+    },
+    {
+      text: "1.OG Raum 4",
+      icon: <CameraIndoorIcon style={{ color: "yellow" }} />,
+      path: "/1OGRaum4",
+    },
+    {
+      text: "1.OG Raum 5",
+      icon: <CameraIndoorIcon style={{ color: "yellow" }} />,
+      path: "/1OGRaum5",
     },
   ];
 
