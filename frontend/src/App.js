@@ -2,17 +2,16 @@ import "./App.css";
 import Layout from "./components/Layout";
 import { ThemeProvider } from "@mui/styles";
 import { createTheme } from "@mui/material/styles";
-import { purple } from "@mui/material/colors";
+import { blue } from "@mui/material/colors";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
 import Wetterstation from "./pages/Wetterstation";
+import OGRaum1 from "./pages/1OGRaum1";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#fefefe",
+      main: "#4d4949",
     },
-    secondary: purple,
   },
   typography: {
     fontFamily: "Quicksand",
@@ -21,16 +20,25 @@ const theme = createTheme({
     fontWeightMedium: 600,
     fontWeightBold: 700,
   },
+  components: {
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          color: "red", // Hier kannst du die Farbe für die Icons anpassen
+        },
+      },
+    },
+  },
 });
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Layout></Layout>
       <Router>
+        <Layout></Layout>
         <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/wetterstation" element={<Wetterstation />} />
+          <Route exact path="/" element={<Wetterstation />} />
+          <Route exact path="/1OGRaum1" element={<OGRaum1 />} />
         </Routes>
       </Router>
     </ThemeProvider>
