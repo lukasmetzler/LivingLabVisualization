@@ -40,6 +40,15 @@ services:
     depends_on:
       - kafka
 
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "8080:8080"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./defaults.ini:/usr/share/grafana/conf/defaults.ini
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgAdmin
@@ -50,15 +59,6 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
       - postgres
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    ports:
-      - "8080:8080"
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./defaults.ini:/usr/share/grafana/conf/defaults.ini
 
   frontend:
     image: node:latest
