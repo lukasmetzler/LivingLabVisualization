@@ -24,8 +24,21 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka -Dcom.sun.management.jmxremote.rmi.port=9999"
     depends_on:
       - zookeeper
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/prometheus/prometheus.yml
+    command:
+      - "--config.file=/prometheus/prometheus.yml"
+    depends_on:
+      - kafka
 
   postgres:
     image: postgres:12-alpine
@@ -48,6 +61,8 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - ./defaults.ini:/usr/share/grafana/conf/defaults.ini
+    depends_on:
+      - prometheus
 
   pgadmin:
     image: dpage/pgadmin4

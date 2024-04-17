@@ -9,6 +9,7 @@ import psycopg2
 from kafka import KafkaProducer
 import config
 import column_names as cn
+import dotenv
 
 
 def stop_producer(signum, frame):
