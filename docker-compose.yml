@@ -70,6 +70,14 @@ services:
     working_dir: /app
     command: npm start
 
+  kafdrop:
+    image: robsonribeiro/kafdrop-arm64:latest
+    container_name: kafdrop
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:9092"
+
 volumes:
   postgres-data:
   grafana_data:
