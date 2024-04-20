@@ -3,83 +3,66 @@ services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
-    ports:
-      - "2181:2181"
+    network_mode: host
     environment:
       ZOO_MY_ID: 1
       ZOO_PORT: 2181
-      ZOO_SERVERS: server.1=zookeeper:2888:3888
+      ZOO_SERVERS: server.1=localhost:2888:3888
       ZOOKEEPER_CLIENT_PORT: 2181
 
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka
-    ports:
-      - "9092:9092"
+    network_mode: host
     environment:
-      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka:19092,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka:19092,LISTENER_DOCKER_EXTERNAL://85.215.59.47:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ZOOKEEPER_CONNECT: "localhost:2181"
       KAFKA_BROKER_ID: 1
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka -Dcom.sun.management.jmxremote.rmi.port=9999"
-    depends_on:
-      - zookeeper
 
   prometheus:
     image: prom/prometheus
     container_name: prometheus
-    ports:
-      - "9090:9090"
+    network_mode: host
     volumes:
       - ./prometheus.yml:/prometheus/prometheus.yml
     command:
       - "--config.file=/prometheus/prometheus.yml"
-    depends_on:
-      - kafka
 
   postgres:
     image: postgres:12-alpine
     container_name: postgres
-    ports:
-      - "5432:5432"
+    network_mode: host
     env_file:
       - local.env
     volumes:
       - postgres-data:/var/lib/postgresql/data
     command: ["postgres", "-c", "log_statement=all"]
-    depends_on:
-      - kafka
 
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
-    ports:
-      - "8080:8080"
+    network_mode: host
     volumes:
       - grafana_data:/var/lib/grafana
       - ./defaults.ini:/usr/share/grafana/conf/defaults.ini
-    depends_on:
-      - prometheus
 
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgAdmin
-    ports:
-      - "5050:80"
+    network_mode: host
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
-    depends_on:
-      - postgres
 
   frontend:
     image: node:latest
     container_name: frontend
-    ports:
-      - "3000:3000"
+    network_mode: host
     volumes:
       - ./frontend:/app
     working_dir: /app
@@ -88,10 +71,9 @@ services:
   kafdrop:
     image: robsonribeiro/kafdrop-arm64:latest
     container_name: kafdrop
-    ports:
-      - "9000:9000"
+    network_mode: host
     environment:
-      KAFKA_BROKERCONNECT: "kafka:9092"
+      KAFKA_BROKERCONNECT: "localhost:9092"
 
 volumes:
   postgres-data:
