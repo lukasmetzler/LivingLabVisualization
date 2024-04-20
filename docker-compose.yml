@@ -44,9 +44,7 @@ services:
     image: postgres:12-alpine
     container_name: postgres
     ports:
-      - target: 5432
-        published: 5432
-        protocol: tcp
+      - "5432:5432"
     env_file:
       - local.env
     volumes:
