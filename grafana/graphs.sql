@@ -52,3 +52,17 @@ SELECT timestamp, headpose_pitch_1 FROM dim_head_positions_1og_r1 dhp1 JOIN fact
 SELECT timestamp, headpose_roll_1 FROM dim_head_positions_1og_r1 dhp1 JOIN fact_environmental_data_facts fedf ON dhp1.head_positions_id = fedf.head_positions_id
 -- Graph2
 SELECT timestamp, headpose_x_1 AS x, headpose_y_1 AS y, headpose_z_1 AS z FROM dim_head_positions_1og_r1 dhp1 JOIN fact_environmental_data_facts fedf ON dhp1.head_positions_id = fedf.head_positions_id
+-- Same for Graph 3 and Graph 4 etc
+
+-- 1.OG Raum 2
+SELECT timestamp,slat_ang1_act_1og_r2,slat_pos1_act_1og_r2 FROM dim_raffstore_light_data_1og_r2 drld2 JOIN fact_raffstore_light_facts frlf ON drld2.raffstore_light_data_1og_r2_id = frlf.raffstore_light_light_facts_id
+SELECT timestamp,light1_act_1og_r2 FROM dim_raffstore_light_data_1og_r2 drld2 JOIN fact_raffstore_light_facts frlf ON drld2.raffstore_light_data_1og_r2_id = frlf.raffstore_light_light_facts_id
+-- 1.OG Raum 3
+SELECT timestamp,slat_ang1_act_1og_r3,slat_pos1_act_1og_r3 FROM dim_raffstore_light_data_1og_r3 drld3 JOIN fact_raffstore_light_facts frlf ON drld3.raffstore_light_data_1og_r3_id = frlf.raffstore_light_light_facts_id
+SELECT timestamp,light1_act_1og_r3 FROM dim_raffstore_light_data_1og_r3 drld3 JOIN fact_raffstore_light_facts frlf ON drld3.raffstore_light_data_1og_r3_id = frlf.raffstore_light_light_facts_id
+-- 1.OG Raum 4
+SELECT timestamp,slat_ang1_act_1og_r5,slat_pos1_act_1og_r5 FROM dim_raffstore_light_data_1og_r5 drld5 JOIN fact_raffstore_light_facts frlf ON drld5.raffstore_light_data_1og_r5_id = frlf.raffstore_light_light_facts_id
+SELECT timestamp,slat_ang2_act_1og_r5,slat_pos2_act_1og_r5 FROM dim_raffstore_light_data_1og_r5 drld5 JOIN fact_raffstore_light_facts frlf ON drld5.raffstore_light_data_1og_r5_id = frlf.raffstore_light_light_facts_id
+SELECT timestamp,slat_ang3_act_1og_r5,slat_pos3_act_1og_r5 FROM dim_raffstore_light_data_1og_r5 drld5 JOIN fact_raffstore_light_facts frlf ON drld5.raffstore_light_data_1og_r5_id = frlf.raffstore_light_light_facts_id
+SELECT timestamp,light1_act_1og_r5 FROM dim_raffstore_light_data_1og_r5 drld5 JOIN fact_raffstore_light_facts frlf ON drld5.raffstore_light_data_1og_r5_id = frlf.raffstore_light_light_facts_id
+-- 1.OG Raum 5

@@ -10,6 +10,8 @@ services:
       ZOO_PORT: 2181
       ZOO_SERVERS: server.1=zookeeper:2888:3888
       ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - backend
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -24,32 +26,41 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka -Dcom.sun.management.jmxremote.rmi.port=9999"
     depends_on:
       - zookeeper
+    networks:
+      - backend
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/prometheus/prometheus.yml
+    command:
+      - "--config.file=/prometheus/prometheus.yml"
+    depends_on:
+      - kafka
+    networks:
+      - backend
 
   postgres:
     image: postgres:12-alpine
     container_name: postgres
     ports:
-      - "${CONSUMER_POSTGRES_PORT}:5432"
-    env_file:
-      - local.env
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     command: ["postgres", "-c", "log_statement=all"]
     depends_on:
       - kafka
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgAdmin
-    ports:
-      - "5050:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    depends_on:
-      - postgres
+    networks:
+      - backend
 
   grafana:
     image: grafana/grafana:latest
@@ -59,6 +70,23 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - ./defaults.ini:/usr/share/grafana/conf/defaults.ini
+    depends_on:
+      - prometheus
+    networks:
+      - backend
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgAdmin
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - postgres
+    networks:
+      - backend
 
   frontend:
     image: node:latest
@@ -69,8 +97,27 @@ services:
       - ./frontend:/app
     working_dir: /app
     command: npm start
+    networks:
+      - backend
+
+  kafdrop:
+    image: robsonribeiro/kafdrop-arm64:latest
+    container_name: kafdrop
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:9092"
+    depends_on:
+      - kafka
+    networks:
+      - backend
 
 volumes:
   postgres-data:
+    driver: local
   grafana_data:
     driver: local
+
+networks:
+  backend:
+    driver: bridge

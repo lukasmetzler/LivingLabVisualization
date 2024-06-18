@@ -11,11 +11,12 @@ import { AddCircleOutlineOutlined, SubjectOutlined } from "@mui/icons-material";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import CameraIndoorIcon from "@mui/icons-material/CameraIndoor";
 import HellaGraphSvg from "../images/navigation-logo.svg";
+
 const drawerWidth = 250;
 
 const useStyles = makeStyles({
   page: {
-    background: "#f9f9f9",
+    background: "#403d3d",
     width: "100%",
   },
   root: {
@@ -29,7 +30,7 @@ const useStyles = makeStyles({
   },
   graph: {
     paddingLeft: 30,
-    paddingTop: 20,
+    paddingTop: 10,
   },
 });
 
@@ -37,26 +38,42 @@ export default function Layout({ children }) {
   const classes = useStyles();
   const history = useNavigate();
   const location = useLocation();
-  const color = "#ff0000";
 
   const menuItems = [
     {
       text: "Wetterstation",
-      icon: <WbSunnyIcon color="secondary" />,
+      icon: <WbSunnyIcon style={{ color: "yellow" }} />,
       path: "/",
     },
     {
       text: "1.OG Raum 1",
-      icon: <CameraIndoorIcon color="secondary" />,
+      icon: <CameraIndoorIcon style={{ color: "yellow" }} />,
       path: "/1OGRaum1",
+    },
+    {
+      text: "1.OG Raum 2",
+      icon: <CameraIndoorIcon style={{ color: "yellow" }} />,
+      path: "/1OGRaum2",
+    },
+    {
+      text: "1.OG Raum 3",
+      icon: <CameraIndoorIcon style={{ color: "yellow" }} />,
+      path: "/1OGRaum3",
+    },
+    {
+      text: "1.OG Raum 4",
+      icon: <CameraIndoorIcon style={{ color: "yellow" }} />,
+      path: "/1OGRaum4",
+    },
+    {
+      text: "1.OG Raum 5",
+      icon: <CameraIndoorIcon style={{ color: "yellow" }} />,
+      path: "/1OGRaum5",
     },
   ];
 
   return (
     <div className={classes.root}>
-      {/* app bar */}
-
-      {/* side drawer */}
       <Drawer
         className={classes.drawer}
         variant="permanent"
@@ -88,7 +105,6 @@ export default function Layout({ children }) {
         </List>
       </Drawer>
 
-      {/* main content */}
       <div className={classes.page}>{children}</div>
     </div>
   );
