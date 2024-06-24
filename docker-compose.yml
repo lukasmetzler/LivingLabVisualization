@@ -33,7 +33,7 @@ services:
       - backend
 
   postgres:
-    image: ubuntu/postgres:12-alpine
+    image: ubuntu/postgres:latest
     container_name: postgres_new
     ports:
       - "5432:5432"
