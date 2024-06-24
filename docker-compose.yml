@@ -1,7 +1,7 @@
 version: "3"
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+    image: ubuntu/zookeeper:latest
     container_name: zookeeper_new
     ports:
       - "2181:2181"
@@ -14,7 +14,7 @@ services:
       - backend
 
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: ubuntu/kafka:latest
     container_name: kafka_new
     ports:
       - "9092:9092"
@@ -33,7 +33,7 @@ services:
       - backend
 
   postgres:
-    image: postgres:12-alpine
+    image: ubuntu/postgres:12-alpine
     container_name: postgres_new
     ports:
       - "5432:5432"
