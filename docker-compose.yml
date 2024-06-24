@@ -32,20 +32,6 @@ services:
     networks:
       - backend
 
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus_new
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-    depends_on:
-      - kafka_new
-    networks:
-      - backend
-
   postgres:
     image: postgres:12-alpine
     container_name: postgres_new
@@ -70,8 +56,6 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - ./defaults.ini:/etc/grafana/grafana.ini
-    depends_on:
-      - prometheus_new
     networks:
       - backend
 
