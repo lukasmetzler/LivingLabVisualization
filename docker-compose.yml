@@ -44,7 +44,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     command: ["postgres", "-c", "log_statement=all"]
     depends_on:
-      - kafka_new
+      - kafka
     networks:
       - backend
 
@@ -92,7 +92,7 @@ services:
     environment:
       KAFKA_BROKERCONNECT: "kafka_new:9092"
     depends_on:
-      - kafka_new
+      - kafka
     networks:
       - backend
 
