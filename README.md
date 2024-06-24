@@ -86,46 +86,29 @@ cd echtzeitvisualisierung-von-gebaeudeindustriedaten
 This project is licensed under the [MIT License](https://opensource.org/license/mit/).
 
 ## Deployment Notes:
-1. Datei außerhalb des Containers bearbeiten und mounten
+### 1. Datei außerhalb des Containers bearbeiten und mounten
 
-    Lokale Kopie der grafana.ini erstellen und bearbeiten:
+1. **Lokale Kopie der `grafana.ini` erstellen und bearbeiten:**
+   - Kopiere die `grafana.ini` aus dem Container auf dein lokales Dateisystem:
 
-        Kopiere die grafana.ini aus dem Container auf dein lokales Dateisystem:
+     ```bash
+     docker cp <container_id_or_name>:/etc/grafana/grafana.ini ./grafana.ini
+     ```
 
-        bash
+   - Bearbeite die lokale `grafana.ini` Datei:
 
-docker cp <container_id_or_name>:/etc/grafana/grafana.ini ./grafana.ini
+     ```ini
+     [server]
+     root_url = http://85.215.59.47/grafana/
+     serve_from_sub_path = true
+     ```
 
-Bearbeite die lokale grafana.ini Datei:
+2. **Container mit gemounteter Datei neu starten:**
+   - Starte den Container neu und mounte die bearbeitete `grafana.ini`:
 
-ini
-
-    [server]
-    root_url = http://85.215.59.47/grafana/
-    serve_from_sub_path = true
-
-Container mit gemounteter Datei neu starten:
-
-    Starte den Container neu und mounte die bearbeitete grafana.ini:
-
-    bash
-
-        docker run -d -p 8080:3000 \
-          -v $(pwd)/grafana.ini:/etc/grafana/grafana.ini \
-          --name grafana \
-          grafana/grafana
-
-2. Umgebungsvariablen verwenden
-
-Falls du die Konfiguration nicht über eine Datei ändern kannst, kannst du Umgebungsvariablen verwenden, um die Einstellungen zu überschreiben:
-
-    Container mit den entsprechenden Umgebungsvariablen starten:
-
-    bash
-
-docker run -d -p 8080:3000 \
-  -e "GF_SERVER_ROOT_URL=http://85.215.59.47/grafana/" \
-  -e "GF_SERVER_SERVE_FROM_SUB_PATH=true" \
-  --name grafana \
-  grafana/grafana
-
+     ```bash
+     docker run -d -p 8080:3000 \
+       -v $(pwd)/grafana.ini:/etc/grafana/grafana.ini \
+       --name grafana \
+       grafana/grafana
+     ```
