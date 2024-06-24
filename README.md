@@ -1,3 +1,10 @@
+## Checklist 24.06
+- [ ] Datenbank zum Laufen bringen am Remote Server (Docker Container Stand mitnehmen vom lokalen oder Möglichkeit finden diesen zu deployen)
+- [ ] Grafana Dashboards importieren
+- [ ] Frontend bauen und anzeigen lassen, docker container sollte bereits production ready sein
+- [ ] Kafka laufen lassen und in 1 min frequenz Werte pushen
+- [ ] CI/CD aufbauen
+- [ ] Dokumentation des gesamten Deployments um für HELLA vorbereitet zu sein
 # Real-time Visualization of Building Industry Data
 
 This project provides a real-time visualization solution for building industry data. It includes components for data acquisition, storage, processing, and visualization.
