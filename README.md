@@ -147,4 +147,7 @@ sudo apt-get install docker-compose
 ```bash
 sudo apt install python3-pip
 ```
-
+#### Kafka
+```bash
+pip3 install -r requirements.txt
+```
