@@ -204,3 +204,9 @@ name = postgres
 user = lukasmetzler
 password = lukasmetzler
 ```
+
+### 4. Wichtige Details
+```bash
+docker-compose down --volumes --remove-orphans
+docker-compose --env-file local.env up -d
+```
