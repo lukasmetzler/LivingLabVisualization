@@ -152,3 +152,31 @@ sudo apt install python3-pip
 cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/kafka
 pip3 install -r requirements.txt
 ```
+
+### 3. Nginx Einstellungen (Grafane etc.)
+#### /etc/nginx/sites-available/hella
+```nginx
+server {
+    listen 80;
+    server_name 85.215.59.47;
+
+    location /grafana/ {
+        proxy_pass http://localhost:3000/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_http_version 1.1;
+
+        # Add trailing slash to avoid redirects
+        rewrite ^/grafana$ /grafana/ permanent;
+    }
+
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}
+```
