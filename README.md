@@ -149,5 +149,6 @@ sudo apt install python3-pip
 ```
 #### Kafka
 ```bash
+cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/kafka
 pip3 install -r requirements.txt
 ```
