@@ -1,5 +1,5 @@
 ## Checklist 24.06
-- [ ] Datenbank zum Laufen bringen am Remote Server (Docker Container Stand mitnehmen vom lokalen oder Möglichkeit finden diesen zu deployen)
+- [x] Datenbank zum Laufen bringen am Remote Server (Docker Container Stand mitnehmen vom lokalen oder Möglichkeit finden diesen zu deployen)
 - [ ] Grafana ini für die Produktion anpassen
 - [ ] Grafana Dashboards importieren
 - [ ] Frontend bauen und anzeigen lassen, docker container sollte bereits production ready sein
@@ -113,3 +113,94 @@ This project is licensed under the [MIT License](https://opensource.org/license/
        --name grafana \
        grafana/grafana
      ```
+
+### 2. Must have installationen für Server
+```bash
+sudo apt install nginx
+```
+#### Docker:
+```bash
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+```
+```bash
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+```
+```bash
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+```bash
+sudo apt-get install docker-compose
+```
+#### Etc.
+```bash
+sudo apt install python3-pip
+```
+#### Kafka
+```bash
+cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/kafka
+pip3 install -r requirements.txt
+```
+
+### 3. Nginx Einstellungen (Grafana etc.)
+#### /etc/nginx/sites-available/hella
+```nginx
+server {
+    listen 80;
+    server_name 85.215.59.47;
+
+    location /grafana/ {
+        proxy_pass http://localhost:3000/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_http_version 1.1;
+
+        # Add trailing slash to avoid redirects
+        rewrite ^/grafana$ /grafana/ permanent;
+    }
+
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}
+```
+#### /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/defaults.ini
+```ini
+[server]
+protocol = http
+min_tls_version = ""
+http_addr =
+http_port = 3000
+domain = localhost
+enforce_domain = false
+# The full public facing url
+root_url = %(protocol)s://%(domain)s:%(http_port)s/grafana/
+
+# Serve Grafana from subpath specified in `root_url` setting. By default it is set to `false` for compatibility reasons.
+serve_from_sub_path = true
+router_logging = false
+```
+```ini
+[database]
+
+host = postgres_new:5432
+name = postgres
+user = lukasmetzler
+password = lukasmetzler
+```
