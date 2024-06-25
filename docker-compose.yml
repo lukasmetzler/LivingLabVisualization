@@ -52,7 +52,7 @@ services:
     image: ubuntu/grafana:latest
     container_name: grafana_new
     ports:
-      - "8080:3000"
+      - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
       - ./defaults.ini:/etc/grafana/grafana.ini
