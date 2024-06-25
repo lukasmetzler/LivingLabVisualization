@@ -153,7 +153,7 @@ cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/kafka
 pip3 install -r requirements.txt
 ```
 
-### 3. Nginx Einstellungen (Grafane etc.)
+### 3. Nginx Einstellungen (Grafana etc.)
 #### /etc/nginx/sites-available/hella
 ```nginx
 server {
@@ -179,4 +179,28 @@ server {
         root /usr/share/nginx/html;
     }
 }
+```
+#### /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/defaults.ini
+```ini
+[server]
+protocol = http
+min_tls_version = ""
+http_addr =
+http_port = 3000
+domain = localhost
+enforce_domain = false
+# The full public facing url
+root_url = %(protocol)s://%(domain)s:%(http_port)s/grafana/
+
+# Serve Grafana from subpath specified in `root_url` setting. By default it is set to `false` for compatibility reasons.
+serve_from_sub_path = true
+router_logging = false
+```
+```ini
+[database]
+
+host = postgres_new:5432
+name = postgres
+user = lukasmetzler
+password = lukasmetzler
 ```
