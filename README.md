@@ -1,5 +1,5 @@
 ## Checklist 24.06
-- [ ] Datenbank zum Laufen bringen am Remote Server (Docker Container Stand mitnehmen vom lokalen oder Möglichkeit finden diesen zu deployen)
+- [x] Datenbank zum Laufen bringen am Remote Server (Docker Container Stand mitnehmen vom lokalen oder Möglichkeit finden diesen zu deployen)
 - [ ] Grafana ini für die Produktion anpassen
 - [ ] Grafana Dashboards importieren
 - [ ] Frontend bauen und anzeigen lassen, docker container sollte bereits production ready sein
@@ -123,7 +123,7 @@ sudo apt install nginx
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 ```
 ```bash
-f# Add Docker's official GPG key:
+# Add Docker's official GPG key:
 sudo apt-get update
 sudo apt-get install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
