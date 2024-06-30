@@ -1,7 +1,7 @@
 ## Checklist 24.06
 - [x] Datenbank zum Laufen bringen am Remote Server (Docker Container Stand mitnehmen vom lokalen oder Möglichkeit finden diesen zu deployen)
-- [ ] Grafana ini für die Produktion anpassen
-- [ ] Grafana Dashboards importieren
+- [x] Grafana ini für die Produktion anpassen
+- [x] Grafana Dashboards importieren
 - [ ] Frontend bauen und anzeigen lassen, docker container sollte bereits production ready sein
 - [ ] Kafka laufen lassen und in 1 min frequenz Werte pushen
 - [ ] CI/CD aufbauen
