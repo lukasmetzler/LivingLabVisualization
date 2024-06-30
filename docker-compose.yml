@@ -32,7 +32,6 @@ services:
     networks:
       - backend
 
-
   postgres:
     image: ubuntu/postgres:latest
     container_name: postgres_new
@@ -59,6 +58,9 @@ services:
       - ./defaults.ini:/etc/grafana/grafana.ini
     depends_on:
       - postgres
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
     networks:
       - backend
 
@@ -77,7 +79,7 @@ services:
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
     container_name: kafdrop_new
-    ports: 
+    ports:
       - "9000:9000"
     environment:
       KAFKA_BROKERCONNECT: "kafka_new:9092"
