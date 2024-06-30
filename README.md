@@ -210,3 +210,15 @@ password = lukasmetzler
 docker-compose down --volumes --remove-orphans
 docker-compose --env-file local.env up -d
 ```
+
+
+### 4. Grafana Benutzer über POST Call erstellen
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{
+  "name":"New User",
+  "email":"newuser@example.com",
+  "login":"newuser",
+  "password":"newuserpassword",
+  "OrgId": 1
+}' http://admin:admin@localhost:3000/api/admin/users
+```
