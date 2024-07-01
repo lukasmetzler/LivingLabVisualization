@@ -34,15 +34,18 @@ services:
       - backend
 
   postgres:
-    image: postgres:latest
+    image: ubuntu/postgres:latest
     container_name: postgres_new
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: your_password
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    command: ["postgres", "-c", "log_statement=all"]
+    depends_on:
+      - kafka
     networks:
       - backend
 
