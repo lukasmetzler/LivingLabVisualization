@@ -1,7 +1,7 @@
 version: "3"
 services:
   zookeeper:
-    image: wurstmeister/zookeeper:latest
+    image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper_new
     ports:
       - "2181:2181"
@@ -14,7 +14,7 @@ services:
       - backend
 
   kafka:
-    image: wurstmeister/kafka:latest
+    image: confluentinc/cp-kafka:latest
     container_name: kafka_new
     ports:
       - "9092:9092"
