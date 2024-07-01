@@ -9,7 +9,6 @@ import psycopg2
 from kafka import KafkaProducer
 import config
 import column_names as cn
-import socket
 
 
 def stop_producer(signum, frame):
@@ -49,7 +48,6 @@ def main():
     configurations = config.load_config()
     logging.info("Starting the Producer...")
     logging.info(f"KAFKA_BOOTSTRAP_SERVER: {configurations.KAFKA_BOOTSTRAP_SERVER}")
-    logging.info(f"Resolved IP for kafka_new: {socket.gethostbyname('kafka_new')}")
 
     global db_connection, producer
     db_connection = establish_db_connection(configurations)
