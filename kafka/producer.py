@@ -9,13 +9,10 @@ import psycopg2
 from kafka import KafkaProducer
 import config
 import column_names as cn
-import dotenv
+import socket
 
 
 def stop_producer(signum, frame):
-    """
-    Stop producer when SIGINT signal received.
-    """
     logging.info("Stopping producer...")
     producer.close()
     db_connection.close()
@@ -23,9 +20,6 @@ def stop_producer(signum, frame):
 
 
 def generate_random_data(table_column_names: Dict[str, List[str]]) -> Dict[str, float]:
-    """
-    Generate random data for tables based on column names.
-    """
     data = {}
     for table, columns in table_column_names.items():
         filtered_columns = [column for column in columns if not column.endswith("_id")]
@@ -35,9 +29,6 @@ def generate_random_data(table_column_names: Dict[str, List[str]]) -> Dict[str, 
 
 
 def establish_db_connection(configurations):
-    """
-    Establish PostgreSQL connection.
-    """
     return psycopg2.connect(
         dbname=configurations.CONSUMER_POSTGRES_DB,
         user=configurations.CONSUMER_POSTGRES_USER,
@@ -48,9 +39,6 @@ def establish_db_connection(configurations):
 
 
 def start_producer(configurations):
-    """
-    Start Kafka producer.
-    """
     return KafkaProducer(
         bootstrap_servers=[configurations.KAFKA_BOOTSTRAP_SERVER],
         value_serializer=lambda v: json.dumps(v).encode("utf-8"),
@@ -58,12 +46,10 @@ def start_producer(configurations):
 
 
 def main():
-    """
-    Main function to start the producer loop.
-    """
     configurations = config.load_config()
     logging.info("Starting the Producer...")
     logging.info(f"KAFKA_BOOTSTRAP_SERVER: {configurations.KAFKA_BOOTSTRAP_SERVER}")
+    logging.info(f"Resolved IP for kafka_new: {socket.gethostbyname('kafka_new')}")
 
     global db_connection, producer
     db_connection = establish_db_connection(configurations)
