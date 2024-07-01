@@ -227,13 +227,13 @@ curl -X POST -H "Content-Type: application/json" -d '{
 ```bash
 docker exec -it postgres_new psql -U postgres
 ```
-```postgres
+```SQL
 -- Benutzer erstellen
 CREATE USER lukasmetzler WITH PASSWORD 'lukasmetzler';
 
 -- Datenbank erstellen
-CREATE DATABASE your_database_name OWNER lukasmetzler;
+CREATE DATABASE evi OWNER lukasmetzler;
 
 -- Berechtigungen erteilen
-GRANT ALL PRIVILEGES ON DATABASE your_database_name TO lukasmetzler;
+GRANT ALL PRIVILEGES ON DATABASE evi TO lukasmetzler;
 ```
