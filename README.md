@@ -212,7 +212,7 @@ docker-compose --env-file local.env up -d
 ```
 
 
-### 4. Grafana Benutzer über POST Call erstellen
+### 5. Grafana Benutzer über POST Call erstellen
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
   "name":"New User",
@@ -221,4 +221,19 @@ curl -X POST -H "Content-Type: application/json" -d '{
   "password":"newuserpassword",
   "OrgId": 1
 }' http://admin:admin@localhost:3000/api/admin/users
+```
+
+#### Datenbank-setup
+```bash
+docker exec -it postgres_new psql -U postgres
+```
+```postgres
+-- Benutzer erstellen
+CREATE USER lukasmetzler WITH PASSWORD 'lukasmetzler';
+
+-- Datenbank erstellen
+CREATE DATABASE your_database_name OWNER lukasmetzler;
+
+-- Berechtigungen erteilen
+GRANT ALL PRIVILEGES ON DATABASE your_database_name TO lukasmetzler;
 ```
