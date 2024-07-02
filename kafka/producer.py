@@ -10,13 +10,11 @@ from kafka import KafkaProducer
 import config
 import column_names as cn
 
-
 def stop_producer(signum, frame):
     logging.info("Stopping producer...")
     producer.close()
     db_connection.close()
     sys.exit(0)
-
 
 def generate_random_data(table_column_names: Dict[str, List[str]]) -> Dict[str, float]:
     data = {}
@@ -25,7 +23,6 @@ def generate_random_data(table_column_names: Dict[str, List[str]]) -> Dict[str, 
         data[table] = {column: random.uniform(0, 100) for column in filtered_columns}
     logging.debug("Generated data: %s", data)
     return data
-
 
 def establish_db_connection(configurations):
     return psycopg2.connect(
@@ -36,13 +33,11 @@ def establish_db_connection(configurations):
         port=configurations.CONSUMER_POSTGRES_PORT,
     )
 
-
 def start_producer(configurations):
     return KafkaProducer(
         bootstrap_servers=[configurations.KAFKA_BOOTSTRAP_SERVER],
         value_serializer=lambda v: json.dumps(v).encode("utf-8"),
     )
-
 
 def main():
     configurations = config.load_config()
@@ -64,7 +59,6 @@ def main():
         logging.debug("Data for tables: %s", data_for_tables)
         producer.send(kafka_topic, value=data_for_tables)
         sleep(wait_between_iterations)
-
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
