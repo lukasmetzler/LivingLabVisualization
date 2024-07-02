@@ -81,14 +81,14 @@ services:
       dockerfile: Dockerfile-producer
     container_name: kafka-producer
     environment:
-      KAFKA_BOOTSTRAP_SERVER: kafka_new:9092
-      KAFKA_TOPIC: hella_data_topic
-      PRODUCER_INTERVAL_SECONDS: 60
-      CONSUMER_POSTGRES_USER: lukasmetzler
-      CONSUMER_POSTGRES_PASSWORD: lukasmetzler
-      CONSUMER_POSTGRES_DB: evi
-      CONSUMER_POSTGRES_HOST: postgres_new
-      CONSUMER_POSTGRES_PORT: 5432
+      - KAFKA_BOOTSTRAP_SERVER=kafka_new:9092
+      - KAFKA_TOPIC=hella_data_topic
+      - PRODUCER_INTERVAL_SECONDS=60
+      - CONSUMER_POSTGRES_USER=lukasmetzler
+      - CONSUMER_POSTGRES_PASSWORD=lukasmetzler
+      - CONSUMER_POSTGRES_DB=evi
+      - CONSUMER_POSTGRES_HOST=postgres_new
+      - CONSUMER_POSTGRES_PORT=5432
     networks:
       - backend
     depends_on:
@@ -101,13 +101,13 @@ services:
       dockerfile: Dockerfile-consumer
     container_name: kafka-consumer
     environment:
-      KAFKA_BOOTSTRAP_SERVER: kafka_new:9092
-      KAFKA_TOPIC: hella_data_topic
-      CONSUMER_POSTGRES_USER: lukasmetzler
-      CONSUMER_POSTGRES_PASSWORD: lukasmetzler
-      CONSUMER_POSTGRES_DB: evi
-      CONSUMER_POSTGRES_HOST: postgres_new
-      CONSUMER_POSTGRES_PORT: 5432
+      - KAFKA_BOOTSTRAP_SERVER=kafka_new:9092
+      - KAFKA_TOPIC=hella_data_topic
+      - CONSUMER_POSTGRES_USER=lukasmetzler
+      - CONSUMER_POSTGRES_PASSWORD=lukasmetzler
+      - CONSUMER_POSTGRES_DB=evi
+      - CONSUMER_POSTGRES_HOST=postgres_new
+      - CONSUMER_POSTGRES_PORT=5432
     networks:
       - backend
     depends_on:
