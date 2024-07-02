@@ -1,6 +1,6 @@
-SELECT * FROM pg_extension WHERE extname = 'INT-ossp';
+SELECT * FROM pg_extension WHERE extname = 'UUID-ossp';
 
-CREATE EXTENSION IF NOT EXISTS "INT-ossp";
+CREATE EXTENSION IF NOT EXISTS "UUID-ossp";
 
 
 --- Dimensionstabellen
@@ -26,7 +26,7 @@ CREATE TABLE dim_metrological_data (
     RelativeAirPressureAct Numeric,
     AbsoluteHumidityAct Numeric,
     RelativeHumidityAct Numeric,
-    DewPointTempAct Numeric,
+    DewPoUUIDTempAct Numeric,
     HousingTemAct Numeric,
     RoomTempAct Numeric,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
@@ -52,8 +52,8 @@ CREATE TABLE dim_pv_modul_data_1og_r1 (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE dim_illumination_datapoints_1og_r1 (
-    illumination_datapoints_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE dim_illumination_datapoUUIDs_1og_r1 (
+    illumination_datapoUUIDs_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     illum_mp1_act Numeric,
     illum_mp2_act Numeric,
     illum_mp3_act Numeric,
@@ -463,10 +463,10 @@ CREATE TABLE dim_head_positions_1og_r1 (
 CREATE TABLE fact_user_input_facts (
     user_input_facts_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    user_input_mp1_id INT,
-    user_input_mp2_id INT,
-    user_input_mp3_id INT,
-    user_input_mp4_id INT,
+    user_input_mp1_id UUID,
+    user_input_mp2_id UUID,
+    user_input_mp3_id UUID,
+    user_input_mp4_id UUID,
     FOREIGN KEY (user_input_mp1_id) REFERENCES dim_user_input_mp1_1og_r1(user_input_mp1_id),
     FOREIGN KEY (user_input_mp2_id) REFERENCES dim_user_input_mp2_1og_r1(user_input_mp2_id),
     FOREIGN KEY (user_input_mp3_id) REFERENCES dim_user_input_mp3_1og_r1(user_input_mp3_id),
@@ -476,18 +476,18 @@ CREATE TABLE fact_user_input_facts (
 CREATE TABLE fact_sensory (
     sensory_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    zed_body_tracking_id INT,
+    zed_body_tracking_id UUID,
     FOREIGN KEY (zed_body_tracking_id) REFERENCES dim_zed_body_tracking_1og_r1(zed_body_tracking_id)
 )
 
 CREATE TABLE fact_raffstore_light_facts (
     raffstore_light_light_facts_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    raffstore_light_data_1og_r1_id INT,
-    raffstore_light_data_1og_r2_id INT,
-    raffstore_light_data_1og_r3_id INT,
-    raffstore_light_data_1og_r4_id INT,
-    raffstore_light_data_1og_r5_id INT,
+    raffstore_light_data_1og_r1_id UUID,
+    raffstore_light_data_1og_r2_id UUID,
+    raffstore_light_data_1og_r3_id UUID,
+    raffstore_light_data_1og_r4_id UUID,
+    raffstore_light_data_1og_r5_id UUID,
     FOREIGN KEY (raffstore_light_data_1og_r1_id) REFERENCES dim_raffstore_light_data_1og_r1(raffstore_light_data_1og_r1_id),
     FOREIGN KEY (raffstore_light_data_1og_r2_id) REFERENCES dim_raffstore_light_data_1og_r2(raffstore_light_data_1og_r2_id),
     FOREIGN KEY (raffstore_light_data_1og_r3_id) REFERENCES dim_raffstore_light_data_1og_r3(raffstore_light_data_1og_r3_id),
@@ -498,10 +498,10 @@ CREATE TABLE fact_raffstore_light_facts (
 CREATE TABLE fact_indi_hella_illum_facts (
     indi_hella_illum_var_facts_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    indi_hella_illum_var_mp1_id INT,
-    indi_hella_illum_var_mp2_id INT,
-    indi_hella_illum_var_mp3_id INT,
-    indi_hella_illum_var_mp4_id INT,
+    indi_hella_illum_var_mp1_id UUID,
+    indi_hella_illum_var_mp2_id UUID,
+    indi_hella_illum_var_mp3_id UUID,
+    indi_hella_illum_var_mp4_id UUID,
     FOREIGN KEY (indi_hella_illum_var_mp1_id) REFERENCES dim_indihella_illum_var_mp1_1og_r1(indi_hella_illum_var_mp1_id),
     FOREIGN KEY (indi_hella_illum_var_mp2_id) REFERENCES dim_indihella_illum_var_mp2_1og_r1(indi_hella_illum_var_mp2_id),
     FOREIGN KEY (indi_hella_illum_var_mp3_id) REFERENCES dim_indihella_illum_var_mp3_1og_r1(indi_hella_illum_var_mp3_id),
@@ -511,9 +511,9 @@ CREATE TABLE fact_indi_hella_illum_facts (
 CREATE TABLE fact_indi_hella_calc_vars_facts (
     fact_indi_hella_calc_vars_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    indi_hella_calc_var_radiance_ih_id INT,
-    indi_hella_tar_var_ih_id INT,
-    indi_hella_dgp_var_ih_id INT,
+    indi_hella_calc_var_radiance_ih_id UUID,
+    indi_hella_tar_var_ih_id UUID,
+    indi_hella_dgp_var_ih_id UUID,
     FOREIGN KEY (indi_hella_calc_var_radiance_ih_id) REFERENCES dim_indihella_calc_var_radiance_1og_r1(indi_hella_calc_var_radiance_ih_id),
     FOREIGN KEY (indi_hella_tar_var_ih_id) REFERENCES dim_indihella_target_var_1og_r1(indi_hella_tar_var_ih_id),
     FOREIGN KEY (indi_hella_dgp_var_ih_id) REFERENCES dim_indihella_dgp_var_1og_r1(indi_hella_dgp_var_ih_id)
@@ -522,15 +522,15 @@ CREATE TABLE fact_indi_hella_calc_vars_facts (
 CREATE TABLE fact_environmental_data_facts (
     fact_table_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    metrological_data_id INT,
-    pv_modul_data_id INT,
-    illumination_datapoints_id INT,
-    radiation_forecast_id INT,
-    head_positions_id INT,
+    metrological_data_id UUID,
+    pv_modul_data_id UUID,
+    illumination_datapoUUIDs_id UUID,
+    radiation_forecast_id UUID,
+    head_positions_id UUID,
     
     FOREIGN KEY (metrological_data_id) REFERENCES dim_metrological_data(metrological_data_id),
     FOREIGN KEY (pv_modul_data_id) REFERENCES dim_pv_modul_data_1og_r1(pv_modul_data_id),
-    FOREIGN KEY (illumination_datapoints_id) REFERENCES dim_illumination_datapoints_1og_r1(illumination_datapoints_id),
+    FOREIGN KEY (illumination_datapoUUIDs_id) REFERENCES dim_illumination_datapoUUIDs_1og_r1(illumination_datapoUUIDs_id),
     FOREIGN KEY (radiation_forecast_id) REFERENCES dim_radiation_forecast(radiation_forecast_id),
     FOREIGN KEY (head_positions_id) REFERENCES dim_head_positions_1og_r1(head_positions_id)
 )
