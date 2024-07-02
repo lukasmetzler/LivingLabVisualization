@@ -237,3 +237,13 @@ CREATE DATABASE evi OWNER lukasmetzler;
 -- Berechtigungen erteilen
 GRANT ALL PRIVILEGES ON DATABASE evi TO lukasmetzler;
 ```
+
+#### Dockerization of Producer und Consumer
+```bash
+docker build -t kafka-producer -f Dockerfile-producer .
+docker build -t kafka-consumer -f Dockerfile-consumer .
+```
+```bash
+docker run -d --network=echtzeitvisualisierung-von-gebaeudeindustriedaten_backend --name kafka-producer kafka-producer
+docker run -d --network=echtzeitvisualisierung-von-gebaeudeindustriedaten_backend --name kafka-consumer kafka-consumer
+```
