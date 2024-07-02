@@ -76,7 +76,8 @@ services:
       - backend
 
   kafka-producer:
-    image: kafka-producer
+    build:
+      context: ./kafka/Dockerfile-producer
     container_name: kafka-producer
     environment:
       - KAFKA_BOOTSTRAP_SERVER=kafka_new:9092
@@ -94,7 +95,8 @@ services:
       - postgres
 
   kafka-consumer:
-    image: kafka-consumer
+    build:
+      context: ./kafka/Dockerfile-consumer
     container_name: kafka-consumer
     environment:
       - KAFKA_BOOTSTRAP_SERVER=kafka_new:9092
