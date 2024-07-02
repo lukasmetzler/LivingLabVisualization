@@ -28,10 +28,17 @@ def get_last_inserted_ids(cursor):
         for table_name, column_names in table_column_names.items():
             if table_name.startswith("dim_"):
                 id_column_name = next(
-                    (col for col in column_names if col.endswith("_id")), None
+                    (
+                        col
+                        for col in column_names
+                        if col.endswith("_id") and not col.endswith("_uuid")
+                    ),
+                    None,
                 )
                 if not id_column_name:
-                    logger.error(f"No ID column found for table {table_name}")
+                    logger.error(
+                        f"No ID column found for table {table_name} or column is a UUID"
+                    )
                     continue
                 query = f"SELECT max({id_column_name}) FROM {table_name}"
                 cursor.execute(query)
