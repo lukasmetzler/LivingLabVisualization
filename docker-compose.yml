@@ -82,9 +82,9 @@ services:
       - KAFKA_BOOTSTRAP_SERVER=kafka_new:9092
       - KAFKA_TOPIC=hella_data_topic
       - PRODUCER_INTERVAL_SECONDS=60
-      - CONSUMER_POSTGRES_USER=postgres
-      - CONSUMER_POSTGRES_PASSWORD=your_password
-      - CONSUMER_POSTGRES_DB=your_db
+      - CONSUMER_POSTGRES_USER=lukasmetzler
+      - CONSUMER_POSTGRES_PASSWORD=lukasmetzler
+      - CONSUMER_POSTGRES_DB=evi
       - CONSUMER_POSTGRES_HOST=postgres_new
       - CONSUMER_POSTGRES_PORT=5432
     networks:
@@ -99,9 +99,9 @@ services:
     environment:
       - KAFKA_BOOTSTRAP_SERVER=kafka_new:9092
       - KAFKA_TOPIC=hella_data_topic
-      - CONSUMER_POSTGRES_USER=postgres
-      - CONSUMER_POSTGRES_PASSWORD=your_password
-      - CONSUMER_POSTGRES_DB=your_db
+      - CONSUMER_POSTGRES_USER=lukasmetzler
+      - CONSUMER_POSTGRES_PASSWORD=lukasmetzler
+      - CONSUMER_POSTGRES_DB=evi
       - CONSUMER_POSTGRES_HOST=postgres_new
       - CONSUMER_POSTGRES_PORT=5432
     networks:
