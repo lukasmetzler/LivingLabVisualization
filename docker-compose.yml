@@ -31,8 +31,7 @@ services:
     depends_on:
       - zookeeper
     networks:
-
-
+      - backend
 
   postgres:
     image: postgres:latest
