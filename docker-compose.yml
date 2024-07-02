@@ -30,6 +30,9 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
     depends_on:
       - zookeeper
+    volumes:
+      - ./create_kafka_topics.sh:/usr/bin/create_kafka_topics.sh
+    command: ["sh", "-c", "/etc/confluent/docker/run & /usr/bin/create_kafka_topics.sh && tail -f /dev/null"]
     networks:
       - backend
 
