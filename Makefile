@@ -33,4 +33,4 @@ install-dependencies:
 	cd kafka && pip3 install -r requirements.txt
 
 create-topics-local: start-infra-local
-	docker exec -it kafka kafka-topics --create --topic hella_data_topic --bootstrap-server kafka_new:9092 --partitions 1 --replication-factor 1
+	docker exec -it kafka_new kafka-topics --create --topic hella_data_topic --bootstrap-server kafka_new:9092 --partitions 1 --replication-factor 1
