@@ -30,7 +30,6 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
     depends_on:
       - zookeeper
-    command: ["/etc/confluent/docker/run"]
     networks:
       - backend
 
