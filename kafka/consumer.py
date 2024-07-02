@@ -27,23 +27,19 @@ def get_last_inserted_ids(cursor):
     try:
         for table_name, column_names in table_column_names.items():
             if table_name.startswith("dim_"):
-                id_column_name = next(
-                    (
-                        col
-                        for col in column_names
-                        if col.endswith("_id") and not col.endswith("_uuid")
-                    ),
-                    None,
-                )
-                if not id_column_name:
-                    logger.error(
-                        f"No ID column found for table {table_name} or column is a UUID"
-                    )
-                    continue
-                query = f"SELECT max({id_column_name}) FROM {table_name}"
+                query = f"SELECT * FROM {table_name} ORDER BY created_at DESC LIMIT 1"
                 cursor.execute(query)
-                result = cursor.fetchone()[0]
-                last_inserted_ids[id_column_name] = result
+                result = cursor.fetchone()
+                if result:
+                    id_column_name = next(
+                        (
+                            col
+                            for col in column_names
+                            if col.endswith("_id") or col.endswith("_uuid")
+                        ),
+                        None,
+                    )
+                    last_inserted_ids[id_column_name] = result[id_column_name]
         return last_inserted_ids
     except Exception as e:
         logger.error(f"An error occurred while retrieving last inserted IDs: {e}")
