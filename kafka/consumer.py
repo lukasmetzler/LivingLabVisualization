@@ -71,7 +71,7 @@ def insert_data_into_table(connection, cursor, table_name, column_names, data):
             values_placeholder = ", ".join(["%s" for _ in filtered_columns])
             query = f"INSERT INTO {table_name} ({columns_placeholder}) VALUES ({values_placeholder})"
             cursor.execute(query, filtered_values)
-            logger.info(f"Data inserted into database: {data}")
+            logger.info(f"Data inserted into database")
             return None
     except Exception as e:
         logger.error(f"An error occurred while inserting data into {table_name}: {e}")
