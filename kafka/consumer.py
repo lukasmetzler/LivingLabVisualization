@@ -6,7 +6,6 @@ import postgres as pg
 from column_names import table_column_names
 import signal
 import sys
-import logging
 
 c = config.load_config()
 logger = logging.getLogger(__name__)
@@ -27,6 +26,7 @@ def get_last_inserted_ids(cursor):
     try:
         for table_name, column_names in table_column_names.items():
             if table_name.startswith("dim_"):
+                # Assuming created_at is of timestamp type
                 query = f"SELECT * FROM {table_name} ORDER BY created_at DESC LIMIT 1"
                 cursor.execute(query)
                 result = cursor.fetchone()
@@ -39,7 +39,12 @@ def get_last_inserted_ids(cursor):
                         ),
                         None,
                     )
-                    last_inserted_ids[id_column_name] = result[id_column_name]
+                    if id_column_name:
+                        last_inserted_ids[id_column_name] = result[
+                            column_names.index(id_column_name)
+                        ]
+                    else:
+                        logger.error(f"No ID column found for table {table_name}")
         return last_inserted_ids
     except Exception as e:
         logger.error(f"An error occurred while retrieving last inserted IDs: {e}")
@@ -58,10 +63,12 @@ def insert_data_into_table(connection, cursor, table_name, column_names, data):
             filtered_values = [
                 table_data.get(column, None)
                 for column in column_names
-                if not column.endswith("_id")
+                if not column.endswith("_id") and column != "created_at"
             ]
             filtered_columns = [
-                column for column in column_names if not column.endswith("_id")
+                column
+                for column in column_names
+                if not column.endswith("_id") and column != "created_at"
             ]
             columns_placeholder = ", ".join(filtered_columns)
             values_placeholder = ", ".join(["%s" for _ in filtered_columns])
@@ -88,6 +95,11 @@ def process_messages():
                         )
                         dimension_ids[table_name] = inserted_id
                     last_inserted_ids = get_last_inserted_ids(cursor)
+                    if not last_inserted_ids:
+                        logger.error(
+                            "No last inserted IDs found. Skipping fact table insertion."
+                        )
+                        continue
                     fact_tables = [
                         table_name
                         for table_name in table_column_names.keys()
