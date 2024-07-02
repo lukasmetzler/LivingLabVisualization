@@ -75,17 +75,17 @@ services:
     networks:
       - backend
 
-  kafdrop:
-    image: obsidiandynamics/kafdrop:latest
-    container_name: kafdrop_new
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
     ports:
       - "9000:9000"
-    environment:
-      KAFKA_BROKERCONNECT: "kafka_new:9092"
-    depends_on:
-      - kafka
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - backend
+
+
 
 volumes:
   postgres_data:
