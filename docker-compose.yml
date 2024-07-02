@@ -20,10 +20,10 @@ services:
       - "9092:9092"
       - "29092:29092"
     environment:
-      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:29092
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka_new:9092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:29092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_new:9092,PLAINTEXT://${DOCKER_HOST_IP:-127.0.0.1}:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper_new:2181"
       KAFKA_BROKER_ID: 1
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
@@ -81,14 +81,14 @@ services:
       dockerfile: Dockerfile-producer
     container_name: kafka-producer
     environment:
-      - KAFKA_BOOTSTRAP_SERVER=kafka_new:9092
-      - KAFKA_TOPIC=hella_data_topic
-      - PRODUCER_INTERVAL_SECONDS=60
-      - CONSUMER_POSTGRES_USER=lukasmetzler
-      - CONSUMER_POSTGRES_PASSWORD=lukasmetzler
-      - CONSUMER_POSTGRES_DB=evi
-      - CONSUMER_POSTGRES_HOST=postgres_new
-      - CONSUMER_POSTGRES_PORT=5432
+      KAFKA_BOOTSTRAP_SERVER: kafka_new:9092
+      KAFKA_TOPIC: hella_data_topic
+      PRODUCER_INTERVAL_SECONDS: 60
+      CONSUMER_POSTGRES_USER: lukasmetzler
+      CONSUMER_POSTGRES_PASSWORD: lukasmetzler
+      CONSUMER_POSTGRES_DB: evi
+      CONSUMER_POSTGRES_HOST: postgres_new
+      CONSUMER_POSTGRES_PORT: 5432
     networks:
       - backend
     depends_on:
@@ -101,13 +101,13 @@ services:
       dockerfile: Dockerfile-consumer
     container_name: kafka-consumer
     environment:
-      - KAFKA_BOOTSTRAP_SERVER=kafka_new:9092
-      - KAFKA_TOPIC=hella_data_topic
-      - CONSUMER_POSTGRES_USER=lukasmetzler
-      - CONSUMER_POSTGRES_PASSWORD=lukasmetzler
-      - CONSUMER_POSTGRES_DB=evi
-      - CONSUMER_POSTGRES_HOST=postgres_new
-      - CONSUMER_POSTGRES_PORT=5432
+      KAFKA_BOOTSTRAP_SERVER: kafka_new:9092
+      KAFKA_TOPIC: hella_data_topic
+      CONSUMER_POSTGRES_USER: lukasmetzler
+      CONSUMER_POSTGRES_PASSWORD: lukasmetzler
+      CONSUMER_POSTGRES_DB: evi
+      CONSUMER_POSTGRES_HOST: postgres_new
+      CONSUMER_POSTGRES_PORT: 5432
     networks:
       - backend
     depends_on:
