@@ -50,7 +50,7 @@ services:
       - backend
 
   grafana:
-    image: grafana/grafana:latest
+    image: ubuntu/grafana:latest
     container_name: grafana_new
     ports:
       - "3000:3000"
