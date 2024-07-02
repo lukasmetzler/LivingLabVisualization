@@ -1,20 +1,15 @@
-# Use a lightweight Python image
 FROM python:3.10-slim
 
-# Set the working directory
 WORKDIR /app
 
-# Copy the requirements file and install dependencies
-COPY requirements.txt .
+COPY consumer.py /app
+COPY config.py /app
+COPY column_names.py /app
+COPY fact_column_names.py /app
+COPY fact_db_operations.py /app
+COPY postgres.py /app
+COPY requirements.txt /app
+
 RUN pip install -r requirements.txt
 
-# Copy the application files
-COPY consumer.py .
-COPY config.py .
-COPY column_names.py .
-COPY fact_column_names.py .
-COPY fact_db_operations.py .
-COPY postgres.py .
-
-# Set the entrypoint
-ENTRYPOINT ["python", "consumer.py"]
+CMD ["python", "consumer.py"]
