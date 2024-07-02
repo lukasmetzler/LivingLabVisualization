@@ -18,7 +18,6 @@ services:
     container_name: kafka_new
     ports:
       - "9092:9092"
-      - "29092:29092"
     environment:
       KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:29092
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka_new:9092,EXTERNAL://localhost:29092
@@ -26,13 +25,11 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper_new:2181"
       KAFKA_BROKER_ID: 1
-      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka_new -Dcom.sun.management.jmxremote.rmi.port=9999"
     depends_on:
       - zookeeper
     networks:
       - backend
+
 
   postgres:
     image: postgres:latest
