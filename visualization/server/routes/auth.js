@@ -4,13 +4,14 @@ const jwt = require("jsonwebtoken");
 const db = require("../db");
 const router = express.Router();
 
-const secret = process.env.JWT_SECRET;
+const secret = process.env.JWT_SECRET || "test";
 
 // Register Endpoint
 router.post("/register", async (req, res) => {
   const { email, password, first_name, last_name } = req.body;
 
   try {
+    // Hash the password before saving it to the database
     const hashedPassword = await bcrypt.hash(password, 10);
     const result = await db.one(
       "INSERT INTO users(email, password, first_name, last_name) VALUES($1, $2, $3, $4) RETURNING id, email, first_name, last_name",
@@ -29,6 +30,7 @@ router.post("/login", async (req, res) => {
   try {
     const user = await db.one("SELECT * FROM users WHERE email = $1", [email]);
 
+    // Compare the provided password with the hashed password stored in the database
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
