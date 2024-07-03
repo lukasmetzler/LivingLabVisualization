@@ -65,18 +65,6 @@ services:
     networks:
       - backend
 
-  frontend:
-    image: node:latest
-    container_name: frontend
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./frontend:/app
-    working_dir: /app
-    command: npm start
-    networks:
-      - backend
-
   kafka-producer:
     build:
       context: ./kafka
@@ -125,6 +113,30 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - backend
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - backend
+    depends_on:
+      - postgres
+
+  backend:
+    build:
+      context: ./server
+    container_name: backend
+    ports:
+      - "5000:5000"
+    networks:
+      - backend
+    depends_on:
+      - postgres
+    environment:
+      - JWT_SECRET=test
 
 volumes:
   postgres_data:
