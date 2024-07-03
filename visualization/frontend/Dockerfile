@@ -2,7 +2,8 @@
 FROM node:18-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci --cache /tmp/npm-cache --prefer-offline
+# Set Verdaccio as the npm registry
+RUN npm set registry http://verdaccio:4873/ && npm ci --cache /tmp/npm-cache --prefer-offline
 
 # Rebuild the source code only when needed
 FROM node:18-alpine AS builder

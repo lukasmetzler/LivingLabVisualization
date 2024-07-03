@@ -114,20 +114,28 @@ services:
     networks:
       - backend
 
+  verdaccio:
+    image: verdaccio/verdaccio
+    container_name: verdaccio
+    ports:
+      - "4873:4873"
+    networks:
+      - backend
+
   frontend:
     build:
-      context: ./visualization/frontend
+      context: ./frontend
     container_name: frontend
     ports:
       - "3000:3000"
     networks:
       - backend
     depends_on:
-      - postgres
+      - verdaccio
 
   backend:
     build:
-      context: ./visualization/server
+      context: ./server
     container_name: backend
     ports:
       - "5000:5000"
