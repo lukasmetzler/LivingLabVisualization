@@ -3,7 +3,8 @@ FROM node:18-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm set registry http://verdaccio:4873/
-RUN npm ci --cache /tmp/npm-cache --prefer-offline
+RUN npm cache clean --force
+RUN npm ci --prefer-offline
 
 # Rebuild the source code only when needed
 FROM node:18-alpine AS builder
