@@ -115,20 +115,28 @@ services:
       - backend
 
   frontend:
-    build:
-      context: ./visualization/frontend
+    image: node:18-alpine
     container_name: frontend
     ports:
       - "3000:3000"
+    volumes:
+      - ./visualization/frontend:/app
+      - /app/node_modules
+    working_dir: /app
+    command: sh -c "npm install && npm run build && npm start"
     networks:
       - backend
 
   backend:
-    build:
-      context: ./visualization/server
+    image: node:18-alpine
     container_name: backend
     ports:
       - "5000:5000"
+    volumes:
+      - ./visualization/server:/app
+      - /app/node_modules
+    working_dir: /app
+    command: sh -c "npm install && npm start"
     networks:
       - backend
     depends_on:
