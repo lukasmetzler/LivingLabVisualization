@@ -1,4 +1,7 @@
 import React from "react";
+import grafanaLogo from "../images/grafana-logo.png";
+import monitoringLogo from "../images/monitoring-logo.png";
+import TableComponent from "../components/TableComponent"; // Anpassen des Pfades entsprechend Ihrer Ordnerstruktur
 
 const Dashboard = () => {
   return (
@@ -13,7 +16,7 @@ const Dashboard = () => {
             className="bg-white dark:bg-gray-800 p-4 rounded shadow hover:bg-gray-200 dark:hover:bg-gray-700"
           >
             <img
-              src="../images/grafana-logo.png"
+              src={grafanaLogo}
               alt="Grafana Logo"
               className="h-16 mx-auto"
             />
@@ -26,7 +29,7 @@ const Dashboard = () => {
             className="bg-white dark:bg-gray-800 p-4 rounded shadow hover:bg-gray-200 dark:hover:bg-gray-700"
           >
             <img
-              src="../images/monitoring-logo"
+              src={monitoringLogo}
               alt="Monitoring Logo"
               className="h-16 mx-auto"
             />
@@ -34,6 +37,9 @@ const Dashboard = () => {
               Monitoring
             </h2>
           </a>
+        </div>
+        <div className="mt-6">
+          <TableComponent />
         </div>
       </div>
     </div>

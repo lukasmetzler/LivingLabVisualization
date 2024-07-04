@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const authRoutes = require("./routes/auth");
+const dataRoutes = require("./routes/data");
 const { swaggerUi, specs } = require("./swagger");
 
 const app = express();
@@ -20,19 +21,13 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 app.use("/", authRoutes);
-app.use("/api-docs", swaggerUi.serve, (req, res) => {
-  const options = {
-    swaggerOptions: {
-      url: "/api-docs/swagger.json",
-    },
-  };
-  swaggerUi.setup(specs, options)(req, res);
-});
+app.use("/api", dataRoutes);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
-/*app.get("/", (req, res) => {
+app.get("/", (req, res) => {
   res.send("Hello World!");
 });
- */
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
