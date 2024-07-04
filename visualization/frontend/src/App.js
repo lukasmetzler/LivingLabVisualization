@@ -1,7 +1,13 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import Login from "./routes/Login";
+import Register from "./routes/Register";
+import Dashboard from "./routes/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/Navbar";
 
@@ -11,10 +17,16 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route element={<PrivateRoute />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/" element={<Dashboard />} />
-        </Route>
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
   );
