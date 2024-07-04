@@ -11,7 +11,7 @@ const options = {
     },
     servers: [
       {
-        url: "/auth",
+        url: "/auth/", // Basis-URL für die API
       },
     ],
   },
