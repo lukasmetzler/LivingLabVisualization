@@ -6,15 +6,19 @@ const authRoutes = require("./routes/auth");
 const app = express();
 const port = 5000;
 
+const corsOptions = {
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+  allowedHeaders: "Content-Type, Authorization",
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions)); // Verwenden Sie die CORS-Middleware
 app.use(bodyParser.json());
-app.use(cors());
 
 app.use("/auth", authRoutes);
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });
