@@ -11,7 +11,7 @@ const Login = () => {
     try {
       const { data } = await login(email, password);
       localStorage.setItem("token", data.token);
-      // Redirect to home page or dashboard
+      window.location.href = "/dashboard"; // Weiterleitung zum Dashboard
     } catch (err) {
       setError("Invalid credentials");
     }
