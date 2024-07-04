@@ -41,6 +41,14 @@ const Dashboard = () => {
         <div className="mt-6">
           <TableComponent />
         </div>
+        <div className="mt-6">
+          <iframe
+            src="http://85.215.59.47/grafana/d-solo/dba558fd-aa9d-49d9-a9de-99f38ee4c45c/1-og-raum-1?orgId=1&refresh=30s&from=1720127881185&to=1720129681185&theme=dark&panelId=2"
+            width="450"
+            height="200"
+            frameborder="0"
+          ></iframe>
+        </div>
       </div>
     </div>
   );
