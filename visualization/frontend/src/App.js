@@ -5,9 +5,9 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import Login from "./routes/Login";
-import Register from "./routes/Register";
-import Dashboard from "./routes/Dashboard";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import Dashboard from "./components/Dashboard";
 import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/Navbar";
 
