@@ -14,6 +14,8 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.6.0",
-    "pg-promise": "^10.15.4"
+    "pg-promise": "^10.15.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }
