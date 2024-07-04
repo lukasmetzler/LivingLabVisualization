@@ -128,21 +128,22 @@ services:
       - backend
 
   backend:
-    image: node:18-alpine
+    build:
+      context: ./visualization/server
     container_name: backend
     ports:
       - "5000:5000"
-    volumes:
-      - ./visualization/server:/app
-      - /app/node_modules
-    working_dir: /app
-    command: sh -c "npm install && npm start"
     networks:
       - backend
     depends_on:
       - postgres
     environment:
       - JWT_SECRET=test
+      - DB_HOST=postgres_new
+      - DB_PORT=5432
+      - DB_USER=lukasmetzler
+      - DB_PASSWORD=lukasmetzler
+      - DB_NAME=evi
 
 volumes:
   postgres_data:
