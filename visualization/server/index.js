@@ -20,7 +20,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 app.use("/auth", authRoutes);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+app.use("/auth/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
