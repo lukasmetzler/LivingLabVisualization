@@ -123,14 +123,14 @@ services:
       - ./visualization/frontend:/app
       - /app/node_modules
     working_dir: /app
-    command: sh -c "npm install && npm run build && npm start"
+    command: sh -c "npm start"
     networks:
       - backend
     deploy:
       resources:
         limits:
           cpus: "1.0"
-          memory: "1G"
+          memory: "512M"
 
   backend:
     image: node:18-alpine
@@ -141,13 +141,18 @@ services:
       - ./visualization/server:/app
       - /app/node_modules
     working_dir: /app
-    command: sh -c "npm install && npm start"
+    command: sh -c "npm start"
     networks:
       - backend
     depends_on:
       - postgres
     environment:
       - JWT_SECRET=test
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "512M"
 
 volumes:
   postgres_data:
