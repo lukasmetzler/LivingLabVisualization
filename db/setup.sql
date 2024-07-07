@@ -52,8 +52,8 @@ CREATE TABLE dim_pv_modul_data_1og_r1 (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE dim_illumination_datapoUUIDs_1og_r1 (
-    illumination_datapoUUIDs_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE dim_illumination_datapoints_1og_r1 (
+    illumination_datapoints_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     illum_mp1_act Numeric,
     illum_mp2_act Numeric,
     illum_mp3_act Numeric,
