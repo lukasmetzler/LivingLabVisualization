@@ -1,7 +1,6 @@
 SELECT * FROM pg_extension WHERE extname = 'UUID-ossp';
 
-CREATE EXTENSION IF NOT EXISTS "UUID-ossp";
-
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 --- Dimensionstabellen
 CREATE TABLE dim_metrological_data (
@@ -26,7 +25,7 @@ CREATE TABLE dim_metrological_data (
     RelativeAirPressureAct Numeric,
     AbsoluteHumidityAct Numeric,
     RelativeHumidityAct Numeric,
-    DewPoUUIDTempAct Numeric,
+    DewPointTempAct Numeric,
     HousingTemAct Numeric,
     RoomTempAct Numeric,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
@@ -524,15 +523,16 @@ CREATE TABLE fact_environmental_data_facts (
     timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     metrological_data_id UUID,
     pv_modul_data_id UUID,
-    illumination_datapoUUIDs_id UUID,
+    illumination_datapoints_id UUID,
     radiation_forecast_id UUID,
     head_positions_id UUID,
     
     FOREIGN KEY (metrological_data_id) REFERENCES dim_metrological_data(metrological_data_id),
     FOREIGN KEY (pv_modul_data_id) REFERENCES dim_pv_modul_data_1og_r1(pv_modul_data_id),
-    FOREIGN KEY (illumination_datapoUUIDs_id) REFERENCES dim_illumination_datapoUUIDs_1og_r1(illumination_datapoUUIDs_id),
+    FOREIGN KEY (illumination_datapoints_id) REFERENCES dim_illumination_datapoints_1og_r1(illumination_datapoints_id),
     FOREIGN KEY (radiation_forecast_id) REFERENCES dim_radiation_forecast(radiation_forecast_id),
     FOREIGN KEY (head_positions_id) REFERENCES dim_head_positions_1og_r1(head_positions_id)
 )
 
+select * from dim_head_positions_1og_r1 dhpor
 
