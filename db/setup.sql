@@ -533,6 +533,3 @@ CREATE TABLE fact_environmental_data_facts (
     FOREIGN KEY (radiation_forecast_id) REFERENCES dim_radiation_forecast(radiation_forecast_id),
     FOREIGN KEY (head_positions_id) REFERENCES dim_head_positions_1og_r1(head_positions_id)
 )
-
-select * from dim_head_positions_1og_r1 dhpor
-
