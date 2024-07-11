@@ -166,7 +166,7 @@ def process_messages():
 if __name__ == "__main__":
     consumer = KafkaConsumer(
         c.KAFKA_TOPIC,
-        "zed_kamera_topic",  # Add the new topic here
+        "zed_kamera_topic",
         bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],
         auto_offset_reset="earliest",
         enable_auto_commit=True,
