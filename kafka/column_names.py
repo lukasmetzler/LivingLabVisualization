@@ -25,12 +25,12 @@ dim_metrological_column_names = [
     "roomtempact",
 ]
 
-dim_zed_body_tracking_1og_r1_column_names = [
-    "zed_body_tracking_id",
-    "camera_pitch",
-    "camera_roll",
-    "camera_yaw",
-]
+# dim_zed_body_tracking_1og_r1_column_names = [
+#    "zed_body_tracking_id",
+#    "camera_pitch",
+#    "camera_roll",
+#    "camera_yaw",
+# ]
 
 dim_pv_modul_data_1og_r1_column_names = [
     "pv_modul_data_id",
