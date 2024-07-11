@@ -15,7 +15,6 @@ run-consumer-local:
 run-producer-local:
 	cd kafka && KAFKA_ENV_PATH=../local.env python3 -m producer &
 
-
 build-docker:
 	docker build -t kafka:latest -f ./Dockerfile .
 
@@ -34,3 +33,5 @@ install-dependencies:
 
 create-topics-local: start-infra-local
 	docker exec -it kafka_new kafka-topics --create --topic hella_data_topic --bootstrap-server kafka_new:9092 --partitions 1 --replication-factor 1
+	docker exec -it kafka_new kafka-topics --create --topic zed_kamera_topic --bootstrap-server kafka_new:9092 --partitions 1 --replication-factor 1
+
