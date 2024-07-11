@@ -30,7 +30,7 @@ def generate_random_data():
 
 def main():
     producer = KafkaProducer(
-        bootstrap_servers=["localhost:9092"],  # Kafka server address
+        bootstrap_servers=["85.215.59.47:9092"],  # Kafka server address
         value_serializer=lambda v: json.dumps(v).encode("utf-8"),
     )
 
