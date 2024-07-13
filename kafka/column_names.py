@@ -25,12 +25,12 @@ dim_metrological_column_names = [
     "roomtempact",
 ]
 
-# dim_zed_body_tracking_1og_r1_column_names = [
-#    "zed_body_tracking_id",
-#    "camera_pitch",
-#    "camera_roll",
-#    "camera_yaw",
-# ]
+dim_zed_body_tracking_1og_r1_column_names = [
+    "zed_body_tracking_id",
+    "camera_pitch",
+    "camera_roll",
+    "camera_yaw",
+]
 
 dim_pv_modul_data_1og_r1_column_names = [
     "pv_modul_data_id",
@@ -468,7 +468,7 @@ fact_environmental_data_facts_column_names = [
 
 table_column_names = {
     "dim_metrological_data": dim_metrological_column_names,
-    # "dim_zed_body_tracking_1og_r1": dim_zed_body_tracking_1og_r1_column_names,
+    "dim_zed_body_tracking_1og_r1": dim_zed_body_tracking_1og_r1_column_names,
     "dim_pv_modul_data_1og_r1": dim_pv_modul_data_1og_r1_column_names,
     "dim_illumination_datapoints_1og_r1": dim_illumination_datapoints_1og_r1_column_names,
     "dim_raffstore_light_data_1og_r1": dim_raffstore_light_data_1og_r1_column_names,
