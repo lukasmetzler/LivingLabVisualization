@@ -251,8 +251,6 @@ docker run -d --network=echtzeitvisualisierung-von-gebaeudeindustriedaten_backen
 #### Kafka setup
 ##### Topic init
 ```bash
-docker exec -it kafka_new bash
-kafka-topics.sh --create --topic hella_data_topic --bootstrap-server kafka_new:9092 --replication-factor 1 --partitions 1
-kafka-topics.sh --list --bootstrap-server kafka_new:9092
+docker exec -it kafka_new kafka-topics --create --topic hella_data_topic --bootstrap-server kafka_new:9092 --partitions 1 --replication-factor 1
+docker exec -it kafka_new kafka-topics --create --topic zed_kamera_topic --bootstrap-server kafka_new:9092 --partitions 1 --replication-factor 1
 ```
-**Wichtig!** Nach dem docker-compose up -d -> docker restart kafa-producer und dann docker restart kafka-consu,er
