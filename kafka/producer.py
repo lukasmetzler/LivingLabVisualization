@@ -1,13 +1,13 @@
+from kafka import KafkaProducer
 import json
 import logging
+import config
+import column_names as cn
 import random
 import signal
 import sys
 from time import sleep
 from typing import Dict, List
-from kafka import KafkaProducer
-import config
-import column_names as cn
 
 
 def stop_producer(signum, frame):
@@ -29,7 +29,6 @@ def start_producer(configurations):
     return KafkaProducer(
         bootstrap_servers=[configurations.KAFKA_BOOTSTRAP_SERVER],
         value_serializer=lambda v: json.dumps(v).encode("utf-8"),
-        api_version=(2, 5, 0),
     )
 
 
