@@ -22,7 +22,7 @@ class ProducerConfig:
             print(f"{key}: {value}")
 
         self.KAFKA_BOOTSTRAP_SERVER = os.environ.get("KAFKA_BOOTSTRAP_SERVER")
-        kafka_topic_str = os.environ.get("KAFKA_TOPICS")  # Verwenden Sie KAFKA_TOPICS
+        kafka_topic_str = os.environ.get("KAFKA_TOPICS")
 
         print(f"Raw KAFKA_TOPICS from .env: {kafka_topic_str}")  # Debugging-Ausgabe
 

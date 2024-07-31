@@ -173,13 +173,18 @@ if __name__ == "__main__":
     if not c.KAFKA_TOPICS:
         raise ValueError("No Kafka topics found. Please check your configuration.")
 
-    consumer = KafkaConsumer(
-        *c.KAFKA_TOPICS,  # Entpacken der Liste von Themen
-        bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],
-        auto_offset_reset="earliest",
-        enable_auto_commit=True,
-        group_id="consumer",
-        value_deserializer=lambda x: json.loads(x.decode("utf-8")),
-    )
+    try:
+        consumer = KafkaConsumer(
+            *c.KAFKA_TOPICS,  # Entpacken der Liste von Themen
+            bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],
+            auto_offset_reset="earliest",
+            enable_auto_commit=True,
+            group_id="consumer",
+            value_deserializer=lambda x: json.loads(x.decode("utf-8")),
+        )
+    except Exception as e:
+        logger.error(f"An error occurred while creating KafkaConsumer: {e}")
+        sys.exit(1)
+
     signal.signal(signal.SIGINT, stop_consumer)
     process_messages()
