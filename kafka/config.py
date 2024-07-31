@@ -12,11 +12,15 @@ class ProducerConfig:
         load_dotenv(dotenv_path=env_file_path)
 
         self.KAFKA_BOOTSTRAP_SERVER = os.environ.get("KAFKA_BOOTSTRAP_SERVER")
+
         kafka_topic_str = os.environ.get("KAFKA_TOPIC")
+        print(f"Raw KAFKA_TOPIC from .env: {kafka_topic_str}")  # Debugging-Ausgabe
+
         if kafka_topic_str:
             self.KAFKA_TOPIC = kafka_topic_str.split(",")
         else:
             self.KAFKA_TOPIC = []
+
         self.KAFKA_CERT_PATH = os.environ.get("KAFKA_CERT_PATH")
         self.PRODUCER_INTERVAL_SECONDS = int(
             os.environ.get("PRODUCER_INTERVAL_SECONDS", 60)
