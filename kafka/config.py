@@ -10,7 +10,16 @@ class ProducerConfig:
         env_file_path = os.path.join(current_dir, "..", "local.env")
 
         print(f"Loading .env file from: {env_file_path}")  # Debugging-Ausgabe
+        if not os.path.exists(env_file_path):
+            print(f".env file not found at: {env_file_path}")  # Debugging-Ausgabe
+        else:
+            print(f".env file found at: {env_file_path}")  # Debugging-Ausgabe
+
         load_dotenv(dotenv_path=env_file_path)
+
+        # Debugging-Ausgabe aller geladenen Umgebungsvariablen
+        for key, value in os.environ.items():
+            print(f"{key}: {value}")
 
         self.KAFKA_BOOTSTRAP_SERVER = os.environ.get("KAFKA_BOOTSTRAP_SERVER")
         kafka_topic_str = os.environ.get("KAFKA_TOPIC")
