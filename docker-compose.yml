@@ -20,7 +20,7 @@ services:
       - "9092:9092"
     environment:
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://85.215.59.47:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_new:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper_new:2181"
@@ -68,7 +68,7 @@ services:
       dockerfile: Dockerfile-producer
     container_name: kafka-producer
     environment:
-      - KAFKA_BOOTSTRAP_SERVER=85.215.59.47:9092
+      - KAFKA_BOOTSTRAP_SERVER=kafka_new:9092
       - KAFKA_TOPIC=hella_data_topic
       - PRODUCER_INTERVAL_SECONDS=60
       - CONSUMER_POSTGRES_USER=lukasmetzler
@@ -88,7 +88,7 @@ services:
       dockerfile: Dockerfile-consumer
     container_name: kafka-consumer
     environment:
-      - KAFKA_BOOTSTRAP_SERVER=85.215.59.47:9092
+      - KAFKA_BOOTSTRAP_SERVER=kafka_new:9092
       - KAFKA_TOPICS=hella_data_topic,zed_kamera_topic
       - CONSUMER_POSTGRES_USER=lukasmetzler
       - CONSUMER_POSTGRES_PASSWORD=lukasmetzler
