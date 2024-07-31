@@ -9,11 +9,12 @@ class ProducerConfig:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         env_file_path = os.path.join(current_dir, "..", "local.env")
 
+        print(f"Loading .env file from: {env_file_path}")  # Debugging-Ausgabe
         load_dotenv(dotenv_path=env_file_path)
 
         self.KAFKA_BOOTSTRAP_SERVER = os.environ.get("KAFKA_BOOTSTRAP_SERVER")
-
         kafka_topic_str = os.environ.get("KAFKA_TOPIC")
+
         print(f"Raw KAFKA_TOPIC from .env: {kafka_topic_str}")  # Debugging-Ausgabe
 
         if kafka_topic_str:
