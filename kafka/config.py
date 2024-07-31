@@ -13,7 +13,10 @@ class ProducerConfig:
 
         self.KAFKA_BOOTSTRAP_SERVER = os.environ.get("KAFKA_BOOTSTRAP_SERVER")
         kafka_topic_str = os.environ.get("KAFKA_TOPIC")
-        self.KAFKA_TOPIC = kafka_topic_str.split(",") if kafka_topic_str else []
+        if kafka_topic_str:
+            self.KAFKA_TOPIC = kafka_topic_str.split(",")
+        else:
+            self.KAFKA_TOPIC = []
         self.KAFKA_CERT_PATH = os.environ.get("KAFKA_CERT_PATH")
         self.PRODUCER_INTERVAL_SECONDS = int(
             os.environ.get("PRODUCER_INTERVAL_SECONDS", 60)

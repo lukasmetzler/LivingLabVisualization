@@ -164,6 +164,12 @@ def process_messages():
 
 
 if __name__ == "__main__":
+    # Debugging: Überprüfen Sie die geladenen Themen
+    print(f"Loaded Kafka Topics: {c.KAFKA_TOPIC}")
+
+    # Debugging: Überprüfen Sie den Bootstrap-Server
+    print(f"Kafka Bootstrap Server: {c.KAFKA_BOOTSTRAP_SERVER}")
+
     consumer = KafkaConsumer(
         *c.KAFKA_TOPIC,  # Entpacken der Liste von Themen
         bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],
