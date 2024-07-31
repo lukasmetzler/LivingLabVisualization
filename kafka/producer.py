@@ -40,7 +40,7 @@ def main():
     global producer
     producer = start_producer(configurations)
 
-    kafka_topic = configurations.KAFKA_TOPIC
+    kafka_topics = configurations.KAFKA_TOPIC
     wait_between_iterations = configurations.PRODUCER_INTERVAL_SECONDS
     logging.info("Starting the producer loop...")
 
@@ -49,7 +49,9 @@ def main():
     while True:
         data_for_tables = generate_random_data(cn.table_column_names)
         logging.debug("Data for tables: %s", data_for_tables)
-        producer.send(kafka_topic, value=data_for_tables)
+        # Schleife über die einzelnen Topics und sende Daten
+        for topic in kafka_topics:
+            producer.send(topic, value=data_for_tables)
         sleep(wait_between_iterations)
 
 

@@ -170,6 +170,9 @@ if __name__ == "__main__":
     # Debugging: Überprüfen Sie den Bootstrap-Server
     print(f"Kafka Bootstrap Server: {c.KAFKA_BOOTSTRAP_SERVER}")
 
+    if not c.KAFKA_TOPIC:
+        raise ValueError("No Kafka topics found. Please check your configuration.")
+
     consumer = KafkaConsumer(
         *c.KAFKA_TOPIC,  # Entpacken der Liste von Themen
         bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],
