@@ -22,14 +22,14 @@ class ProducerConfig:
             print(f"{key}: {value}")
 
         self.KAFKA_BOOTSTRAP_SERVER = os.environ.get("KAFKA_BOOTSTRAP_SERVER")
-        kafka_topic_str = os.environ.get("KAFKA_TOPIC")
+        kafka_topic_str = os.environ.get("KAFKA_TOPICS")  # Verwenden Sie KAFKA_TOPICS
 
-        print(f"Raw KAFKA_TOPIC from .env: {kafka_topic_str}")  # Debugging-Ausgabe
+        print(f"Raw KAFKA_TOPICS from .env: {kafka_topic_str}")  # Debugging-Ausgabe
 
         if kafka_topic_str:
-            self.KAFKA_TOPIC = kafka_topic_str.split(",")
+            self.KAFKA_TOPICS = kafka_topic_str.split(",")
         else:
-            self.KAFKA_TOPIC = []
+            self.KAFKA_TOPICS = []
 
         self.KAFKA_CERT_PATH = os.environ.get("KAFKA_CERT_PATH")
         self.PRODUCER_INTERVAL_SECONDS = int(

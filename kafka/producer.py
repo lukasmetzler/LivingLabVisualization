@@ -40,7 +40,7 @@ def main():
     global producer
     producer = start_producer(configurations)
 
-    kafka_topics = configurations.KAFKA_TOPIC
+    kafka_topics = configurations.KAFKA_TOPICS
     wait_between_iterations = configurations.PRODUCER_INTERVAL_SECONDS
     logging.info("Starting the producer loop...")
 
