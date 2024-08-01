@@ -175,12 +175,14 @@ if __name__ == "__main__":
 
     try:
         consumer = KafkaConsumer(
-            *c.KAFKA_TOPICS,  # Entpacken der Liste von Themen
+            *c.KAFKA_TOPICS,
             bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],
             auto_offset_reset="earliest",
             enable_auto_commit=True,
             group_id="consumer",
             value_deserializer=lambda x: json.loads(x.decode("utf-8")),
+            fetch_max_bytes=104857600,
+            max_partition_fetch_bytes=104857600,
         )
     except Exception as e:
         logger.error(f"An error occurred while creating KafkaConsumer: {e}")
