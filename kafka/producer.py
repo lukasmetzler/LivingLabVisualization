@@ -1,6 +1,6 @@
-from kafka import KafkaProducer
 import json
 import logging
+from kafka import KafkaProducer
 import config
 import column_names as cn
 import random
@@ -40,7 +40,7 @@ def main():
     global producer
     producer = start_producer(configurations)
 
-    kafka_topics = configurations.KAFKA_TOPICS
+    kafka_topics = configurations.KAFKA_TOPICS  # Verwenden Sie KAFKA_TOPICS
     wait_between_iterations = configurations.PRODUCER_INTERVAL_SECONDS
     logging.info("Starting the producer loop...")
 
@@ -52,9 +52,10 @@ def main():
         # Schleife über die einzelnen Topics und sende Daten
         for topic in kafka_topics:
             producer.send(topic, value=data_for_tables)
+            logging.info(f"Sent data to topic {topic}: {data_for_tables}")
         sleep(wait_between_iterations)
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     main()

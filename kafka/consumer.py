@@ -9,7 +9,7 @@ import sys
 
 c = config.load_config()
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)  # Set log level to DEBUG to get more detailed logs
 
 
 def stop_consumer(signum, frame):
@@ -108,6 +108,7 @@ def process_messages():
         with pg.postgres_connection() as connection:
             logger.debug("Connection established successfully")
             for message in consumer:
+                logger.debug(f"Received message: {message.value}")
                 with connection.cursor() as cursor:
                     if message.topic == "zed_kamera_topic":
                         process_zed_kamera_data(connection, cursor, message.value)
@@ -175,14 +176,12 @@ if __name__ == "__main__":
 
     try:
         consumer = KafkaConsumer(
-            *c.KAFKA_TOPICS,
+            *c.KAFKA_TOPICS,  # Entpacken der Liste von Themen
             bootstrap_servers=[c.KAFKA_BOOTSTRAP_SERVER],
             auto_offset_reset="earliest",
             enable_auto_commit=True,
             group_id="consumer",
             value_deserializer=lambda x: json.loads(x.decode("utf-8")),
-            fetch_max_bytes=104857600,
-            max_partition_fetch_bytes=104857600,
         )
     except Exception as e:
         logger.error(f"An error occurred while creating KafkaConsumer: {e}")
