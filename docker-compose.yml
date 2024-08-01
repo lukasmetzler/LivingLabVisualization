@@ -89,7 +89,7 @@ services:
     container_name: kafka-consumer
     environment:
       - KAFKA_BOOTSTRAP_SERVER=kafka_new:9092
-      - KAFKA_TOPICS=hella_data_topic,zed_kamera_topic
+      - KAFKA_TOPICS=hella_data_topic,zed_kamera_topic # Verwenden Sie hier KAFKA_TOPICS
       - CONSUMER_POSTGRES_USER=lukasmetzler
       - CONSUMER_POSTGRES_PASSWORD=lukasmetzler
       - CONSUMER_POSTGRES_DB=evi
@@ -118,4 +118,45 @@ services:
       - "3000:3000"
     volumes:
       - ./visualization/frontend:/app
-      -
+      - /app/node_modules
+    working_dir: /app
+    command: sh -c "npm install && npm start"
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "512M"
+
+  backend:
+    image: node:18-alpine
+    container_name: backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./visualization/server:/app
+      - ./visualization/server/node_modules:/app/node_modules
+    working_dir: /app
+    command: sh -c "npm install && npm start"
+    networks:
+      - backend
+    depends_on:
+      - postgres
+    environment:
+      - JWT_SECRET=test
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "512M"
+
+volumes:
+  postgres_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  backend:
+    driver: bridge
