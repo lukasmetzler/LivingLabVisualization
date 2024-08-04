@@ -12,6 +12,8 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
     networks:
       - backend
+    volumes:
+      - ./zookeeper.properties:/etc/kafka/zookeeper.properties
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -32,6 +34,9 @@ services:
       - zookeeper
     networks:
       - backend
+    volumes:
+      - ./server.properties:/etc/kafka/server.properties
+      - ./log4j.properties:/etc/kafka/log4j.properties
 
   postgres:
     image: postgres:latest
