@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-docker exec -i postgres_new psql -U "$POSTGRES_USER" <<-EOSQL
+docker exec -i postgres_new psql -U "$POSTGRES_USER" -d postgres <<-EOSQL
     CREATE DATABASE LivingLabVisualization;
     CREATE USER lukasmetzler WITH ENCRYPTED PASSWORD 'lukasmetzler';
     GRANT ALL PRIVILEGES ON DATABASE LivingLabVisualization TO lukasmetzler;
