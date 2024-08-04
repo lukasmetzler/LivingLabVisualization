@@ -12,8 +12,6 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
     networks:
       - backend
-    volumes:
-      - ./zookeeper.properties:/etc/kafka/zookeeper.properties
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -34,9 +32,6 @@ services:
       - zookeeper
     networks:
       - backend
-    volumes:
-      - ./server.properties:/etc/kafka/server.properties
-      - ./log4j.properties:/etc/kafka/log4j.properties
 
   postgres:
     image: postgres:latest
@@ -58,7 +53,7 @@ services:
       - "8080:8080"
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana.ini:/etc/grafana/grafana.ini
+      - /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/grafana.ini:/etc/grafana/grafana.ini:ro
     depends_on:
       - postgres
     environment:
