@@ -12,6 +12,7 @@ from sqlalchemy import (
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+from config import load_config
 
 Base = declarative_base()
 
@@ -245,8 +246,10 @@ class DimHeadPositions1ogR1(Base):
 
 
 def get_engine():
-    from config import load_config
-
-    c = load_config()
-    db_url = f"postgresql+psycopg2://{c.CONSUMER_POSTGRES_USER}:{c.CONSUMER_POSTGRES_PASSWORD}@{c.CONSUMER_POSTGRES_HOST}:{c.CONSUMER_POSTGRES_PORT}/{c.CONSUMER_POSTGRES_DB}"
+    config = load_config()
+    db_url = (
+        f"postgresql+psycopg2://{config.CONSUMER_POSTGRES_USER}:"
+        f"{config.CONSUMER_POSTGRES_PASSWORD}@{config.CONSUMER_POSTGRES_HOST}:"
+        f"{config.CONSUMER_POSTGRES_PORT}/{config.CONSUMER_POSTGRES_DB}"
+    )
     return create_engine(db_url)
