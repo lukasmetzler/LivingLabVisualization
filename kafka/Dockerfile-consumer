@@ -8,6 +8,7 @@ COPY column_names.py /app
 COPY fact_column_names.py /app
 COPY fact_db_operations.py /app
 COPY postgres.py /app
+COPY models.py /app
 COPY requirements.txt /app
 
 RUN pip install -r requirements.txt
