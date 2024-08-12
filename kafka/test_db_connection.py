@@ -4,7 +4,7 @@ conn = psycopg2.connect(
     dbname="livinglabvisualization",
     user="lukasmetzler",
     password="lukasmetzler",
-    host="postgres_new",
+    host="localhost",
     port="5432",
 )
 
