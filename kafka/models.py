@@ -22,7 +22,7 @@ class DimMetrologicalData(Base):
     metrological_data_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
     )
-    GlobIrrVerAct = Column(Numeric)
+    globirrveract = Column(Numeric)
     GlobalIrrHorAct = Column(Numeric)
     DifflrrHorAct = Column(Numeric)
     WindSpeedAct_ms = Column(Numeric)
