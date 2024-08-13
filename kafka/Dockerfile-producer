@@ -9,4 +9,7 @@ COPY requirements.txt /app
 
 RUN pip install -r requirements.txt
 
-CMD ["python", "producer.py"]
+COPY startup/start_producer.sh /start_producer.sh
+RUN chmod +x /start_producer.sh
+
+CMD ["/start_producer.sh", "python", "producer.py"]
