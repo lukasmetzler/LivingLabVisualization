@@ -178,8 +178,10 @@ services:
     networks:
       - backend
     depends_on:
-      - pgadmin
+      - frontend
+      - backend
       - grafana
+      - pgadmin
       - portainer
 
 volumes:
