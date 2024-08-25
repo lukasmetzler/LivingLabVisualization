@@ -180,7 +180,7 @@ services:
     depends_on:
       - frontend
       - backend
-      - grafana_new
+      - grafana
       - pgadmin
       - portainer
 volumes:
