@@ -180,10 +180,9 @@ services:
     depends_on:
       - frontend
       - backend
-      - grafana
+      - grafana_new
       - pgadmin
       - portainer
-
 volumes:
   postgres_data:
     driver: local
