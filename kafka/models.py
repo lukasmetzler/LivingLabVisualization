@@ -8,6 +8,8 @@ from sqlalchemy import (
     TIMESTAMP,
     Integer,
     ForeignKey,
+    func,
+    event,
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import UUID
@@ -118,16 +120,41 @@ class DimUserInput(Base):
 class DimTime(Base):
     __tablename__ = "dim_time"
     time_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
     )
-    timestamp = Column(TIMESTAMP)
+    timestamp = Column(TIMESTAMP, nullable=False)
     date = Column(String)
     day_of_week = Column(String)
     month = Column(String)
     quarter = Column(String)
     year = Column(Integer)
     hour = Column(Integer)
-    created_at = Column(TIMESTAMP, server_default="CURRENT_TIMESTAMP")
+    created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
+
+    def __init__(self, timestamp=None):
+        if timestamp:
+            self.timestamp = timestamp
+            self.date = timestamp.strftime("%Y-%m-%d")
+            self.day_of_week = timestamp.strftime("%A")
+            self.month = timestamp.strftime("%B")
+            self.quarter = f"Q{((timestamp.month - 1) // 3) + 1}"
+            self.year = timestamp.year
+            self.hour = timestamp.hour
+
+    @classmethod
+    def from_datetime(cls, dt):
+        return cls(timestamp=dt)
+
+
+@event.listens_for(DimTime, "before_insert")
+def receive_before_insert(mapper, connection, target):
+    if target.timestamp:
+        target.date = target.timestamp.strftime("%Y-%m-%d")
+        target.day_of_week = target.timestamp.strftime("%A")
+        target.month = target.timestamp.strftime("%B")
+        target.quarter = f"Q{((target.timestamp.month - 1) // 3) + 1}"
+        target.year = target.timestamp.year
+        target.hour = target.timestamp.hour
 
 
 class DimLocation(Base):
