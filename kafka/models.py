@@ -23,7 +23,7 @@ class DimMetrologicalData(Base):
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
     )
     globirrveract = Column(Numeric)
-    globalirrohract = Column(Numeric)
+    globalirrhoract = Column(Numeric)
     difflrrhoract = Column(Numeric)
     windspeedact_ms = Column(Numeric)
     sunelevationact = Column(Numeric)
