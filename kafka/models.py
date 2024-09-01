@@ -17,6 +17,8 @@ from sqlalchemy.orm import relationship
 from config import load_config
 from datetime import datetime
 
+
+c = load_config()
 Base = declarative_base()
 
 
