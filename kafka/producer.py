@@ -16,13 +16,31 @@ def stop_producer(signum, frame):
     sys.exit(0)
 
 
+def generate_boolean() -> bool:
+    return random.choice([True, False])
+
+
 def generate_random_data(
     table_column_names: Dict[str, List[str]]
 ) -> Dict[str, Dict[str, float]]:
     data = {}
+
     for table, columns in table_column_names.items():
+        # Filtere nur die Spalten, die keine IDs sind
         filtered_columns = [column for column in columns if not column.endswith("_id")]
-        data[table] = {column: random.uniform(0, 100) for column in filtered_columns}
+
+        # Generiere die Daten für jede Tabelle
+        table_data = {}
+        for column in filtered_columns:
+            if column in ["is_new", "is_tracked"]:
+                # Erzeuge Boolean-Werte für bestimmte Spalten
+                table_data[column] = generate_boolean()
+            else:
+                # Erzeuge numerische Zufallswerte für andere Spalten
+                table_data[column] = random.uniform(0, 100)
+
+        data[table] = table_data
+
     logging.debug("Generated data: %s", data)
     return data
 
