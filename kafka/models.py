@@ -144,6 +144,6 @@ class FactEnvironmentalDataFacts(Base):
 
 # Beispiel für das Einrichten der Datenbankverbindung
 engine = create_engine(
-    "postgresql+psycopg2://lukasmetzler:lukasmetzler@localhost:5432/livinglabvisualization"
+    f"postgresql+psycopg2://{c.DB_USER}:{c.DB_PASSWORD}@postgres_new:{c.DB_PORT}/{c.DB_NAME}"
 )
 Base.metadata.create_all(engine)
