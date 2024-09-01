@@ -150,6 +150,10 @@ class FactUserInputFacts(Base):
     user_input_id = Column(
         UUID(as_uuid=True), ForeignKey("dim_user_input.user_input_id")
     )
+    # Relationships
+    time = relationship("DimTime")
+    location = relationship("DimLocation")
+    user_input = relationship("DimUserInput")
 
 
 class FactSensory(Base):
@@ -163,6 +167,10 @@ class FactSensory(Base):
         UUID(as_uuid=True),
         ForeignKey("dim_zed_body_tracking_1og_r1.zed_body_tracking_id"),
     )
+    # Relationships
+    time = relationship("DimTime")
+    location = relationship("DimLocation")
+    zed_body_tracking = relationship("DimZedBodyTracking1ogR1")
 
 
 class FactRaffstoreLightFacts(Base):
@@ -176,6 +184,10 @@ class FactRaffstoreLightFacts(Base):
         UUID(as_uuid=True),
         ForeignKey("dim_raffstore_light_data.raffstore_light_data_id"),
     )
+    # Relationships
+    time = relationship("DimTime")
+    location = relationship("DimLocation")
+    raffstore_light_data = relationship("DimRaffstoreLightData")
 
 
 class FactEnvironmentalDataFacts(Base):
@@ -201,6 +213,14 @@ class FactEnvironmentalDataFacts(Base):
     head_positions_id = Column(
         UUID(as_uuid=True), ForeignKey("dim_head_positions_1og_r1.head_positions_id")
     )
+    # Relationships
+    time = relationship("DimTime")
+    location = relationship("DimLocation")
+    metrological_data = relationship("DimMetrologicalData")
+    pv_modul_data = relationship("DimPvModulData1ogR1")
+    illumination_datapoints = relationship("DimIlluminationDatapoints1ogR1")
+    radiation_forecast = relationship("DimRadiationForecast")
+    head_positions = relationship("DimHeadPositions1ogR1")
 
 
 class DimRadiationForecast(Base):
