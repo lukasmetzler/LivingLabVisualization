@@ -121,7 +121,7 @@ class DimPvModulData1ogR1(Base):
 
 class DimIlluminationDatapoints1ogR1(Base):
     __tablename__ = "dim_illumination_datapoints_1og_r1"
-    illumination_data_id = Column(
+    illumination_datapoints_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
     )
     illum_mp1_act = Column(Numeric)
@@ -227,7 +227,7 @@ class FactEnvironmentalDataFacts(Base):
     )
     illumination_datapoints_id = Column(
         UUID(as_uuid=True),
-        ForeignKey("dim_illumination_datapoints_1og_r1.illumination_data_id"),
+        ForeignKey("dim_illumination_datapoints_1og_r1.illumination_datapoints_id"),
     )
     radiation_forecast_id = Column(
         UUID(as_uuid=True), ForeignKey("dim_radiation_forecast.radiation_forecast_id")
