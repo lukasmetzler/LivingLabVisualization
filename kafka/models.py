@@ -12,6 +12,7 @@ from sqlalchemy import (
     event,
 )
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from config import load_config
@@ -82,7 +83,7 @@ class DimTime(Base):
         return cls(timestamp=dt)
 
     @staticmethod
-    def get_or_create(session: Session, timestamp):
+    def get_or_create(session, timestamp):
         time_record = session.query(DimTime).filter_by(timestamp=timestamp).first()
         if not time_record:
             time_record = DimTime(timestamp=timestamp)
