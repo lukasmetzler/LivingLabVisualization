@@ -28,7 +28,7 @@ CREATE TABLE dim_metrological_data (
     relative_humidity_act Numeric,
     dew_point_temp_act Numeric,
     housing_temp_act Numeric,
-    room_temp_act Numeric
+    room_temp_act Numeric,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
