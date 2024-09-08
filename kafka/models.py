@@ -214,17 +214,36 @@ class DimHeadPositions1ogR1(Base):
 
 class FactEnvironmentalDataFacts(Base):
     __tablename__ = "fact_environmental_data_facts"
-    fact_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
+    environmental_data_facts_id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
     )
     time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"))
+    location_id = Column(UUID(as_uuid=True), ForeignKey("dim_location.location_id"))
     metrological_data_id = Column(
         UUID(as_uuid=True), ForeignKey("dim_metrological_data.metrological_data_id")
+    )
+    pv_modul_data_id = Column(
+        UUID(as_uuid=True), ForeignKey("dim_pv_modul_data_1og_r1.pv_modul_data_id")
+    )
+    illumination_datapoints_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("dim_illumination_datapoints_1og_r1.illumination_data_id"),
+    )
+    radiation_forecast_id = Column(
+        UUID(as_uuid=True), ForeignKey("dim_radiation_forecast.radiation_forecast_id")
+    )
+    head_positions_id = Column(
+        UUID(as_uuid=True), ForeignKey("dim_head_positions_1og_r1.head_positions_id")
     )
     created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
 
     time = relationship("DimTime")
+    location = relationship("DimLocation")
     metrological_data = relationship("DimMetrologicalData")
+    pv_modul_data = relationship("DimPvModulData1ogR1")
+    illumination_datapoints = relationship("DimIlluminationDatapoints1ogR1")
+    radiation_forecast = relationship("DimRadiationForecast")
+    head_positions = relationship("DimHeadPositions1ogR1")
 
 
 class FactUserInputFacts(Base):
@@ -278,40 +297,6 @@ class FactRaffstoreLightFacts(Base):
     time = relationship("DimTime")
     location = relationship("DimLocation")
     raffstore_light_data = relationship("DimRaffstoreLightData")
-
-
-class FactEnvironmentalDataFacts(Base):
-    __tablename__ = "fact_environmental_data_facts"
-    environmental_data_facts_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
-    )
-    time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"))
-    location_id = Column(UUID(as_uuid=True), ForeignKey("dim_location.location_id"))
-    metrological_data_id = Column(
-        UUID(as_uuid=True), ForeignKey("dim_metrological_data.metrological_data_id")
-    )
-    pv_modul_data_id = Column(
-        UUID(as_uuid=True), ForeignKey("dim_pv_modul_data_1og_r1.pv_modul_data_id")
-    )
-    illumination_datapoints_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("dim_illumination_datapoints_1og_r1.illumination_data_id"),
-    )
-    radiation_forecast_id = Column(
-        UUID(as_uuid=True), ForeignKey("dim_radiation_forecast.radiation_forecast_id")
-    )
-    head_positions_id = Column(
-        UUID(as_uuid=True), ForeignKey("dim_head_positions_1og_r1.head_positions_id")
-    )
-    created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
-
-    time = relationship("DimTime")
-    location = relationship("DimLocation")
-    metrological_data = relationship("DimMetrologicalData")
-    pv_modul_data = relationship("DimPvModulData1ogR1")
-    illumination_datapoints = relationship("DimIlluminationDatapoints1ogR1")
-    radiation_forecast = relationship("DimRadiationForecast")
-    head_positions = relationship("DimHeadPositions1ogR1")
 
 
 engine = create_engine(
