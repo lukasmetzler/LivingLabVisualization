@@ -8,6 +8,7 @@ from models import (
     DimMetrologicalData,
     DimPvModulData1ogR1,
     DimIlluminationDatapoints1ogR1,
+    DimRaffstoreLightData,
     DimUserInput,
 )
 from sqlalchemy.orm import sessionmaker
