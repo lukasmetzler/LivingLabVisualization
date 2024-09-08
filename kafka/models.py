@@ -235,7 +235,6 @@ class FactEnvironmentalDataFacts(Base):
     head_positions_id = Column(
         UUID(as_uuid=True), ForeignKey("dim_head_positions_1og_r1.head_positions_id")
     )
-    created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
 
     time = relationship("DimTime")
     location = relationship("DimLocation")
@@ -256,7 +255,6 @@ class FactUserInputFacts(Base):
     user_input_id = Column(
         UUID(as_uuid=True), ForeignKey("dim_user_input.user_input_id")
     )
-    created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
 
     time = relationship("DimTime")
     location = relationship("DimLocation")
@@ -274,7 +272,6 @@ class FactSensory(Base):
         UUID(as_uuid=True),
         ForeignKey("dim_zed_body_tracking_1og_r1.zed_body_tracking_id"),
     )
-    created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
 
     time = relationship("DimTime")
     location = relationship("DimLocation")
@@ -292,8 +289,6 @@ class FactRaffstoreLightFacts(Base):
         UUID(as_uuid=True),
         ForeignKey("dim_raffstore_light_data.raffstore_light_data_id"),
     )
-    created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
-
     time = relationship("DimTime")
     location = relationship("DimLocation")
     raffstore_light_data = relationship("DimRaffstoreLightData")
