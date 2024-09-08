@@ -58,7 +58,7 @@ def process_zed_kamera_data(session, data):
 def process_data(session, table_name, data):
     try:
         if table_name == "dim_metrological_data":
-            timestamp = data.get("timestamp")
+            timestamp = data.get("created_at")
             if timestamp:
                 timestamp = datetime.fromisoformat(timestamp)
                 with Session() as session:  # Session Kontexte verwenden
