@@ -58,6 +58,12 @@ def process_zed_kamera_data(session, data):
 def process_data(session, table_name, data):
     try:
         if table_name == "dim_metrological_data":
+            timestamp = data.get("timestamp")
+            if timestamp:
+                timestamp = datetime.fromisoformat(timestamp)
+                with Session() as session:  # Session Kontexte verwenden
+                    time_record = DimTime.get_or_create(session, timestamp)
+                    data["time_id"] = time_record.time_id
             table_data = DimMetrologicalData(**data)
         elif table_name == "dim_pv_modul_data_1og_r1":
             table_data = DimPvModulData1ogR1(**data)
@@ -72,14 +78,6 @@ def process_data(session, table_name, data):
             logger.error(f"Received unexpected data for dim_time: {data}")
             return
         elif table_name == "fact_environmental_data_facts":
-            # Zeitstempel aus den Daten extrahieren
-            timestamp = data.get("timestamp")
-            if timestamp:
-                timestamp = datetime.fromisoformat(timestamp)  # Beispiel für ISO-Format
-                # Zeitstempel in DimTime speichern
-                with Session() as session:  # Session Kontexte verwenden
-                    time_record = DimTime.get_or_create(session, timestamp)
-                    data["time_id"] = time_record.time_id
             table_data = FactEnvironmentalDataFacts(**data)
         elif table_name == "fact_user_input_facts":
             table_data = FactUserInputFacts(**data)
