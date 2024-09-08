@@ -11,6 +11,14 @@ from models import (
     DimIlluminationDatapoints1ogR1,
     DimRaffstoreLightData,
     DimUserInput,
+    DimTime,
+    DimLocation,
+    DimRadiationForecast,
+    DimHeadPositions1ogR1,
+    FactUserInputFacts,
+    FactSensory,
+    FactRaffstoreLightFacts,
+    FactEnvironmentalDataFacts,
 )
 from sqlalchemy.orm import sessionmaker
 import signal
@@ -58,6 +66,22 @@ def process_data(session, table_name, data):
             table_data = DimRaffstoreLightData(**data)
         elif table_name == "dim_user_input":
             table_data = DimUserInput(**data)
+        elif table_name == "dim_time":
+            table_data = DimTime(**data)
+        elif table_name == "dim_location":
+            table_data = DimLocation(**data)
+        elif table_name == "dim_radiation_forecast":
+            table_data = DimRadiationForecast(**data)
+        elif table_name == "dim_head_positions_1og_r1":
+            table_data = DimHeadPositions1ogR1(**data)
+        elif table_name == "fact_user_input_facts":
+            table_data = FactUserInputFacts(**data)
+        elif table_name == "fact_sensory":
+            table_data = FactSensory(**data)
+        elif table_name == "fact_raffstore_light_facts":
+            table_data = FactRaffstoreLightFacts(**data)
+        elif table_name == "fact_environmental_data_facts":
+            table_data = FactEnvironmentalDataFacts(**data)
         else:
             logger.error(f"Unknown table name: {table_name}")
             return
