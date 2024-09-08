@@ -144,7 +144,6 @@ class FactEnvironmentalDataFacts(Base):
     metrological_data = relationship("DimMetrologicalData")
 
 
-# Beispiel für das Einrichten der Datenbankverbindung
 engine = create_engine(
     f"postgresql+psycopg2://{c.CONSUMER_POSTGRES_USER}:{c.CONSUMER_POSTGRES_PASSWORD}@{c.CONSUMER_POSTGRES_HOST}:{c.CONSUMER_POSTGRES_PORT}/{c.CONSUMER_POSTGRES_DB}"
 )
