@@ -124,16 +124,6 @@ class DimIlluminationDatapoints1ogR1(Base):
     illumination_data_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
     )
-    illuminance = Column(Numeric)
-    illuminance_type = Column(String)
-    created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
-
-
-class DimIlluminationDatapoints1ogR1(Base):
-    __tablename__ = "dim_illumination_datapoints_1og_r1"
-    illumination_data_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
-    )
     illum_mp1_act = Column(Numeric)
     illum_mp2_act = Column(Numeric)
     illum_mp3_act = Column(Numeric)
