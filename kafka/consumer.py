@@ -4,6 +4,7 @@ from kafka import KafkaConsumer
 import config
 from models import (
     Base,
+    engine,
     DimZedBodyTracking1ogR1,
     DimMetrologicalData,
     DimPvModulData1ogR1,
@@ -18,6 +19,7 @@ import sys
 c = config.load_config()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+Session = sessionmaker(bind=engine)
 
 
 def stop_consumer(signum, frame):
