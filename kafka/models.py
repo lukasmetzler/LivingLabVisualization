@@ -216,7 +216,6 @@ class FactEnvironmentalDataFacts(Base):
     environmental_data_facts_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
     )
-    time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"))
     location_id = Column(UUID(as_uuid=True), ForeignKey("dim_location.location_id"))
     metrological_data_id = Column(
         UUID(as_uuid=True), ForeignKey("dim_metrological_data.metrological_data_id")
@@ -249,7 +248,6 @@ class FactUserInputFacts(Base):
     user_input_facts_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
     )
-    time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"))
     location_id = Column(UUID(as_uuid=True), ForeignKey("dim_location.location_id"))
     user_input_id = Column(
         UUID(as_uuid=True), ForeignKey("dim_user_input.user_input_id")
@@ -265,7 +263,6 @@ class FactSensory(Base):
     sensory_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
     )
-    time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"))
     location_id = Column(UUID(as_uuid=True), ForeignKey("dim_location.location_id"))
     zed_body_tracking_id = Column(
         UUID(as_uuid=True),
@@ -282,7 +279,6 @@ class FactRaffstoreLightFacts(Base):
     raffstore_light_facts_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
     )
-    time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"))
     location_id = Column(UUID(as_uuid=True), ForeignKey("dim_location.location_id"))
     raffstore_light_data_id = Column(
         UUID(as_uuid=True),
