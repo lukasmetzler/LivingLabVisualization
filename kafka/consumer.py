@@ -11,7 +11,6 @@ from models import (
     DimIlluminationDatapoints1ogR1,
     DimRaffstoreLightData,
     DimUserInput,
-    DimTime,
     DimLocation,
     DimRadiationForecast,
     DimHeadPositions1ogR1,
@@ -66,8 +65,6 @@ def process_data(session, table_name, data):
             table_data = DimRaffstoreLightData(**data)
         elif table_name == "dim_user_input":
             table_data = DimUserInput(**data)
-        elif table_name == "dim_time":
-            table_data = DimTime(**data)
         elif table_name == "dim_location":
             table_data = DimLocation(**data)
         elif table_name == "dim_radiation_forecast":

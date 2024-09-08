@@ -81,16 +81,14 @@ class DimTime(Base):
     def from_datetime(cls, dt):
         return cls(timestamp=dt)
 
-
-@event.listens_for(DimTime, "before_insert")
-def receive_before_insert(mapper, connection, target):
-    if target.timestamp:
-        target.date = target.timestamp.strftime("%Y-%m-%d")
-        target.day_of_week = target.timestamp.strftime("%A")
-        target.month = target.timestamp.strftime("%B")
-        target.quarter = f"Q{((target.timestamp.month - 1) // 3) + 1}"
-        target.year = target.timestamp.year
-        target.hour = target.timestamp.hour
+    @staticmethod
+    def get_or_create(session: Session, timestamp):
+        time_record = session.query(DimTime).filter_by(timestamp=timestamp).first()
+        if not time_record:
+            time_record = DimTime(timestamp=timestamp)
+            session.add(time_record)
+            session.commit()
+        return time_record
 
 
 class DimZedBodyTracking1ogR1(Base):
