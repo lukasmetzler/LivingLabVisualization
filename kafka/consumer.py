@@ -12,7 +12,6 @@ from models import (
     DimIlluminationDatapoints1ogR1,
     DimRaffstoreLightData,
     DimUserInput,
-    DimTime,
     DimLocation,
     DimRadiationForecast,
     DimHeadPositions1ogR1,
@@ -49,19 +48,13 @@ table_to_class = {
 
 def process_zed_kamera_data(session, data):
     try:
-        # Annahme: data['body_list'] ist ein String, der JSON-Daten enthält
-        body_list = (
-            json.loads(data.get("body_list", "[]"))
-            if isinstance(data.get("body_list"), str)
-            else []
-        )
         zed_data = DimZedBodyTracking1ogR1(
             is_new=data.get("is_new", False),
             is_tracked=data.get("is_tracked", False),
             camera_pitch=data.get("camera_pitch"),
             camera_roll=data.get("camera_roll"),
             camera_yaw=data.get("camera_yaw"),
-            body_list=body_list,
+            body_list=json.loads(data.get("body_list", "[]")),
         )
         session.add(zed_data)
         session.commit()
@@ -80,20 +73,6 @@ def stop_consumer(signum, frame):
 def process_data(session, table_name, data):
     try:
         model_class = table_to_class[table_name]
-        if "created_at" in data:
-            try:
-                timestamp = datetime.strptime(
-                    data["created_at"], "%Y-%m-%d %H:%M:%S"
-                )  # Angepasstes Format
-                time_record = DimTime.get_or_create(session, timestamp)
-                data["time_id"] = time_record.time_id
-            except ValueError as ve:
-                logger.error(f"Date parsing error: {ve}")
-                return
-        else:
-            logger.error(f"'created_at' not found in data for {table_name}")
-            return
-
         table_data = model_class(**data)
         session.add(table_data)
         session.commit()
@@ -105,6 +84,16 @@ def process_data(session, table_name, data):
 
 def process_messages():
     session = Session()
+    consumer = KafkaConsumer(
+        *c.KAFKA_TOPICS,
+        bootstrap_servers=c.KAFKA_BOOTSTRAP_SERVER,
+        auto_offset_reset="earliest",
+        enable_auto_commit=True,
+        group_id="consumer",
+        value_deserializer=lambda x: json.loads(x.decode("utf-8")),
+    )
+    signal.signal(signal.SIGINT, stop_consumer)
+
     try:
         for message in consumer:
             logger.debug(f"Received message: {message.value}")
@@ -128,18 +117,4 @@ if __name__ == "__main__":
     print(f"Kafka Bootstrap Server: {c.KAFKA_BOOTSTRAP_SERVER}")
     if not c.KAFKA_TOPICS:
         raise ValueError("No Kafka topics found. Please check your configuration.")
-
-    try:
-        consumer = KafkaConsumer(
-            *c.KAFKA_TOPICS,
-            bootstrap_servers=c.KAFKA_BOOTSTRAP_SERVER,
-            auto_offset_reset="earliest",
-            enable_auto_commit=True,
-            group_id="consumer",
-            value_deserializer=lambda x: json.loads(x.decode("utf-8")),
-        )
-        signal.signal(signal.SIGINT, stop_consumer)
-        process_messages()
-    except Exception as e:
-        logger.error(f"An error occurred while creating KafkaConsumer: {e}")
-        sys.exit(1)
+    process_messages()
