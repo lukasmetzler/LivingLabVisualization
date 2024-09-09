@@ -46,6 +46,12 @@ table_to_class = {
 }
 
 
+def stop_consumer(signum, frame):
+    logging.info("Stopping consumer...")
+    consumer.close()
+    sys.exit(0)
+
+
 def process_zed_kamera_data(session, data):
     try:
         body_list_data = data.get("body_list", "[]")
