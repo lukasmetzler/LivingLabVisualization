@@ -216,6 +216,76 @@ class FactEnvironmentalDataFacts(Base):
     environmental_data_facts_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
     )
+    location_id = Column(
+        UUID(as_uuid=True), ForeignKey("dim_location.location_id"), nullable=True
+    )
+    metrological_data_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("dim_metrological_data.metrological_data_id"),
+        nullable=True,
+    )
+    pv_modul_data_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("dim_pv_modul_data_1og_r1.pv_modul_data_id"),
+        nullable=True,
+    )
+    illumination_datapoints_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("dim_illumination_datapoints_1og_r1.illumination_datapoints_id"),
+        nullable=True,
+    )
+    radiation_forecast_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("dim_radiation_forecast.radiation_forecast_id"),
+        nullable=True,
+    )
+    head_positions_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("dim_head_positions_1og_r1.head_positions_id"),
+        nullable=True,
+    )
+    time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"), nullable=True)
+
+    time = relationship("DimTime", uselist=False, backref="environmental_data_facts")
+    __tablename__ = "fact_environmental_data_facts"
+    environmental_data_facts_id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+    )
+    location_id = Column(
+        UUID(as_uuid=True), ForeignKey("dim_location.location_id"), nullable=True
+    )
+    metrological_data_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("dim_metrological_data.metrological_data_id"),
+        nullable=True,
+    )
+    pv_modul_data_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("dim_pv_modul_data_1og_r1.pv_modul_data_id"),
+        nullable=True,
+    )
+    illumination_datapoints_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("dim_illumination_datapoints_1og_r1.illumination_datapoints_id"),
+        nullable=True,
+    )
+    radiation_forecast_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("dim_radiation_forecast.radiation_forecast_id"),
+        nullable=True,
+    )
+    head_positions_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("dim_head_positions_1og_r1.head_positions_id"),
+        nullable=True,
+    )
+    time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"), nullable=True)
+
+    time = relationship("DimTime", uselist=False, backref="environmental_data_facts")
+    __tablename__ = "fact_environmental_data_facts"
+    environmental_data_facts_id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+    )
     location_id = Column(UUID(as_uuid=True), ForeignKey("dim_location.location_id"))
     metrological_data_id = Column(
         UUID(as_uuid=True), ForeignKey("dim_metrological_data.metrological_data_id")
