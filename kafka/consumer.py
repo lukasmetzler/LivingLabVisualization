@@ -101,46 +101,6 @@ def process_data(session, table_name, data):
     except Exception as e:
         logger.error(f"An error occurred while inserting data into {table_name}: {e}")
         session.rollback()
-    try:
-        if table_name == "dim_metrological_data":
-            table_data = DimMetrologicalData(**data)
-        elif table_name == "dim_pv_modul_data_1og_r1":
-            table_data = DimPvModulData1ogR1(**data)
-        elif table_name == "dim_illumination_datapoints_1og_r1":
-            table_data = DimIlluminationDatapoints1ogR1(**data)
-        elif table_name == "dim_raffstore_light_data":
-            table_data = DimRaffstoreLightData(**data)
-        elif table_name == "dim_user_input":
-            table_data = DimUserInput(**data)
-        elif table_name == "dim_location":
-            table_data = DimLocation(**data)
-        elif table_name == "dim_radiation_forecast":
-            table_data = DimRadiationForecast(**data)
-        elif table_name == "dim_head_positions_1og_r1":
-            table_data = DimHeadPositions1ogR1(**data)
-        elif table_name == "fact_user_input_facts":
-            table_data = FactUserInputFacts(**data)
-        elif table_name == "fact_sensory":
-            table_data = FactSensory(**data)
-        elif table_name == "fact_raffstore_light_facts":
-            table_data = FactRaffstoreLightFacts(**data)
-        elif table_name == "fact_environmental_data_facts":
-            timestamp = data.get("timestamp")
-            if timestamp:
-                timestamp = datetime.fromisoformat(timestamp)
-                time_record = DimTime.get_or_create(session, timestamp)
-                data["time_id"] = time_record.time_id
-            table_data = FactEnvironmentalDataFacts(**data)
-        else:
-            logger.error(f"Unknown table name: {table_name}")
-            return
-
-        session.add(table_data)
-        session.commit()
-        logger.info(f"Data inserted into {table_name}: {data}")
-    except Exception as e:
-        logger.error(f"An error occurred while inserting data into {table_name}: {e}")
-        session.rollback()
 
 
 def process_messages():
