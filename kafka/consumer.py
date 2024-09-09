@@ -74,7 +74,7 @@ def process_zed_kamera_data(session, data):
 
 def process_data(session, table_name, data):
     try:
-        model_class = globals()[table_name]
+        model_class = table_to_class[table_name]
         if table_name == "dim_metrological_data":
             timestamp = data.get("created_at")
             if timestamp:
@@ -113,6 +113,7 @@ def process_messages():
 if __name__ == "__main__":
     print(f"Loaded Kafka Topics: {c.KAFKA_TOPICS}")
     print(f"Kafka Bootstrap Server: {c.KAFKA_BOOTSTRAP_SERVER}")
+
     if not c.KAFKA_TOPICS:
         raise ValueError("No Kafka topics found. Please check your configuration.")
 
