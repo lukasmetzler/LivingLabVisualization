@@ -73,6 +73,12 @@ def process_data(session, table_name, data):
             table_data = DimRaffstoreLightData(**data)
         elif table_name == "dim_user_input":
             table_data = DimUserInput(**data)
+        elif table_name == "dim_location":
+            table_data = DimLocation(**data)
+        elif table_name == "dim_radiation_forecast":
+            table_data = DimRadiationForecast(**data)
+        elif table_name == "dim_head_positions_1og_r1":
+            table_data = DimHeadPositions1ogR1(**data)
         elif table_name == "dim_time":
             # DimTime wird nicht direkt durch den Consumer hinzugefügt
             logger.error(f"Received unexpected data for dim_time: {data}")
