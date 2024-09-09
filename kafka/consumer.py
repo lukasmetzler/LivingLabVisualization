@@ -76,13 +76,18 @@ def stop_consumer(signum, frame):
 def process_data(session, table_name, data):
     try:
         model_class = table_to_class[table_name]
-        if "created_at" in data:
-            timestamp = datetime.fromisoformat(data["created_at"])
-            time_record = DimTime.get_or_create(session, timestamp)
-            data["time_id"] = (
-                time_record.time_id
-            )  # Set the time_id for all tables that require it
         table_data = model_class(**data)
+
+        # Handling für MetrologicalData spezifisch, da hier der Timestamp wichtig ist
+        if table_name == "dim_metrological_data":
+            timestamp = datetime.strptime(
+                data["created_at"], "%Y-%m-%d %H:%M:%S"
+            )  # Stellen Sie sicher, dass das Format korrekt ist
+            time_record = DimTime.get_or_create(session, timestamp)
+            table_data.time_id = (
+                time_record.time_id
+            )  # Verknüpfen des generierten DimTime Eintrags
+
         session.add(table_data)
         session.commit()
         logger.info(f"Data inserted into {table_name}: {data}")

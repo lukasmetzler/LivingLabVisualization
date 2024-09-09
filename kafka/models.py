@@ -59,7 +59,9 @@ class DimTime(Base):
     time_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
     )
-    timestamp = Column(TIMESTAMP, nullable=False)
+    timestamp = Column(
+        TIMESTAMP, nullable=False, unique=True
+    )  # Stellen Sie sicher, dass der Timestamp eindeutig ist
     date = Column(String)
     day_of_week = Column(String)
     month = Column(String)
@@ -68,25 +70,17 @@ class DimTime(Base):
     hour = Column(Integer)
     created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
 
-    def __init__(self, timestamp=None):
-        if timestamp:
-            self.timestamp = timestamp
-            self.date = timestamp.strftime("%Y-%m-%d")
-            self.day_of_week = timestamp.strftime("%A")
-            self.month = timestamp.strftime("%B")
-            self.quarter = f"Q{((timestamp.month - 1) // 3) + 1}"
-            self.year = timestamp.year
-            self.hour = timestamp.hour
-
-    @classmethod
-    def from_datetime(cls, dt):
-        return cls(timestamp=dt)
-
     @staticmethod
     def get_or_create(session, timestamp):
         time_record = session.query(DimTime).filter_by(timestamp=timestamp).first()
         if not time_record:
             time_record = DimTime(timestamp=timestamp)
+            time_record.date = timestamp.strftime("%Y-%m-%d")
+            time_record.day_of_week = timestamp.strftime("%A")
+            time_record.month = timestamp.strftime("%B")
+            time_record.quarter = f"Q{((timestamp.month - 1) // 3) + 1}"
+            time_record.year = timestamp.year
+            time_record.hour = timestamp.hour
             session.add(time_record)
             session.commit()
         return time_record
