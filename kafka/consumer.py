@@ -48,26 +48,33 @@ table_to_class = {
 
 def process_zed_kamera_data(session, data):
     try:
+        body_list_data = data.get("body_list", "[]")
+
+        if isinstance(body_list_data, str):
+            body_list = json.loads(body_list_data)
+        else:
+            logger.error(
+                f"Invalid format for body_list, expected a string but got {type(body_list_data)}: {body_list_data}"
+            )
+            return
+
         zed_data = DimZedBodyTracking1ogR1(
             is_new=data.get("is_new", False),
             is_tracked=data.get("is_tracked", False),
             camera_pitch=data.get("camera_pitch"),
             camera_roll=data.get("camera_roll"),
             camera_yaw=data.get("camera_yaw"),
-            body_list=json.loads(data.get("body_list", "[]")),
+            body_list=body_list,
         )
         session.add(zed_data)
         session.commit()
         logger.info(f"Data inserted into dim_zed_body_tracking_1og_r1: {data}")
+    except json.JSONDecodeError as je:
+        logger.error(f"JSON decoding error while parsing body_list: {je}")
+        session.rollback()
     except Exception as e:
         logger.error(f"An error occurred while inserting zed kamera data: {e}")
         session.rollback()
-
-
-def stop_consumer(signum, frame):
-    logging.info("Stopping consumer...")
-    consumer.close()
-    sys.exit(0)
 
 
 def process_data(session, table_name, data):
