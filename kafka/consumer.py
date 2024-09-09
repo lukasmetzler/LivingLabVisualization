@@ -81,7 +81,7 @@ def process_messages():
     try:
         for message in consumer:
             logger.debug(f"Received message: {message.value}")
-            data = json.loads(message.value)
+            data = message.value
             if message.topic == "zed_kamera_topic":
                 process_zed_kamera_data(session, data)
             else:
