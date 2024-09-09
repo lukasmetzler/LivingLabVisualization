@@ -42,8 +42,10 @@ services:
       POSTGRES_USER: lukasmetzler
       POSTGRES_PASSWORD: lukasmetzler
       POSTGRES_DB: livinglabvisualization
+      POSTGRES_MULTIPLE_DATABASES: grafana,livinglabvisualization
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     networks:
       - backend
 
