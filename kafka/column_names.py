@@ -72,17 +72,6 @@ dim_user_input_column_names = [
     "measurement_point",
 ]
 
-# dim_time_column_names = [
-#    "time_id",
-#    "timestamp",
-#    "date",
-#    "day_of_week",
-#    "month",
-#    "quarter",
-#    "year",
-#    "hour",
-# ]
-
 dim_location_column_names = [
     "location_id",
     "room_number",
@@ -162,7 +151,6 @@ table_column_names = {
     "dim_illumination_datapoints_1og_r1": dim_illumination_datapoints_1og_r1_column_names,
     "dim_raffstore_light_data": dim_raffstore_light_data_column_names,
     "dim_user_input": dim_user_input_column_names,
-    # "dim_time": dim_time_column_names,
     "dim_location": dim_location_column_names,
     "dim_radiation_forecast": dim_radiation_forecast_column_names,
     "dim_head_positions_1og_r1": dim_head_positions_1og_r1_column_names,
