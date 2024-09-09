@@ -54,38 +54,6 @@ class DimMetrologicalData(Base):
     created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
 
 
-class DimTime(Base):
-    __tablename__ = "dim_time"
-    time_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
-    )
-    timestamp = Column(
-        TIMESTAMP, nullable=False, unique=True
-    )  # Stellen Sie sicher, dass der Timestamp eindeutig ist
-    date = Column(String)
-    day_of_week = Column(String)
-    month = Column(String)
-    quarter = Column(String)
-    year = Column(Integer)
-    hour = Column(Integer)
-    created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
-
-    @staticmethod
-    def get_or_create(session, timestamp):
-        time_record = session.query(DimTime).filter_by(timestamp=timestamp).first()
-        if not time_record:
-            time_record = DimTime(timestamp=timestamp)
-            time_record.date = timestamp.strftime("%Y-%m-%d")
-            time_record.day_of_week = timestamp.strftime("%A")
-            time_record.month = timestamp.strftime("%B")
-            time_record.quarter = f"Q{((timestamp.month - 1) // 3) + 1}"
-            time_record.year = timestamp.year
-            time_record.hour = timestamp.hour
-            session.add(time_record)
-            session.commit()
-        return time_record
-
-
 class DimZedBodyTracking1ogR1(Base):
     __tablename__ = "dim_zed_body_tracking_1og_r1"
     zed_body_tracking_id = Column(
@@ -238,9 +206,7 @@ class FactEnvironmentalDataFacts(Base):
         ForeignKey("dim_head_positions_1og_r1.head_positions_id"),
         nullable=True,
     )
-    time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"), nullable=True)
 
-    time = relationship("DimTime", uselist=False, backref="environmental_data_facts")
     __tablename__ = "fact_environmental_data_facts"
     environmental_data_facts_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
@@ -273,9 +239,7 @@ class FactEnvironmentalDataFacts(Base):
         ForeignKey("dim_head_positions_1og_r1.head_positions_id"),
         nullable=True,
     )
-    time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"), nullable=True)
 
-    time = relationship("DimTime", uselist=False, backref="environmental_data_facts")
     __tablename__ = "fact_environmental_data_facts"
     environmental_data_facts_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
@@ -296,10 +260,8 @@ class FactEnvironmentalDataFacts(Base):
     )
     head_positions_id = Column(
         UUID(as_uuid=True), ForeignKey("dim_head_positions_1og_r1.head_positions_id")
-    )
-    time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"))  # Hinzugefügt
+    )  # Hinzugefügt
 
-    time = relationship("DimTime")
     location = relationship("DimLocation")
     metrological_data = relationship("DimMetrologicalData")
     pv_modul_data = relationship("DimPvModulData1ogR1")
@@ -311,7 +273,6 @@ class FactEnvironmentalDataFacts(Base):
     environmental_data_facts_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
     )
-    time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"))
     location_id = Column(UUID(as_uuid=True), ForeignKey("dim_location.location_id"))
     metrological_data_id = Column(
         UUID(as_uuid=True), ForeignKey("dim_metrological_data.metrological_data_id")
@@ -330,7 +291,6 @@ class FactEnvironmentalDataFacts(Base):
         UUID(as_uuid=True), ForeignKey("dim_head_positions_1og_r1.head_positions_id")
     )
 
-    time = relationship("DimTime")
     location = relationship("DimLocation")
     metrological_data = relationship("DimMetrologicalData")
     pv_modul_data = relationship("DimPvModulData1ogR1")
@@ -341,7 +301,6 @@ class FactEnvironmentalDataFacts(Base):
 
 class FactUserInputFacts(Base):
     __tablename__ = "fact_user_input_facts"
-    time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"))
     user_input_facts_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
     )
@@ -350,14 +309,12 @@ class FactUserInputFacts(Base):
         UUID(as_uuid=True), ForeignKey("dim_user_input.user_input_id")
     )
 
-    time = relationship("DimTime")
     location = relationship("DimLocation")
     user_input = relationship("DimUserInput")
 
 
 class FactSensory(Base):
     __tablename__ = "fact_sensory"
-    time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"))
     sensory_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
     )
@@ -367,14 +324,12 @@ class FactSensory(Base):
         ForeignKey("dim_zed_body_tracking_1og_r1.zed_body_tracking_id"),
     )
 
-    time = relationship("DimTime")
     location = relationship("DimLocation")
     zed_body_tracking = relationship("DimZedBodyTracking1ogR1")
 
 
 class FactRaffstoreLightFacts(Base):
     __tablename__ = "fact_raffstore_light_facts"
-    time_id = Column(UUID(as_uuid=True), ForeignKey("dim_time.time_id"))
     raffstore_light_facts_id = Column(
         UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
     )
@@ -383,7 +338,6 @@ class FactRaffstoreLightFacts(Base):
         UUID(as_uuid=True),
         ForeignKey("dim_raffstore_light_data.raffstore_light_data_id"),
     )
-    time = relationship("DimTime")
     location = relationship("DimLocation")
     raffstore_light_data = relationship("DimRaffstoreLightData")
 

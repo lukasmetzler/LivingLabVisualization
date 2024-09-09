@@ -84,18 +84,6 @@ CREATE TABLE dim_user_input (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE dim_time (
-    time_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    timestamp TIMESTAMPTZ,
-    date DATE,
-    day_of_week VARCHAR(10),
-    month VARCHAR(10),
-    quarter VARCHAR(2),
-    year INTEGER,
-    hour INTEGER,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE dim_location (
     location_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     room_number INTEGER,
@@ -107,44 +95,36 @@ CREATE TABLE dim_location (
 
 CREATE TABLE fact_user_input_facts (
     user_input_facts_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    time_id UUID,
     location_id UUID,
     user_input_id UUID,
-    FOREIGN KEY (time_id) REFERENCES dim_time(time_id),
     FOREIGN KEY (location_id) REFERENCES dim_location(location_id),
     FOREIGN KEY (user_input_id) REFERENCES dim_user_input(user_input_id)
 );
 
 CREATE TABLE fact_sensory (
     sensory_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    time_id UUID,
     location_id UUID,
     zed_body_tracking_id UUID,
-    FOREIGN KEY (time_id) REFERENCES dim_time(time_id),
     FOREIGN KEY (location_id) REFERENCES dim_location(location_id),
     FOREIGN KEY (zed_body_tracking_id) REFERENCES dim_zed_body_tracking_1og_r1(zed_body_tracking_id)
 );
 
 CREATE TABLE fact_raffstore_light_facts (
     raffstore_light_facts_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    time_id UUID,
     location_id UUID,
     raffstore_light_data_id UUID,
-    FOREIGN KEY (time_id) REFERENCES dim_time(time_id),
     FOREIGN KEY (location_id) REFERENCES dim_location(location_id),
     FOREIGN KEY (raffstore_light_data_id) REFERENCES dim_raffstore_light_data(raffstore_light_data_id)
 );
 
 CREATE TABLE fact_environmental_data_facts (
     environmental_data_facts_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    time_id UUID,
     location_id UUID,
     metrological_data_id UUID,
     pv_modul_data_id UUID,
     illumination_datapoints_id UUID,
     radiation_forecast_id UUID,
     head_positions_id UUID,
-    FOREIGN KEY (time_id) REFERENCES dim_time(time_id),
     FOREIGN KEY (location_id) REFERENCES dim_location(location_id),
     FOREIGN KEY (metrological_data_id) REFERENCES dim_metrological_data(metrological_data_id),
     FOREIGN KEY (pv_modul_data_id) REFERENCES dim_pv_modul_data_1og_r1(pv_modul_data_id),

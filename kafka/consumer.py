@@ -49,15 +49,19 @@ table_to_class = {
 
 def process_zed_kamera_data(session, data):
     try:
+        # Annahme: data['body_list'] ist ein String, der JSON-Daten enthält
+        body_list = (
+            json.loads(data.get("body_list", "[]"))
+            if isinstance(data.get("body_list"), str)
+            else []
+        )
         zed_data = DimZedBodyTracking1ogR1(
             is_new=data.get("is_new", False),
             is_tracked=data.get("is_tracked", False),
             camera_pitch=data.get("camera_pitch"),
             camera_roll=data.get("camera_roll"),
             camera_yaw=data.get("camera_yaw"),
-            body_list=json.loads(
-                data.get("body_list", "[]")
-            ),  # Ensure JSON is properly parsed
+            body_list=body_list,
         )
         session.add(zed_data)
         session.commit()
@@ -76,18 +80,21 @@ def stop_consumer(signum, frame):
 def process_data(session, table_name, data):
     try:
         model_class = table_to_class[table_name]
+        if "created_at" in data:
+            try:
+                timestamp = datetime.strptime(
+                    data["created_at"], "%Y-%m-%d %H:%M:%S"
+                )  # Angepasstes Format
+                time_record = DimTime.get_or_create(session, timestamp)
+                data["time_id"] = time_record.time_id
+            except ValueError as ve:
+                logger.error(f"Date parsing error: {ve}")
+                return
+        else:
+            logger.error(f"'created_at' not found in data for {table_name}")
+            return
+
         table_data = model_class(**data)
-
-        # Handling für MetrologicalData spezifisch, da hier der Timestamp wichtig ist
-        if table_name == "dim_metrological_data":
-            timestamp = datetime.strptime(
-                data["created_at"], "%Y-%m-%d %H:%M:%S"
-            )  # Stellen Sie sicher, dass das Format korrekt ist
-            time_record = DimTime.get_or_create(session, timestamp)
-            table_data.time_id = (
-                time_record.time_id
-            )  # Verknüpfen des generierten DimTime Eintrags
-
         session.add(table_data)
         session.commit()
         logger.info(f"Data inserted into {table_name}: {data}")
