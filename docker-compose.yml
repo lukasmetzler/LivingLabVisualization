@@ -165,6 +165,20 @@ services:
           cpus: "1.0"
           memory: "512M"
 
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./gitlab-runner/config:/etc/gitlab-runner
+      - /usr/bin/docker:/usr/bin/docker
+    environment:
+      - CI_SERVER_URL=https://gitlab.com/
+      - REGISTRATION_TOKEN=glrt-j9irSkJA3o3Wnyh87SYd
+    networks:
+      - backend
+
   nginx:
     image: nginx:mainline-alpine
     container_name: nginx
@@ -191,20 +205,6 @@ volumes:
     driver: local
   grafana_data:
     driver: local
-
-  gitlab-runner:
-    image: gitlab/gitlab-runner:latest
-    container_name: gitlab-runner
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./gitlab-runner/config:/etc/gitlab-runner
-      - /usr/bin/docker:/usr/bin/docker
-    environment:
-      - CI_SERVER_URL=https://gitlab.com/
-      - REGISTRATION_TOKEN=glrt-j9irSkJA3o3Wnyh87SYd
-    networks:
-      - backend
 
 networks:
   backend:
