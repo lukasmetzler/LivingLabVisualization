@@ -1,4 +1,10 @@
+stages:
+  - deploy
+
 deploy_job:
+  stage: deploy
+  only:
+    - main
   script:
     - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
     - eval $(ssh-agent -s)
