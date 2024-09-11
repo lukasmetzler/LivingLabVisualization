@@ -33,6 +33,14 @@ services:
       - zookeeper
     networks:
       - backend
+    volumes:
+      - ./create-topics.sh:/usr/local/bin/create-topics.sh
+    command:
+      [
+        "sh",
+        "-c",
+        "/usr/local/bin/create-topics.sh && kafka-server-start /etc/kafka/server.properties",
+      ]
 
   postgres:
     image: postgres:latest
