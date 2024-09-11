@@ -7,7 +7,7 @@ _config_cache = None
 class ProducerConfig:
     def __init__(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        env_file_path = os.path.join(current_dir, "..", "local.env")
+        env_file_path = os.path.join(current_dir, "..", ".env")
 
         print(f"Loading .env file from: {env_file_path}")  # Debugging-Ausgabe
         if not os.path.exists(env_file_path):
