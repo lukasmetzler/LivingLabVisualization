@@ -251,6 +251,6 @@ docker run -d --network=echtzeitvisualisierung-von-gebaeudeindustriedaten_backen
 #### Kafka setup
 ##### Topic init
 ```bash
-docker exec -it kafka_new kafka-topics --create --topic hella_data_topic --bootstrap-server kafka_new:9092 --partitions 1 --replication-factor 1
-docker exec -it kafka_new kafka-topics --create --topic zed_kamera_topic --bootstrap-server kafka_new:9092 --partitions 1 --replication-factor 1
+docker exec -it kafka_new kafka-topics --create --topic hella_data_topic --bootstrap-server kafka_new:29092 --partitions 1 --replication-factor 1
+docker exec -it kafka_new kafka-topics --create --topic zed_kamera_topic --bootstrap-server kafka_new:29092 --partitions 1 --replication-factor 1
 ```
