@@ -14,6 +14,6 @@ deploy:
     - ssh-keyscan -H "$DEPLOY_SERVER_IP" >> ~/.ssh/known_hosts  # Fügt den Host-Schlüssel zu known_hosts hinzu
     - chmod 600 ~/.ssh/known_hosts
   script:
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP "cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten && git pull origin main && docker-compose down && docker-compose up -d --build"
+    - ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP "cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten && git remote set-url origin git@gitlab.com:lukasmetzler/echtzeitvisualisierung-von-gebaeudeindustriedaten.git && git pull origin main && docker-compose down && docker-compose up -d --build"
   only:
     - main
