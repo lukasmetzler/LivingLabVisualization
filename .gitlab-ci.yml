@@ -7,7 +7,10 @@ deploy_job:
     - main
   script:
     - cd /builds/lukasmetzler/echtzeitvisualisierung-von-gebaeudeindustriedaten
-    - git pull
+    - git status
+    - git fetch
+    - git checkout main
+    - git pull origin main
     - docker-compose down
     - docker-compose up -d
   tags:
