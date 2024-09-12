@@ -4,7 +4,7 @@ stages:
 deploy:
   stage: deploy
   script:
-    - ssh -i $SSH_PRIVATE_KEY -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP  "cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten && git pull origin main && docker-compose down && docker-compose up -d --build"
+    - ssh -i <(echo "$SSH_PRIVATE_KEY") -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP "cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten && git pull origin main && docker-compose down && docker-compose up -d --build"
   only:
     - main
 
