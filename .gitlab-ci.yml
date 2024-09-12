@@ -16,6 +16,6 @@ deploy:
     - ssh-keyscan -H "$DEPLOY_SERVER_IP" >> ~/.ssh/known_hosts
   script:
     # Verbindung herstellen und die Docker-Befehle auf dem Server ausführen
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP "cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten && git pull origin main && docker-compose down && docker-compose up -d --build"
+    - cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten && git pull origin main && docker-compose down && docker-compose up -d --build
   only:
     - main
