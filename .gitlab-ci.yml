@@ -2,19 +2,17 @@ stages:
   - deploy
 
 deploy:
+  image: ubuntu:latest
   stage: deploy
-  image: ubuntu
-  before_script:
-    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client wget gnupg -y )'
-    - wget -qO- https://get.docker.com/gpg | apt-key add -
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - touch ~/.ssh/known_hosts
-    - ssh-keyscan -H "$DEPLOY_SERVER_IP" >> ~/.ssh/known_hosts  # Fügt den Host-Schlüssel zu known_hosts hinzu
-    - chmod 600 ~/.ssh/known_hosts
-  script:
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP
-    - cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten
-  only:
+  only: 
     - main
+  before_script:
+    - apt-get -yq update
+    - apt-get -yqq install ssh
+    - install -m 600 -D /dev/null ~/.ssh/id_rsa
+    - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
+    - ssh-keyscan -H $DEPLOY_SERVER_IP > ~/.ssh/known_hosts
+  script:
+    - ssh $DEPLOY_USER@$DEPLOY_SERVER_IP "cd $WORK_DIR && git checkout main && git pull && exit"
+  after_script:
+    - rm -rf ~/.ssh
