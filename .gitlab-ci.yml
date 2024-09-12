@@ -4,7 +4,7 @@ stages:
 deploy:
   stage: deploy
   script:
-    - ssh root@83.175.123.10 "cd /path/to/your/project && git pull origin main && docker-compose down && docker-compose up -d --build"
+    - ssh root@83.175.123.10 "cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten && git pull origin main && docker-compose down && docker-compose up -d --build"
   only:
     - main
 
