@@ -16,8 +16,6 @@ deploy:
     - ssh-keyscan -H $DEPLOY_SERVER_IP > ~/.ssh/known_hosts
   script:
     - ssh $DEPLOY_USER@$DEPLOY_SERVER_IP
-    - su
-    - "$CI_REGISTRY_PASSWORD"
     - cd $WORK_DIR && sudo git pull && exit
   after_script:
     - rm -rf ~/.ssh
