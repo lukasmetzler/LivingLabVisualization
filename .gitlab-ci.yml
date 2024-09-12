@@ -17,7 +17,7 @@ deploy:
   script:
     - ssh $DEPLOY_USER@$DEPLOY_SERVER_IP
     - su
-    - echo "$CI_REGISTRY_PASSWORD"
+    - "$CI_REGISTRY_PASSWORD"
     - cd $WORK_DIR && sudo git pull && exit
   after_script:
     - rm -rf ~/.ssh
