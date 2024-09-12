@@ -6,8 +6,11 @@ deploy_job:
   only:
     - main
   script:
+    - pwd
+    - ls -la
     - cd /builds/lukasmetzler/echtzeitvisualisierung-von-gebaeudeindustriedaten
-    - git status
+    - pwd
+    - ls -la
     - git fetch
     - git checkout main
     - git pull origin main
