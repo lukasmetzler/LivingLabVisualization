@@ -1,20 +1,10 @@
 stages:
   - deploy
 
-deploy_job:
+deploy:
   stage: deploy
+  script:
+    - ssh root@83.175.123.10 "cd /path/to/your/project && git pull origin main && docker-compose down && docker-compose up -d --build"
   only:
     - main
-  script:
-    - pwd
-    - ls -la
-    - cd /builds/lukasmetzler/echtzeitvisualisierung-von-gebaeudeindustriedaten
-    - pwd
-    - ls -la
-    - git fetch
-    - git checkout main
-    - git pull origin main
-    - docker-compose down
-    - docker-compose up -d
-  tags:
-    - hella
+
