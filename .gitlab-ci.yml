@@ -3,8 +3,19 @@ stages:
 
 deploy:
   stage: deploy
+  image: ubuntu
+  before_script:
+    - mkdir -p ~/.ssh
+    # Nutze den SSH-Schlüssel aus der Umgebungsvariable "$SSH_PRIVATE_KEY"
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    # Füge den Zielserver zu known_hosts hinzu, um Verbindungswarnungen zu vermeiden
+    - ssh-keyscan -H "$DEPLOY_SERVER_IP" >> ~/.ssh/known_hosts
   script:
-    - ssh -i <(echo "$SSH_PRIVATE_KEY") -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP "cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten && git pull origin main && docker-compose down && docker-compose up -d --build"
+    # Verbindung herstellen und die Docker-Befehle auf dem Server ausführen
+    - ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP "cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten && git pull origin main && docker-compose down && docker-compose up -d --build"
   only:
     - main
-
