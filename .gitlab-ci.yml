@@ -13,7 +13,6 @@ deploy:
     - touch ~/.ssh/config
     - touch ~/.ssh/known_hosts
     - chmod -R 400 ~/.ssh
-    - ssh-keyscan <ip> >> ~/.ssh/known_hosts
     - '[[ -f /.dockerinit ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
     # Verbindung herstellen und die Docker-Befehle auf dem Server ausführen
