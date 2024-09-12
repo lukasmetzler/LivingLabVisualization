@@ -16,6 +16,7 @@ deploy:
     - '[[ -f /.dockerinit ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
     # Verbindung herstellen und die Docker-Befehle auf dem Server ausführen
+    - ssh $DEPLOY_USER@$DEPLOY_SERVER_IP
     - cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten && git pull origin main && docker-compose down && docker-compose up -d --build
   only:
     - main
