@@ -16,6 +16,6 @@ deploy:
     - ssh-keyscan -H $DEPLOY_SERVER_IP > ~/.ssh/known_hosts
   script:
     - ssh -t -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP
-    - cd $WORK_DIR && sudo git pull && docker ps
+    - cd $WORK_DIR && sudo git pull
   after_script:
     - rm -rf ~/.ssh
