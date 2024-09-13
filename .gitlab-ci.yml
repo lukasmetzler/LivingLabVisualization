@@ -16,12 +16,8 @@ deploy:
     - ssh-keyscan -H $DEPLOY_SERVER_IP >> ~/.ssh/known_hosts
   script:
     - ssh -t -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP
-    - echo 'Current directory: $(pwd)';
-    - echo 'Listing files in root directory:';
-    - ls -la /;
-    - echo 'Changing to working directory: $WORK_DIR';
-    - cd $WORK_DIR &&
-    - echo 'Current directory after cd: $(pwd)' &&
+    - $(pwd)
+    - cd $WORK_DIR
     - sudo git pull
     - docker-compose up -d
   after_script:
