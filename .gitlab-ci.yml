@@ -16,16 +16,10 @@ deploy:
     - ssh-keyscan -H $DEPLOY_SERVER_IP >> ~/.ssh/known_hosts
   script:
     - ssh -t -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP "
-        # Überprüfe, ob das Arbeitsverzeichnis existiert
-        if [ -d $WORK_DIR ]; then
-          # Wechsle ins Arbeitsverzeichnis und führe Git-Pull und Docker-Compose-Befehle aus
-          cd $WORK_DIR &&
-          sudo git pull &&
-          docker-compose up -d
-        else
-          echo 'Directory $WORK_DIR does not exist!' >&2
-          exit 1
-        fi
+        # Wechsle ins Arbeitsverzeichnis und führe Git-Pull und Docker-Compose-Befehle aus
+        cd $WORK_DIR &&
+        sudo git pull &&
+        docker-compose up -d
       "
   after_script:
     - rm -rf ~/.ssh
