@@ -15,6 +15,6 @@ deploy:
     - ssh-keyscan -H gitlab.com >> ~/.ssh/known_hosts
     - ssh-keyscan -H $DEPLOY_SERVER_IP > ~/.ssh/known_hosts
   script:
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP "cd $WORK_DIR && git pull"
+    - ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP "cd $WORK_DIR && sudo git pull"
   after_script:
     - rm -rf ~/.ssh
