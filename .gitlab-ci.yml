@@ -17,7 +17,6 @@ deploy:
   script:
     - ssh -t -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP
     - pwd
-    - cd $WORK_DIR
     - sudo git pull
     - docker-compose up -d
   after_script:
