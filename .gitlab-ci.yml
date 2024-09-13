@@ -16,8 +16,8 @@ deploy:
     - ssh-keyscan -H $DEPLOY_SERVER_IP >> ~/.ssh/known_hosts
   script:
     - ssh -t -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_SERVER_IP
-    - cd $WORK_DIR &&
-    - sudo git pull &&
+    - cd $WORK_DIR
+    - sudo git pull
     - docker-compose up -d
   after_script:
     - rm -rf ~/.ssh
