@@ -66,12 +66,11 @@ def get_latest_id(session, model_class):
     """
     record = session.query(model_class).order_by(model_class.created_at.desc()).first()
     if record:
-        logger.info(
-            f"Latest {model_class.__tablename__} ID: {getattr(record, f'{model_class.__tablename__}_id')}"
-        )
+        # Verwende den primären Schlüssel (ID) der Tabelle direkt, ohne dynamische Namensbildung
+        return getattr(record, model_class.__mapper__.primary_key[0].name)
     else:
         logger.warning(f"No records found for {model_class.__tablename__}")
-    return record and getattr(record, f"{model_class.__tablename__}_id", None)
+        return None
 
 
 # Funktion zum Einfügen von Daten in die Faktentabelle für Umweltinformationen
