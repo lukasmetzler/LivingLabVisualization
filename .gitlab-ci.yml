@@ -17,6 +17,6 @@ deploy:
     - ssh -T $DEPLOY_USER@$DEPLOY_SERVER_IP
     - git checkout main
     - git pull
-    - ssh $DEPLOY_USER@$DEPLOY_SERVER_IP "export PATH=\$PATH:/usr/bin && docker-compose up -d"
+    - ssh $DEPLOY_USER@$DEPLOY_SERVER_IP "cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten && /usr/bin/docker-compose up -d"
   after_script:
     - rm -rf ~/.ssh
