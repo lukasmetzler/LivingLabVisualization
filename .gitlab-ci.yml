@@ -16,7 +16,7 @@ deploy:
   script:
     - ssh -T $DEPLOY_USER@$DEPLOY_SERVER_IP
     - git checkout main
-    - git pull
+    - sudo git pull
     - docker-compose up -d
   after_script:
     - rm -rf ~/.ssh
