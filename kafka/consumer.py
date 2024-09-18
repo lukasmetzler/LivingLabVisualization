@@ -75,54 +75,39 @@ def get_latest_id(session, model_class):
         return None
 
 
-# Funktion zum Einfügen von Daten in die Faktentabelle für Umweltinformationen
-def insert_fact_environmental_data(session, data):
+# Generische Funktion zum Einfügen in Faktentabellen
+def insert_fact_table(session, fact_model_class, dimension_model_classes):
     """
-    Diese Funktion fügt Daten in die FactEnvironmentalDataFacts-Tabelle ein.
+    Generische Funktion, die Daten in eine Faktentabelle einfügt.
     Sie ruft die neuesten IDs der zugehörigen Dimensionstabellen ab und verknüpft sie in der Fact-Tabelle.
+
+    :param session: Die aktuelle Datenbank-Sitzung
+    :param fact_model_class: Die Faktentabelle als SQLAlchemy Modellklasse
+    :param dimension_model_classes: Ein Dictionary, das die Dimensionstabellen als Schlüssel enthält
+                                    und die entsprechenden Fremdschlüsselfelder als Werte
     """
     try:
-        # Abrufen der neuesten IDs aus den Dimensionstabellen
-        location_id = get_latest_id(session, DimLocation)
-        metrological_data_id = get_latest_id(session, DimMetrologicalData)
-        pv_modul_data_id = get_latest_id(session, DimPvModulData1ogR1)
-        illumination_datapoints_id = get_latest_id(
-            session, DimIlluminationDatapoints1ogR1
-        )
-        radiation_forecast_id = get_latest_id(session, DimRadiationForecast)
-        head_positions_id = get_latest_id(session, DimHeadPositions1ogR1)
+        # Abrufen der neuesten IDs für jede Dimensionstabelle
+        dimension_ids = {}
+        for dimension_name, fk_field in dimension_model_classes.items():
+            model_class = table_to_class[dimension_name]
+            latest_id = get_latest_id(session, model_class)
+            dimension_ids[fk_field] = latest_id
 
-        # Überprüfen, ob alle benötigten IDs vorhanden sind
-        if any(
-            id is None
-            for id in [
-                location_id,
-                metrological_data_id,
-                pv_modul_data_id,
-                illumination_datapoints_id,
-            ]
-        ):
-            logger.error(
-                "Missing required IDs for FactEnvironmentalDataFacts insertion."
-            )
-            return
+            # Überprüfen, ob die ID vorhanden ist
+            if latest_id is None:
+                logger.error(f"Missing required ID for {dimension_name}")
+                return
 
-        # Einfügen der Daten in die Faktentabelle
-        fact_data = FactEnvironmentalDataFacts(
-            location_id=location_id,
-            metrological_data_id=metrological_data_id,
-            pv_modul_data_id=pv_modul_data_id,
-            illumination_datapoints_id=illumination_datapoints_id,
-            radiation_forecast_id=radiation_forecast_id,
-            head_positions_id=head_positions_id,
-        )
+        # Erstellen eines Faktentabellen-Datensatzes mit den abgerufenen IDs
+        fact_data = fact_model_class(**dimension_ids)
         session.add(fact_data)
         session.commit()
 
-        logger.info(f"Inserted data into FactEnvironmentalDataFacts: {fact_data}")
+        logger.info(f"Inserted data into {fact_model_class.__tablename__}: {fact_data}")
     except Exception as e:
         session.rollback()
-        logger.error(f"Error inserting data into FactEnvironmentalDataFacts: {e}")
+        logger.error(f"Error inserting data into {fact_model_class.__tablename__}: {e}")
 
 
 # Funktion zum Verarbeiten von ZED-Kamera-Daten
@@ -168,13 +153,52 @@ def process_zed_kamera_data(session, data):
 # Funktion zum Verarbeiten von allgemeinen Daten und Einfügen in die entsprechenden Tabellen
 def process_data(session, table_name, data):
     """
-    Verarbeitet eingehende Daten, fügt sie in die Dimensionstabellen ein oder ruft insert_fact_environmental_data auf,
+    Verarbeitet eingehende Daten, fügt sie in die Dimensionstabellen ein oder ruft insert_fact_table auf,
     wenn es sich um eine Faktentabelle handelt.
     """
     try:
-        if table_name == "fact_environmental_data_facts":
-            # Spezielle Behandlung für Umweltfaktendaten
-            insert_fact_environmental_data(session, data)
+        # Fall für Faktentabellen
+        if table_name.startswith("fact_"):
+            if table_name == "fact_environmental_data_facts":
+                insert_fact_table(
+                    session,
+                    FactEnvironmentalDataFacts,
+                    {
+                        "dim_location": "location_id",
+                        "dim_metrological_data": "metrological_data_id",
+                        "dim_pv_modul_data_1og_r1": "pv_modul_data_id",
+                        "dim_illumination_datapoints_1og_r1": "illumination_datapoints_id",
+                        "dim_radiation_forecast": "radiation_forecast_id",
+                        "dim_head_positions_1og_r1": "head_positions_id",
+                    },
+                )
+            elif table_name == "fact_user_input_facts":
+                insert_fact_table(
+                    session,
+                    FactUserInputFacts,
+                    {
+                        "dim_location": "location_id",
+                        "dim_user_input": "user_input_id",
+                    },
+                )
+            elif table_name == "fact_sensory":
+                insert_fact_table(
+                    session,
+                    FactSensory,
+                    {
+                        "dim_location": "location_id",
+                        "dim_zed_body_tracking_1og_r1": "zed_body_tracking_id",
+                    },
+                )
+            elif table_name == "fact_raffstore_light_facts":
+                insert_fact_table(
+                    session,
+                    FactRaffstoreLightFacts,
+                    {
+                        "dim_location": "location_id",
+                        "dim_raffstore_light_data": "raffstore_light_data_id",
+                    },
+                )
         else:
             # Allgemeiner Fall für Dimensionstabellen
             model_class = table_to_class[table_name]
