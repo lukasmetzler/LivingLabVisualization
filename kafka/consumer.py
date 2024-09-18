@@ -66,8 +66,10 @@ def get_latest_id(session, model_class):
     """
     record = session.query(model_class).order_by(model_class.created_at.desc()).first()
     if record:
-        # Verwende den primären Schlüssel (ID) der Tabelle direkt, ohne dynamische Namensbildung
-        return getattr(record, model_class.__mapper__.primary_key[0].name)
+        # Verwende den tatsächlichen Primärschlüssel (ID) der Tabelle
+        primary_key_column = model_class.__mapper__.primary_key[0].name
+        logging.debug(primary_key_column)
+        return getattr(record, primary_key_column)
     else:
         logger.warning(f"No records found for {model_class.__tablename__}")
         return None
