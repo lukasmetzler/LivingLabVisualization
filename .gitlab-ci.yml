@@ -7,8 +7,6 @@ deploy:
   only:
     - main
   before_script:
-    - apt-get -yq update
-    - apt-get -yqq install ssh curl git
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H gitlab.com >> ~/.ssh/known_hosts
