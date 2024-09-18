@@ -65,6 +65,12 @@ def get_latest_id(session, model_class):
     Diese Funktion ruft den neuesten Datensatz aus einer Dimensionstabelle ab und gibt dessen ID zurück.
     """
     record = session.query(model_class).order_by(model_class.created_at.desc()).first()
+    if record:
+        logger.info(
+            f"Latest {model_class.__tablename__} ID: {getattr(record, f'{model_class.__tablename__}_id')}"
+        )
+    else:
+        logger.warning(f"No records found for {model_class.__tablename__}")
     return record and getattr(record, f"{model_class.__tablename__}_id", None)
 
 
