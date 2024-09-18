@@ -115,13 +115,17 @@ def process_zed_kamera_data(session, data):
     Diese Funktion verarbeitet spezielle ZED-Kamera-Daten und fügt sie in die entsprechende Dimensionstabelle ein.
     """
     try:
-        # JSON-Parsing der body_list-Daten (die als String erwartet werden)
+        # Überprüfung, ob body_list existiert und korrekt formatiert ist
         body_list_data = data.get("body_list", "[]")
+
         if isinstance(body_list_data, str):
             body_list = json.loads(body_list_data)
+        elif isinstance(body_list_data, list):
+            # Falls das body_list bereits als Liste geliefert wird
+            body_list = body_list_data
         else:
             logger.error(
-                f"Invalid format for body_list, expected string but got {type(body_list_data)}"
+                f"Invalid format for body_list, expected string or list but got {type(body_list_data)}: {body_list_data}"
             )
             return
 

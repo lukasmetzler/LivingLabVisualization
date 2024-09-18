@@ -35,6 +35,11 @@ def generate_random_data(
             if column in ["is_new", "is_tracked"]:
                 # Erzeuge Boolean-Werte für bestimmte Spalten
                 table_data[column] = generate_boolean()
+            elif column == "body_list":
+                # Füge ein korrektes JSON-Format für body_list hinzu
+                table_data[column] = json.dumps(
+                    [{"id": random.randint(1, 100), "name": "Body"}]
+                )
             else:
                 # Erzeuge numerische Zufallswerte für andere Spalten
                 table_data[column] = random.uniform(0, 100)
