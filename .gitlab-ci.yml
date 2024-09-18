@@ -18,7 +18,7 @@ deploy:
     - git remote set-url origin git@gitlab.com:lukasmetzler/echtzeitvisualisierung-von-gebaeudeindustriedaten.git
     - git checkout main
     - git fetch --all
-    - ssh -vT git@gitlab.com # Verbose SSH-Test
+    - ssh -vvvT git@gitlab.com # Detaillierte Ausgabe zur Fehlersuche
     - git pull origin main
     - ssh $DEPLOY_USER@$DEPLOY_SERVER_IP "cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten && /usr/bin/docker-compose up -d"
   after_script:
