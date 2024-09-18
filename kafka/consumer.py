@@ -68,7 +68,7 @@ def get_latest_id(session, model_class):
     if record:
         # Verwende den tatsächlichen Primärschlüssel (ID) der Tabelle
         primary_key_column = model_class.__mapper__.primary_key[0].name
-        logging.debug(primary_key_column)
+        logger.debug(f"Latest record for {model_class.__tablename__}: {record}")
         return getattr(record, primary_key_column)
     else:
         logger.warning(f"No records found for {model_class.__tablename__}")
@@ -91,6 +91,21 @@ def insert_fact_environmental_data(session, data):
         )
         radiation_forecast_id = get_latest_id(session, DimRadiationForecast)
         head_positions_id = get_latest_id(session, DimHeadPositions1ogR1)
+
+        # Überprüfen, ob alle benötigten IDs vorhanden sind
+        if any(
+            id is None
+            for id in [
+                location_id,
+                metrological_data_id,
+                pv_modul_data_id,
+                illumination_datapoints_id,
+            ]
+        ):
+            logger.error(
+                "Missing required IDs for FactEnvironmentalDataFacts insertion."
+            )
+            return
 
         # Einfügen der Daten in die Faktentabelle
         fact_data = FactEnvironmentalDataFacts(
