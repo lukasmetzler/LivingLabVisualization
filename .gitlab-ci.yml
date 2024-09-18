@@ -15,6 +15,7 @@ deploy:
     - ssh-keyscan -H $DEPLOY_SERVER_IP >> ~/.ssh/known_hosts
   script:
     - ssh -T $DEPLOY_USER@$DEPLOY_SERVER_IP
+    - git checkout main
     - git pull
     - docker-compose up -d
   after_script:
