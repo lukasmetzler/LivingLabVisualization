@@ -43,6 +43,7 @@ def start_producer(kafka_server):
     return KafkaProducer(
         bootstrap_servers=[kafka_server],
         value_serializer=lambda v: json.dumps(v).encode("utf-8"),
+        api_version=(2, 8, 0),
     )
 
 
