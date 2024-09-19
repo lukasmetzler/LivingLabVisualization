@@ -33,8 +33,6 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
     depends_on:
       - zookeeper
-    networks:
-      - backend
     volumes:
       - ./create-topic.sh:/docker-entrypoint-init.d/create-topic.sh
 
