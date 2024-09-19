@@ -1,63 +1,75 @@
 import json
 import logging
-from kafka import KafkaProducer
 import random
+from kafka import KafkaProducer
 import signal
 import sys
 from time import sleep
 
 
+# Funktion zum ordnungsgemäßen Beenden des Producers bei Signalunterbrechung
 def stop_producer(signum, frame):
     logging.info("Stopping producer...")
     producer.close()
     sys.exit(0)
 
 
-def generate_boolean() -> bool:
-    return random.choice([True, False])
-
-
-def generate_random_data() -> dict:
-    """Generiere Zufallsdaten für die Zed-Kamera."""
-    zed_data = {
-        "is_new": generate_boolean(),
-        "is_tracked": generate_boolean(),
-        "tracking_confidence": random.uniform(0, 100),
-        "object_count": random.randint(0, 10)
+# Funktion zur Generierung von zufälligen Daten für die Tabelle dim_zed_body_tracking
+def generate_zed_body_tracking_data():
+    """
+    Generiert zufällige Testdaten für die ZED-Kameradaten.
+    """
+    data = {
+        "is_new": random.choice([True, False]),
+        "is_tracked": random.choice([True, False]),
+        "camera_pitch": random.uniform(-180, 180),
+        "camera_roll": random.uniform(-180, 180),
+        "camera_yaw": random.uniform(-180, 180),
+        "body_list": [
+            {
+                "id": random.randint(1, 100),
+                "position": [random.uniform(0, 10) for _ in range(3)],
+            }
+        ],
     }
-    logging.debug("Generated Zed data: %s", zed_data)
-    return zed_data
+    return data
 
 
-def start_producer(broker_server):
+# Funktion zum Starten des Kafka-Producers
+def start_producer(kafka_server):
+    """
+    Initialisiert und gibt einen KafkaProducer zurück, der mit dem externen Kafka-Server kommunizieren kann.
+    """
     return KafkaProducer(
-        bootstrap_servers=[broker_server],
+        bootstrap_servers=[kafka_server],
         value_serializer=lambda v: json.dumps(v).encode("utf-8"),
     )
 
 
+# Hauptfunktion des Producers
 def main():
-    broker_server = "83.175.123.10:9092"
-    logging.info(f"Starting the Producer with broker {broker_server}...")
+    kafka_server = "83.175.123.10:9092"  # Externer Kafka-Server
+    topic = "zed_kamera_topic"  # Thema, auf das die Daten gesendet werden
+    interval_seconds = 5  # Wartezeit zwischen den Nachrichten
 
+    logging.info(f"Connecting to Kafka at {kafka_server}...")
     global producer
-    producer = start_producer(broker_server)
+    producer = start_producer(kafka_server)
 
-    wait_between_iterations = 5  # Sekunden zwischen jeder Nachricht
     logging.info("Starting the producer loop...")
 
     signal.signal(signal.SIGINT, stop_producer)
 
     while True:
-        logging.basicConfig(level=logging.DEBUG)
-        # Generiere zufällige Daten für den Zed-Kamera-Topic
-        zed_data = generate_random_data()
+        # Generiere ZED-Kameradaten
+        zed_data = generate_zed_body_tracking_data()
 
-        # Sende die Daten an den zed_kamera_topic
-        producer.send("zed_kamera_topic", value=zed_data)
-        logging.info(f"Sent data to topic zed_kamera_topic: {zed_data}")
+        # Sende die Daten an das Kafka-Thema zed_kamera_topic
+        producer.send(topic, value=zed_data)
+        logging.info(f"Sent data to topic {topic}: {zed_data}")
 
-        sleep(wait_between_iterations)
+        # Warte, bevor die nächste Nachricht gesendet wird
+        sleep(interval_seconds)
 
 
 if __name__ == "__main__":
