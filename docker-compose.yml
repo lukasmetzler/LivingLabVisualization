@@ -16,9 +16,6 @@ services:
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka_new
-    ports:
-      - "9092:9092" # Externer Port für externe Verbindungen
-      - "29092:29092" # Interner Port für Docker-Netzwerk
     network_mode: "host"
     environment:
       KAFKA_BROKER_ID: 1
