@@ -19,7 +19,7 @@ services:
     network_mode: "host"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper_new:2181"
+      KAFKA_ZOOKEEPER_CONNECT: "localhost:2181"
       # Definiere die Listener für interne und externe Verbindungen
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://213.33.101.10:9092,PLAINTEXT_INTERNAL://kafka_new:29092
