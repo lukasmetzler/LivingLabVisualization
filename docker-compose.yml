@@ -16,13 +16,16 @@ services:
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka_new
-    network_mode: "host"
+    networks:
+      - backend
+    ports:
+      - "9092:9092"
+      - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "localhost:2181"
-      # Definiere die Listener für interne und externe Verbindungen
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper_new:2181"
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://213.33.101.10:9092,PLAINTEXT_INTERNAL://localhost:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://213.33.101.10:9092,PLAINTEXT_INTERNAL://kafka_new:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
