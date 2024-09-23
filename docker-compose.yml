@@ -20,17 +20,19 @@ services:
       - backend
     ports:
       - "9092:9092"
+      - "29092:29092"
     environment:
-      KAFKA_NODE_ID: 1
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://83.175.123.10:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka_new:9092
-      KAFKA_LOG_DIRS: /var/lib/kafka/data
-      KAFKA_METADATA_LOG_DIRS: /var/lib/kafka/meta
-      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper_new:2181"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_new:29092,PLAINTEXT_HOST://83.175.123.10:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    depends_on:
+      - zookeeper
     volumes:
       - kafka-data:/var/lib/kafka
 
@@ -192,6 +194,8 @@ volumes:
     driver: local
   grafana_data:
     driver: local
+  volumes:
+    kafka-data:
 
 networks:
   backend:
