@@ -19,8 +19,8 @@ services:
     networks:
       - backend
     ports:
-      - "9092:9092" # Für externe Verbindungen
-      - "29092:29092" # Für interne Verbindungen
+      - "9092:9092"
+      - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper_new:2181"
