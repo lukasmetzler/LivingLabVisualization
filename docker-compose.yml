@@ -8,28 +8,21 @@ services:
     ports:
       - "9092:9092" # Externe Verbindung
       - "29092:29092" # Interne Verbindung
+      - "29093:29093" # Controller-Port für KRaft-Mode
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:29093"
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://83.175.123.10:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_LOG_DIRS: /var/lib/kafka/data
-      KAFKA_METRIC_REPORTERS: org.apache.kafka.common.metrics.JmxReporter
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_LOG_RETENTION_HOURS: 168
-      KAFKA_LOG_SEGMENT_BYTES: 1073741824
-      KAFKA_NUM_PARTITIONS: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-      KAFKA_MIN_INSYNC_REPLICAS: 1
-      KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_KRAFT_CLUSTER_ID: my-cluster-id
     volumes:
       - kafka-data:/var/lib/kafka
-    depends_on:
-      - postgres
 
   postgres:
     image: postgres:latest
