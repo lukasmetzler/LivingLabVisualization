@@ -49,7 +49,7 @@ def start_producer(kafka_server):
 
 # Hauptfunktion des Producers
 def main():
-    kafka_server = "livinglab-prod.hella.info:9092"  # Externer Kafka-Server
+    kafka_server = "83.175.123.10:9092"  # Externer Kafka-Server
     topic = "zed_kamera_topic"  # Thema, auf das die Daten gesendet werden
     interval_seconds = 5  # Wartezeit zwischen den Nachrichten
 

@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+    image: zookeeper:latest
     container_name: zookeeper_new
     ports:
       - "2181:2181"
@@ -14,7 +14,7 @@ services:
       - backend
 
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: apache/kafka:latest
     container_name: kafka_new
     networks:
       - backend
