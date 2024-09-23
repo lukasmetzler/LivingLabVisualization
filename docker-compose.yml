@@ -194,8 +194,8 @@ volumes:
     driver: local
   grafana_data:
     driver: local
-  volumes:
-    kafka-data:
+  kafka-data:
+    driver: local
 
 networks:
   backend:
