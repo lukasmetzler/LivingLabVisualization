@@ -16,10 +16,14 @@ services:
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka_new
-    network_mode: host
+    networks:
+      - backend # Ändere den Netzwerkmodus auf backend
+    ports:
+      - "9092:9092"
+      - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper_new:2181"
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper_new:2181" # Verbindung zu Zookeeper über den Netzwerk-Namen
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://83.175.123.10:29092,PLAINTEXT_HOST://83.175.123.10:9092
