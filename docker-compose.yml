@@ -13,29 +13,25 @@ services:
     networks:
       - backend
 
-  kafka:
-    image: confluentinc/cp-kafka:latest
-    container_name: kafka_new
-    networks:
-      - backend
-    ports:
-      - "9092:9092"
-      - "29092:29092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper_new:2181"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_new:29092,PLAINTEXT_HOST://83.175.123.10:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-    depends_on:
-      - zookeeper
-    volumes:
-      - ./server.properties:/etc/kafka/server.properties
-      - ./create-topic.sh:/docker-entrypoint-init.d/create-topic.sh
+kafka:
+  image: confluentinc/cp-kafka:latest
+  container_name: kafka_new
+  network_mode: host
+  environment:
+    KAFKA_BROKER_ID: 1
+    KAFKA_ZOOKEEPER_CONNECT: "zookeeper_new:2181"
+    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+    KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+    KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://83.175.123.10:29092,PLAINTEXT_HOST://83.175.123.10:9092
+    KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+    KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+  depends_on:
+    - zookeeper
+  volumes:
+    - ./server.properties:/etc/kafka/server.properties
+    - ./create-topic.sh:/docker-entrypoint-init.d/create-topic.sh
 
   postgres:
     image: postgres:latest
