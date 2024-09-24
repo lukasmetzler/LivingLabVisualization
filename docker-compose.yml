@@ -16,7 +16,11 @@ services:
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka_new
-    network_mode: host
+    networks:
+      - backend
+    ports:
+      - "9092:9092"
+      - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper_new:2181"
