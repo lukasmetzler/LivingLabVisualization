@@ -34,6 +34,7 @@ services:
     depends_on:
       - zookeeper
     volumes:
+      - ./server.properties:/etc/kafka/server.properties
       - ./create-topic.sh:/docker-entrypoint-init.d/create-topic.sh
 
   postgres:
