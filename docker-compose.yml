@@ -10,29 +10,25 @@ services:
       ZOO_PORT: 2181
       ZOO_SERVERS: server.1=zookeeper_new:2888:3888
       ZOOKEEPER_CLIENT_PORT: 2181
-    networks:
-      - backend
+    network_mode: host
 
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka_new
-    networks:
-      - backend
     ports:
       - "9092:9092"
       - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper_new:2181"
+      KAFKA_ZOOKEEPER_CONNECT: "localhost:2181" # oder zookeeper_new:2181, wenn im selben Netzwerk
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka_new:29092,PLAINTEXT_HOST://83.175.123.10:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://83.175.123.10:9092,PLAINTEXT://0.0.0.0:29092
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-    depends_on:
-      - zookeeper
+    network_mode: host
     volumes:
       - ./server.properties:/etc/kafka/server.properties
       - ./create-topic.sh:/docker-entrypoint-init.d/create-topic.sh
@@ -49,8 +45,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-    networks:
-      - backend
+    network_mode: host
 
   grafana:
     image: grafana/grafana:latest
@@ -65,8 +60,7 @@ services:
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
-    networks:
-      - backend
+    network_mode: host
 
   pgadmin:
     image: dpage/pgadmin4
@@ -76,8 +70,7 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "6060:80"
-    networks:
-      - backend
+    network_mode: host
 
   kafka-producer:
     build:
@@ -85,7 +78,7 @@ services:
       dockerfile: Dockerfile-producer
     container_name: kafka-producer
     environment:
-      - KAFKA_BOOTSTRAP_SERVER=kafka_new:29092 # Interne Verbindung
+      - KAFKA_BOOTSTRAP_SERVER=localhost:9092 # Interne Verbindung
       - KAFKA_TOPICS=${KAFKA_TOPICS}
       - PRODUCER_INTERVAL_SECONDS=${PRODUCER_INTERVAL_SECONDS}
       - CONSUMER_POSTGRES_USER=${CONSUMER_POSTGRES_USER}
@@ -93,8 +86,7 @@ services:
       - CONSUMER_POSTGRES_DB=${CONSUMER_POSTGRES_DB}
       - CONSUMER_POSTGRES_HOST=${CONSUMER_POSTGRES_HOST}
       - CONSUMER_POSTGRES_PORT=${CONSUMER_POSTGRES_PORT}
-    networks:
-      - backend
+    network_mode: host
     depends_on:
       - kafka
       - postgres
@@ -105,15 +97,14 @@ services:
       dockerfile: Dockerfile-consumer
     container_name: kafka-consumer
     environment:
-      - KAFKA_BOOTSTRAP_SERVER=kafka_new:29092 # Interne Verbindung
+      - KAFKA_BOOTSTRAP_SERVER=localhost:9092 # Interne Verbindung
       - KAFKA_TOPICS=${KAFKA_TOPICS}
       - CONSUMER_POSTGRES_USER=${CONSUMER_POSTGRES_USER}
       - CONSUMER_POSTGRES_PASSWORD=${CONSUMER_POSTGRES_PASSWORD}
       - CONSUMER_POSTGRES_DB=${CONSUMER_POSTGRES_DB}
       - CONSUMER_POSTGRES_HOST=${CONSUMER_POSTGRES_HOST}
       - CONSUMER_POSTGRES_PORT=${CONSUMER_POSTGRES_PORT}
-    networks:
-      - backend
+    network_mode: host
     depends_on:
       - kafka
       - postgres
@@ -125,8 +116,7 @@ services:
       - "9000:9000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - backend
+    network_mode: host
 
   frontend:
     image: node:18-alpine
@@ -138,13 +128,7 @@ services:
       - /app/node_modules
     working_dir: /app
     command: sh -c "npm install && npm start"
-    networks:
-      - backend
-    deploy:
-      resources:
-        limits:
-          cpus: "1.0"
-          memory: "512M"
+    network_mode: host
 
   backend:
     image: node:18-alpine
@@ -156,17 +140,11 @@ services:
       - ./visualization/server/node_modules:/app/node_modules
     working_dir: /app
     command: sh -c "npm install && npm start"
-    networks:
-      - backend
+    network_mode: host
     depends_on:
       - postgres
     environment:
       - JWT_SECRET=test
-    deploy:
-      resources:
-        limits:
-          cpus: "1.0"
-          memory: "512M"
 
   nginx:
     image: nginx:mainline-alpine
@@ -181,8 +159,7 @@ services:
       - /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/nginx/sites-enabled.d/:/etc/nginx/sites-enabled.d/:ro
       - /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/nginx/ssl/:/etc/nginx/ssl/:ro
       - /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/www/:/var/www:ro
-    networks:
-      - backend
+    network_mode: host
     depends_on:
       - frontend
       - backend
@@ -195,7 +172,3 @@ volumes:
     driver: local
   grafana_data:
     driver: local
-
-networks:
-  backend:
-    driver: bridge
