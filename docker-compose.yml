@@ -85,7 +85,7 @@ services:
       dockerfile: Dockerfile-producer
     container_name: kafka-producer
     environment:
-      - KAFKA_BOOTSTRAP_SERVER=kafka_new:29092 # Interne Verbindung
+      - KAFKA_BOOTSTRAP_SERVER=83.175.123.10:29092
       - KAFKA_TOPICS=${KAFKA_TOPICS}
       - PRODUCER_INTERVAL_SECONDS=${PRODUCER_INTERVAL_SECONDS}
       - CONSUMER_POSTGRES_USER=${CONSUMER_POSTGRES_USER}
@@ -105,7 +105,7 @@ services:
       dockerfile: Dockerfile-consumer
     container_name: kafka-consumer
     environment:
-      - KAFKA_BOOTSTRAP_SERVER=kafka_new:29092 # Interne Verbindung
+      - KAFKA_BOOTSTRAP_SERVER=83.175.123.10:29092
       - KAFKA_TOPICS=${KAFKA_TOPICS}
       - CONSUMER_POSTGRES_USER=${CONSUMER_POSTGRES_USER}
       - CONSUMER_POSTGRES_PASSWORD=${CONSUMER_POSTGRES_PASSWORD}
