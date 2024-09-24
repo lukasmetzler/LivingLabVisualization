@@ -197,5 +197,5 @@ volumes:
     driver: local
 
 networks:
-  backend:
-    driver: bridge
+  default:
+    driver: host
