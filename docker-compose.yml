@@ -1,31 +1,36 @@
 version: "3.2"
+
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper_new
     environment:
-      ZOO_MY_ID: 1
-      ZOO_PORT: 2181
-      ZOO_SERVERS: server.1=zookeeper_new:2888:3888
       ZOOKEEPER_CLIENT_PORT: 2181
-    network_mode: host
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka-net
 
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka_new
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "localhost:2181"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://213.33.101.109:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper_new:2181"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: INTERNAL://kafka_new:29092,EXTERNAL://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka_new:29092,EXTERNAL://213.33.101.109:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-    network_mode: host
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
     volumes:
       - ./create-topic.sh:/docker-entrypoint-init.d/create-topic.sh
+    networks:
+      - kafka-net
 
   postgres:
     image: postgres:latest
@@ -37,20 +42,24 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-    network_mode: host
+    networks:
+      - kafka-net
 
   grafana:
     image: grafana/grafana:latest
     container_name: grafana_new
     volumes:
       - grafana_data:/var/lib/grafana
-      - /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./grafana.ini:/etc/grafana/grafana.ini:ro
     depends_on:
       - postgres
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
-    network_mode: host
+    ports:
+      - "3000:3000"
+    networks:
+      - kafka-net
 
   pgadmin:
     image: dpage/pgadmin4
@@ -58,7 +67,10 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
-    network_mode: host
+    ports:
+      - "5050:80"
+    networks:
+      - kafka-net
 
   kafka-producer:
     build:
@@ -66,18 +78,19 @@ services:
       dockerfile: Dockerfile-producer
     container_name: kafka-producer
     environment:
-      - KAFKA_BOOTSTRAP_SERVER=213.33.101.109:9092 # Interne Verbindung
+      - KAFKA_BOOTSTRAP_SERVER=kafka_new:29092
       - KAFKA_TOPICS=${KAFKA_TOPICS}
       - PRODUCER_INTERVAL_SECONDS=${PRODUCER_INTERVAL_SECONDS}
       - CONSUMER_POSTGRES_USER=${CONSUMER_POSTGRES_USER}
       - CONSUMER_POSTGRES_PASSWORD=${CONSUMER_POSTGRES_PASSWORD}
       - CONSUMER_POSTGRES_DB=${CONSUMER_POSTGRES_DB}
-      - CONSUMER_POSTGRES_HOST=${CONSUMER_POSTGRES_HOST}
-      - CONSUMER_POSTGRES_PORT=${CONSUMER_POSTGRES_PORT}
-    network_mode: host
+      - CONSUMER_POSTGRES_HOST=postgres_new
+      - CONSUMER_POSTGRES_PORT=5432
     depends_on:
       - kafka
       - postgres
+    networks:
+      - kafka-net
 
   kafka-consumer:
     build:
@@ -85,24 +98,28 @@ services:
       dockerfile: Dockerfile-consumer
     container_name: kafka-consumer
     environment:
-      - KAFKA_BOOTSTRAP_SERVER=localhost:9092 # Interne Verbindung
+      - KAFKA_BOOTSTRAP_SERVER=kafka_new:29092
       - KAFKA_TOPICS=${KAFKA_TOPICS}
       - CONSUMER_POSTGRES_USER=${CONSUMER_POSTGRES_USER}
       - CONSUMER_POSTGRES_PASSWORD=${CONSUMER_POSTGRES_PASSWORD}
       - CONSUMER_POSTGRES_DB=${CONSUMER_POSTGRES_DB}
-      - CONSUMER_POSTGRES_HOST=${CONSUMER_POSTGRES_HOST}
-      - CONSUMER_POSTGRES_PORT=${CONSUMER_POSTGRES_PORT}
-    network_mode: host
+      - CONSUMER_POSTGRES_HOST=postgres_new
+      - CONSUMER_POSTGRES_PORT=5432
     depends_on:
       - kafka
       - postgres
+    networks:
+      - kafka-net
 
   portainer:
     image: portainer/portainer-ce
     container_name: portainer
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    network_mode: host
+    ports:
+      - "9000:9000"
+    networks:
+      - kafka-net
 
   frontend:
     image: node:18-alpine
@@ -112,42 +129,53 @@ services:
       - /app/node_modules
     working_dir: /app
     command: sh -c "npm install && npm start"
-    network_mode: host
+    ports:
+      - "3001:3000"
+    networks:
+      - kafka-net
 
   backend:
     image: node:18-alpine
     container_name: backend
     volumes:
       - ./visualization/server:/app
-      - ./visualization/server/node_modules:/app/node_modules
+      - /app/node_modules
     working_dir: /app
     command: sh -c "npm install && npm start"
-    network_mode: host
     depends_on:
       - postgres
     environment:
       - JWT_SECRET=test
+    ports:
+      - "3002:3000"
+    networks:
+      - kafka-net
 
   nginx:
     image: nginx:mainline-alpine
     container_name: nginx
     volumes:
-      - /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/nginx/conf.d/:/etc/nginx/conf.d/:ro
-      - /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/nginx/plugins.d/:/etc/nginx/plugins.d/:ro
-      - /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/nginx/sites-enabled.d/:/etc/nginx/sites-enabled.d/:ro
-      - /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/nginx/ssl/:/etc/nginx/ssl/:ro
-      - /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/www/:/var/www:ro
-    network_mode: host
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d/:/etc/nginx/conf.d/:ro
+      - ./nginx/plugins.d/:/etc/nginx/plugins.d/:ro
+      - ./nginx/sites-enabled.d/:/etc/nginx/sites-enabled.d/:ro
+      - ./nginx/ssl/:/etc/nginx/ssl/:ro
+      - ./www/:/var/www:ro
     depends_on:
       - frontend
       - backend
       - grafana
       - pgadmin
       - portainer
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - kafka-net
 
 volumes:
   postgres_data:
-    driver: local
   grafana_data:
-    driver: local
+
+networks:
+  kafka-net:
