@@ -29,7 +29,6 @@ c = config.load_config()
 
 # Logging konfigurieren, um Nachrichten zu debuggen und Fehler zu verfolgen
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
 logger.setLevel(logging.DEBUG)
 
 # Sessionmaker für die Datenbank-Sitzung initialisieren
