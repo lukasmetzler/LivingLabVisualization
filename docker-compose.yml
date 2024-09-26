@@ -101,10 +101,10 @@ services:
     container_name: kafka-consumer
     environment:
       - KAFKA_BOOTSTRAP_SERVER=kafka_new:29092
-      - KAFKA_TOPICS=${KAFKA_TOPICS}
-      - CONSUMER_POSTGRES_USER=${CONSUMER_POSTGRES_USER}
-      - CONSUMER_POSTGRES_PASSWORD=${CONSUMER_POSTGRES_PASSWORD}
-      - CONSUMER_POSTGRES_DB=${CONSUMER_POSTGRES_DB}
+      - KAFKA_TOPICS=hella_data_topic,zed_kamera_topic
+      - CONSUMER_POSTGRES_USER=lukasmetzler
+      - CONSUMER_POSTGRES_PASSWORD=lukasmetzler
+      - CONSUMER_POSTGRES_DB=livinglabvisualization
       - CONSUMER_POSTGRES_HOST=postgres_new
       - CONSUMER_POSTGRES_PORT=5432
     depends_on:
