@@ -1,20 +1,20 @@
-from datetime import datetime
 import json
 import logging
 import sys
 import traceback
 import signal
+from datetime import datetime
 
 print("Starting consumer.py")  # Debugging output
 
+# Import configuration
 try:
     import config
 
     print("Imported config")  # Debugging output
 except Exception as e:
     print(f"Error importing config: {e}")
-    traceback_str = traceback.format_exc()
-    print(f"Stack trace:\n{traceback_str}")
+    traceback.print_exc()
     sys.exit(1)
 
 # Load configuration
@@ -22,19 +22,23 @@ c = config.load_config()
 print("Loaded config")  # Debugging output
 
 # Set up logging
-logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-# Create the database engine
+# Create the database engine and import models
 try:
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
 
+    # Create the database engine
     engine = create_engine(
-        f"postgresql+psycopg2://{c.CONSUMER_POSTGRES_USER}:{c.CONSUMER_POSTGRES_PASSWORD}@{c.CONSUMER_POSTGRES_HOST}:{c.CONSUMER_POSTGRES_PORT}/{c.CONSUMER_POSTGRES_DB}"
+        f"postgresql+psycopg2://{c.CONSUMER_POSTGRES_USER}:{c.CONSUMER_POSTGRES_PASSWORD}"
+        f"@{c.CONSUMER_POSTGRES_HOST}:{c.CONSUMER_POSTGRES_PORT}/{c.CONSUMER_POSTGRES_DB}"
     )
+    print("Database engine created")  # Debugging output
 
+    # Import models after engine creation
     from models import (
         Base,
         DimZedBodyTracking1ogR1,
@@ -54,16 +58,16 @@ try:
 
     print("Imported models")  # Debugging output
 
+    # Create database tables
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
-    print("Database engine created and tables initialized")
+    print("Database tables initialized")
 except Exception as e:
     logger.error(f"Error creating database engine or importing models: {e}")
-    traceback_str = traceback.format_exc()
-    logger.error(f"Stack trace:\n{traceback_str}")
+    traceback.print_exc()
     sys.exit(1)
 
-# Dictionary that maps table names to model classes
+# Map table names to model classes
 table_to_class = {
     "dim_zed_body_tracking_1og_r1": DimZedBodyTracking1ogR1,
     "dim_metrological_data": DimMetrologicalData,
@@ -81,13 +85,13 @@ table_to_class = {
 }
 
 
-# Function to handle SIGINT for graceful shutdown
+# Function to handle graceful shutdown on SIGINT
 def stop_consumer(signum, frame):
     logger.info("Stopping consumer...")
     sys.exit(0)
 
 
-# Helper functions
+# Helper function to get the latest ID from a dimension table
 def get_latest_id(session, model_class):
     record = session.query(model_class).order_by(model_class.created_at.desc()).first()
     if record:
@@ -99,6 +103,7 @@ def get_latest_id(session, model_class):
         return None
 
 
+# Function to insert data into fact tables
 def insert_fact_table(session, fact_model_class, dimension_model_classes):
     try:
         dimension_ids = {}
@@ -114,15 +119,14 @@ def insert_fact_table(session, fact_model_class, dimension_model_classes):
         fact_data = fact_model_class(**dimension_ids)
         session.add(fact_data)
         session.commit()
-
         logger.info(f"Inserted data into {fact_model_class.__tablename__}: {fact_data}")
     except Exception as e:
         session.rollback()
         logger.error(f"Error inserting data into {fact_model_class.__tablename__}: {e}")
-        traceback_str = traceback.format_exc()
-        logger.error(f"Stack trace:\n{traceback_str}")
+        traceback.print_exc()
 
 
+# Function to process ZED camera data
 def process_zed_kamera_data(session, data):
     try:
         body_list_data = data.get("body_list", "[]")
@@ -152,15 +156,16 @@ def process_zed_kamera_data(session, data):
         logger.error(f"JSON decoding error while parsing body_list: {je}")
         session.rollback()
     except Exception as e:
-        logger.error(f"An error occurred while inserting zed kamera data: {e}")
-        traceback_str = traceback.format_exc()
-        logger.error(f"Stack trace:\n{traceback_str}")
+        logger.error(f"An error occurred while inserting ZED camera data: {e}")
+        traceback.print_exc()
         session.rollback()
 
 
+# Function to process incoming data and insert into appropriate tables
 def process_data(session, table_name, data):
     try:
         if table_name.startswith("fact_"):
+            # Handling fact tables
             if table_name == "fact_environmental_data_facts":
                 insert_fact_table(
                     session,
@@ -202,35 +207,38 @@ def process_data(session, table_name, data):
                     },
                 )
         else:
-            model_class = table_to_class[table_name]
-            table_data = model_class(**data)
-            session.add(table_data)
-            session.commit()
-            logger.info(f"Data inserted into {table_name}: {data}")
+            # Handling dimension tables
+            model_class = table_to_class.get(table_name)
+            if model_class:
+                table_data = model_class(**data)
+                session.add(table_data)
+                session.commit()
+                logger.info(f"Data inserted into {table_name}: {data}")
+            else:
+                logger.error(f"Unknown table name: {table_name}")
     except Exception as e:
         session.rollback()
         logger.error(f"Error inserting data into {table_name}: {e}")
-        traceback_str = traceback.format_exc()
-        logger.error(f"Stack trace:\n{traceback_str}")
+        traceback.print_exc()
 
 
-def deserialize_message(x):
+# Function to deserialize messages from Kafka
+def deserialize_message(message):
     try:
-        message = x.decode("utf-8")
-        logger.debug(f"Raw message before deserialization: {message}")
-        return json.loads(message)
+        message_str = message.decode("utf-8")
+        logger.debug(f"Raw message before deserialization: {message_str}")
+        return json.loads(message_str)
     except json.JSONDecodeError as e:
         logger.error(f"JSON deserialization error: {e}")
-        logger.error(f"Raw message: {message}")
+        logger.error(f"Raw message: {message_str}")
         return None
     except Exception as e:
         logger.error(f"Unexpected error during deserialization: {e}")
-        traceback_str = traceback.format_exc()
-        logger.error(f"Stack trace:\n{traceback_str}")
+        traceback.print_exc()
         return None
 
 
-# Main function to process messages
+# Main function to process messages from Kafka
 def process_messages():
     session = Session()
 
@@ -247,7 +255,7 @@ def process_messages():
         bootstrap_servers=c.KAFKA_BOOTSTRAP_SERVER,
         auto_offset_reset="earliest",
         enable_auto_commit=True,
-        group_id="consumer",
+        group_id="consumer_group",
         value_deserializer=deserialize_message,
     )
     signal.signal(signal.SIGINT, stop_consumer)
@@ -260,7 +268,7 @@ def process_messages():
                     continue
                 logger.debug(f"Received message: {message.value}")
                 data = message.value
-                # Process the message
+                # Process the message based on the topic
                 if message.topic == "zed_kamera_topic":
                     process_zed_kamera_data(session, data)
                 else:
@@ -269,8 +277,7 @@ def process_messages():
                 session.commit()
             except Exception as e:
                 logger.error(f"Error processing message: {e}")
-                traceback_str = traceback.format_exc()
-                logger.error(f"Stack trace:\n{traceback_str}")
+                traceback.print_exc()
                 session.rollback()
     finally:
         consumer.close()

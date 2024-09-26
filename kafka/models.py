@@ -333,9 +333,3 @@ class FactRaffstoreLightFacts(Base):
     )
     location = relationship("DimLocation")
     raffstore_light_data = relationship("DimRaffstoreLightData")
-
-
-engine = create_engine(
-    f"postgresql+psycopg2://{c.CONSUMER_POSTGRES_USER}:{c.CONSUMER_POSTGRES_PASSWORD}@{c.CONSUMER_POSTGRES_HOST}:{c.CONSUMER_POSTGRES_PORT}/{c.CONSUMER_POSTGRES_DB}"
-)
-Base.metadata.create_all(engine)
