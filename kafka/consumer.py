@@ -1,42 +1,69 @@
 from datetime import datetime
 import json
 import logging
-import config
-from models import (
-    Base,
-    engine,
-    DimZedBodyTracking1ogR1,
-    DimMetrologicalData,
-    DimPvModulData1ogR1,
-    DimIlluminationDatapoints1ogR1,
-    DimRaffstoreLightData,
-    DimUserInput,
-    DimLocation,
-    DimRadiationForecast,
-    DimHeadPositions1ogR1,
-    FactUserInputFacts,
-    FactSensory,
-    FactRaffstoreLightFacts,
-    FactEnvironmentalDataFacts,
-)
-from sqlalchemy.orm import sessionmaker
-import signal
 import sys
 import traceback
-from kafka import KafkaConsumer
+import signal
 
-# Konfigurationsdatei laden
+print("Starting consumer.py")  # Debugging output
+
+try:
+    import config
+
+    print("Imported config")  # Debugging output
+except Exception as e:
+    print(f"Error importing config: {e}")
+    traceback_str = traceback.format_exc()
+    print(f"Stack trace:\n{traceback_str}")
+    sys.exit(1)
+
+# Load configuration
 c = config.load_config()
+print("Loaded config")  # Debugging output
 
-# Logging konfigurieren, um Nachrichten zu debuggen und Fehler zu verfolgen
+# Set up logging
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 logger.setLevel(logging.DEBUG)
 
-# Sessionmaker für die Datenbank-Sitzung initialisieren
-Session = sessionmaker(bind=engine)
+# Create the database engine
+try:
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
 
-# Dictionary, das Tabellennamen mit den entsprechenden Modelklassen verbindet
+    engine = create_engine(
+        f"postgresql+psycopg2://{c.CONSUMER_POSTGRES_USER}:{c.CONSUMER_POSTGRES_PASSWORD}@{c.CONSUMER_POSTGRES_HOST}:{c.CONSUMER_POSTGRES_PORT}/{c.CONSUMER_POSTGRES_DB}"
+    )
+
+    from models import (
+        Base,
+        DimZedBodyTracking1ogR1,
+        DimMetrologicalData,
+        DimPvModulData1ogR1,
+        DimIlluminationDatapoints1ogR1,
+        DimRaffstoreLightData,
+        DimUserInput,
+        DimLocation,
+        DimRadiationForecast,
+        DimHeadPositions1ogR1,
+        FactUserInputFacts,
+        FactSensory,
+        FactRaffstoreLightFacts,
+        FactEnvironmentalDataFacts,
+    )
+
+    print("Imported models")  # Debugging output
+
+    Base.metadata.create_all(engine)
+    Session = sessionmaker(bind=engine)
+    print("Database engine created and tables initialized")
+except Exception as e:
+    logger.error(f"Error creating database engine or importing models: {e}")
+    traceback_str = traceback.format_exc()
+    logger.error(f"Stack trace:\n{traceback_str}")
+    sys.exit(1)
+
+# Dictionary that maps table names to model classes
 table_to_class = {
     "dim_zed_body_tracking_1og_r1": DimZedBodyTracking1ogR1,
     "dim_metrological_data": DimMetrologicalData,
@@ -54,20 +81,16 @@ table_to_class = {
 }
 
 
-# Funktion zum ordnungsgemäßen Beenden des Consumers bei Signalunterbrechung
+# Function to handle SIGINT for graceful shutdown
 def stop_consumer(signum, frame):
     logger.info("Stopping consumer...")
     sys.exit(0)
 
 
-# Hilfsfunktion zum Abrufen der neuesten ID einer Dimensionstabelle
+# Helper functions
 def get_latest_id(session, model_class):
-    """
-    Diese Funktion ruft den neuesten Datensatz aus einer Dimensionstabelle ab und gibt dessen ID zurück.
-    """
     record = session.query(model_class).order_by(model_class.created_at.desc()).first()
     if record:
-        # Verwende den tatsächlichen Primärschlüssel (ID) der Tabelle
         primary_key_column = model_class.__mapper__.primary_key[0].name
         logger.debug(f"Latest record for {model_class.__tablename__}: {record}")
         return getattr(record, primary_key_column)
@@ -76,31 +99,18 @@ def get_latest_id(session, model_class):
         return None
 
 
-# Generische Funktion zum Einfügen in Faktentabellen
 def insert_fact_table(session, fact_model_class, dimension_model_classes):
-    """
-    Generische Funktion, die Daten in eine Faktentabelle einfügt.
-    Sie ruft die neuesten IDs der zugehörigen Dimensionstabellen ab und verknüpft sie in der Fact-Tabelle.
-
-    :param session: Die aktuelle Datenbank-Sitzung
-    :param fact_model_class: Die Faktentabelle als SQLAlchemy Modellklasse
-    :param dimension_model_classes: Ein Dictionary, das die Dimensionstabellen als Schlüssel enthält
-                                    und die entsprechenden Fremdschlüsselfelder als Werte
-    """
     try:
-        # Abrufen der neuesten IDs für jede Dimensionstabelle
         dimension_ids = {}
         for dimension_name, fk_field in dimension_model_classes.items():
             model_class = table_to_class[dimension_name]
             latest_id = get_latest_id(session, model_class)
             dimension_ids[fk_field] = latest_id
 
-            # Überprüfen, ob die ID vorhanden ist
             if latest_id is None:
                 logger.error(f"Missing required ID for {dimension_name}")
                 return
 
-        # Erstellen eines Faktentabellen-Datensatzes mit den abgerufenen IDs
         fact_data = fact_model_class(**dimension_ids)
         session.add(fact_data)
         session.commit()
@@ -113,19 +123,13 @@ def insert_fact_table(session, fact_model_class, dimension_model_classes):
         logger.error(f"Stack trace:\n{traceback_str}")
 
 
-# Funktion zum Verarbeiten von ZED-Kamera-Daten
 def process_zed_kamera_data(session, data):
-    """
-    Diese Funktion verarbeitet spezielle ZED-Kamera-Daten und fügt sie in die entsprechende Dimensionstabelle ein.
-    """
     try:
-        # Überprüfung, ob body_list existiert und korrekt formatiert ist
         body_list_data = data.get("body_list", "[]")
 
         if isinstance(body_list_data, str):
             body_list = json.loads(body_list_data)
         elif isinstance(body_list_data, list):
-            # Falls das body_list bereits als Liste geliefert wird
             body_list = body_list_data
         else:
             logger.error(
@@ -133,7 +137,6 @@ def process_zed_kamera_data(session, data):
             )
             return
 
-        # Einfügen der ZED-Daten in die Tabelle DimZedBodyTracking1ogR1
         zed_data = DimZedBodyTracking1ogR1(
             is_new=data.get("is_new", False),
             is_tracked=data.get("is_tracked", False),
@@ -155,14 +158,8 @@ def process_zed_kamera_data(session, data):
         session.rollback()
 
 
-# Funktion zum Verarbeiten von allgemeinen Daten und Einfügen in die entsprechenden Tabellen
 def process_data(session, table_name, data):
-    """
-    Verarbeitet eingehende Daten, fügt sie in die Dimensionstabellen ein oder ruft insert_fact_table auf,
-    wenn es sich um eine Faktentabelle handelt.
-    """
     try:
-        # Fall für Faktentabellen
         if table_name.startswith("fact_"):
             if table_name == "fact_environmental_data_facts":
                 insert_fact_table(
@@ -205,7 +202,6 @@ def process_data(session, table_name, data):
                     },
                 )
         else:
-            # Allgemeiner Fall für Dimensionstabellen
             model_class = table_to_class[table_name]
             table_data = model_class(**data)
             session.add(table_data)
@@ -218,7 +214,6 @@ def process_data(session, table_name, data):
         logger.error(f"Stack trace:\n{traceback_str}")
 
 
-# Deserialisierungsfunktion mit Fehlerbehandlung
 def deserialize_message(x):
     try:
         message = x.decode("utf-8")
@@ -235,18 +230,17 @@ def deserialize_message(x):
         return None
 
 
-# Hauptschleife zum Empfangen und Verarbeiten von Nachrichten
+# Main function to process messages
 def process_messages():
-    """
-    Diese Funktion liest kontinuierlich Nachrichten von Kafka, verarbeitet sie und fügt die Daten in die PostgreSQL-Datenbank ein.
-    """
     session = Session()
 
-    # Sicherstellen, dass KAFKA_TOPICS eine Liste ist
+    # Ensure KAFKA_TOPICS is a list
     if isinstance(c.KAFKA_TOPICS, str):
         c.KAFKA_TOPICS = [topic.strip() for topic in c.KAFKA_TOPICS.split(",")]
 
     logger.debug(f"Subscribing to topics: {c.KAFKA_TOPICS}")
+
+    from kafka import KafkaConsumer
 
     consumer = KafkaConsumer(
         *c.KAFKA_TOPICS,
@@ -266,11 +260,10 @@ def process_messages():
                     continue
                 logger.debug(f"Received message: {message.value}")
                 data = message.value
-                # Falls es sich um ZED-Kameradaten handelt, eine spezielle Verarbeitungsfunktion aufrufen
+                # Process the message
                 if message.topic == "zed_kamera_topic":
                     process_zed_kamera_data(session, data)
                 else:
-                    # Für alle anderen Daten die generische Verarbeitungsfunktion aufrufen
                     for table_name, table_data in data.items():
                         process_data(session, table_name, table_data)
                 session.commit()
@@ -284,7 +277,6 @@ def process_messages():
         session.close()
 
 
-# Hauptfunktion für den Start des Kafka-Consumers
 if __name__ == "__main__":
     print(f"Loaded Kafka Topics: {c.KAFKA_TOPICS}")
     print(f"Kafka Bootstrap Server: {c.KAFKA_BOOTSTRAP_SERVER}")

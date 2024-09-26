@@ -1,5 +1,4 @@
 from sqlalchemy import (
-    create_engine,
     Column,
     String,
     Numeric,
@@ -9,17 +8,11 @@ from sqlalchemy import (
     Integer,
     ForeignKey,
     func,
-    event,
 )
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-from config import load_config
-from datetime import datetime
+from sqlalchemy.dialects.postgresql import UUID
 
-
-c = load_config()
 Base = declarative_base()
 
 
