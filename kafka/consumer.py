@@ -1,7 +1,6 @@
 from datetime import datetime
 import json
 import logging
-from kafka import KafkaConsumer
 import config
 from models import (
     Base,
@@ -23,12 +22,15 @@ from models import (
 from sqlalchemy.orm import sessionmaker
 import signal
 import sys
+import traceback
+from kafka import KafkaConsumer
 
 # Konfigurationsdatei laden
 c = config.load_config()
 
 # Logging konfigurieren, um Nachrichten zu debuggen und Fehler zu verfolgen
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 logger.setLevel(logging.DEBUG)
 
 # Sessionmaker für die Datenbank-Sitzung initialisieren
@@ -54,8 +56,7 @@ table_to_class = {
 
 # Funktion zum ordnungsgemäßen Beenden des Consumers bei Signalunterbrechung
 def stop_consumer(signum, frame):
-    logging.info("Stopping consumer...")
-    consumer.close()
+    logger.info("Stopping consumer...")
     sys.exit(0)
 
 
@@ -108,6 +109,8 @@ def insert_fact_table(session, fact_model_class, dimension_model_classes):
     except Exception as e:
         session.rollback()
         logger.error(f"Error inserting data into {fact_model_class.__tablename__}: {e}")
+        traceback_str = traceback.format_exc()
+        logger.error(f"Stack trace:\n{traceback_str}")
 
 
 # Funktion zum Verarbeiten von ZED-Kamera-Daten
@@ -147,6 +150,8 @@ def process_zed_kamera_data(session, data):
         session.rollback()
     except Exception as e:
         logger.error(f"An error occurred while inserting zed kamera data: {e}")
+        traceback_str = traceback.format_exc()
+        logger.error(f"Stack trace:\n{traceback_str}")
         session.rollback()
 
 
@@ -209,6 +214,25 @@ def process_data(session, table_name, data):
     except Exception as e:
         session.rollback()
         logger.error(f"Error inserting data into {table_name}: {e}")
+        traceback_str = traceback.format_exc()
+        logger.error(f"Stack trace:\n{traceback_str}")
+
+
+# Deserialisierungsfunktion mit Fehlerbehandlung
+def deserialize_message(x):
+    try:
+        message = x.decode("utf-8")
+        logger.debug(f"Raw message before deserialization: {message}")
+        return json.loads(message)
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON deserialization error: {e}")
+        logger.error(f"Raw message: {message}")
+        return None
+    except Exception as e:
+        logger.error(f"Unexpected error during deserialization: {e}")
+        traceback_str = traceback.format_exc()
+        logger.error(f"Stack trace:\n{traceback_str}")
+        return None
 
 
 # Hauptschleife zum Empfangen und Verarbeiten von Nachrichten
@@ -217,31 +241,44 @@ def process_messages():
     Diese Funktion liest kontinuierlich Nachrichten von Kafka, verarbeitet sie und fügt die Daten in die PostgreSQL-Datenbank ein.
     """
     session = Session()
+
+    # Sicherstellen, dass KAFKA_TOPICS eine Liste ist
+    if isinstance(c.KAFKA_TOPICS, str):
+        c.KAFKA_TOPICS = [topic.strip() for topic in c.KAFKA_TOPICS.split(",")]
+
+    logger.debug(f"Subscribing to topics: {c.KAFKA_TOPICS}")
+
     consumer = KafkaConsumer(
         *c.KAFKA_TOPICS,
         bootstrap_servers=c.KAFKA_BOOTSTRAP_SERVER,
         auto_offset_reset="earliest",
         enable_auto_commit=True,
         group_id="consumer",
-        value_deserializer=lambda x: json.loads(x.decode("utf-8")),
+        value_deserializer=deserialize_message,
     )
     signal.signal(signal.SIGINT, stop_consumer)
 
     try:
         for message in consumer:
-            logger.debug(f"Received message: {message.value}")
-            data = message.value
-            # Falls es sich um ZED-Kameradaten handelt, eine spezielle Verarbeitungsfunktion aufrufen
-            if message.topic == "zed_kamera_topic":
-                process_zed_kamera_data(session, data)
-            else:
-                # Für alle anderen Daten die generische Verarbeitungsfunktion aufrufen
-                for table_name, table_data in data.items():
-                    process_data(session, table_name, table_data)
-        session.commit()
-    except Exception as e:
-        logger.error(f"An error occurred: {e}")
-        session.rollback()
+            try:
+                if message.value is None:
+                    logger.warning("Received a message that could not be deserialized.")
+                    continue
+                logger.debug(f"Received message: {message.value}")
+                data = message.value
+                # Falls es sich um ZED-Kameradaten handelt, eine spezielle Verarbeitungsfunktion aufrufen
+                if message.topic == "zed_kamera_topic":
+                    process_zed_kamera_data(session, data)
+                else:
+                    # Für alle anderen Daten die generische Verarbeitungsfunktion aufrufen
+                    for table_name, table_data in data.items():
+                        process_data(session, table_name, table_data)
+                session.commit()
+            except Exception as e:
+                logger.error(f"Error processing message: {e}")
+                traceback_str = traceback.format_exc()
+                logger.error(f"Stack trace:\n{traceback_str}")
+                session.rollback()
     finally:
         consumer.close()
         session.close()
