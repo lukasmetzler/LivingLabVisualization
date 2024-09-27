@@ -10,22 +10,16 @@ RUN npm install -g pm2
 WORKDIR /app
 
 # Erstelle Frontend und Backend Verzeichnisse im Container
-RUN mkdir frontend backend
+RUN mkdir frontend
 
 # Kopiere package.json und package-lock.json für Frontend
 COPY livinglabdashboard/package*.json ./frontend/
-
-# Kopiere package.json und package-lock.json für Backend
-COPY livinglabdashboard/server/package*.json ./backend/
 
 # Setze NPM-Registry auf das Standard-Registry, um lokale Registry-Probleme zu vermeiden
 RUN npm config set registry https://registry.npmjs.org
 
 # Installiere Abhängigkeiten für Frontend mit expliziter Registry
 RUN cd frontend && npm install --registry=https://registry.npmjs.org
-
-# Installiere Abhängigkeiten für Backend mit expliziter Registry
-RUN cd backend && npm install --registry=https://registry.npmjs.org
 
 # Kopiere den Frontend-Code (ohne den server-Ordner)
 COPY livinglabdashboard/ ./frontend/
@@ -39,15 +33,14 @@ COPY livinglabdashboard/pages ./frontend/pages
 COPY livinglabdashboard/plugins ./frontend/plugins
 COPY livinglabdashboard/static ./frontend/static
 COPY livinglabdashboard/store ./frontend/store
+COPY livinglabdashboard/server/ ./frontend/server
 
-# Kopiere den Backend-Code
-COPY livinglabdashboard/server/ ./backend/
 
 # Kopiere die PM2-Konfigurationsdatei
 COPY ecosystem.config.js ./ecosystem.config.js
 
 # Exponiere die benötigten Ports
-EXPOSE 3000 3001
+EXPOSE 3000
 
 # Starte PM2, um sowohl Frontend als auch Backend zu starten
 CMD ["pm2-runtime", "ecosystem.config.js"]
