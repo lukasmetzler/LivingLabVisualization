@@ -13,8 +13,6 @@ COPY models.py /app/models.py
 COPY requirements.txt /app/requirements.txt
 
 RUN pip install -r requirements.txt
-# Warte auf PostgreSQL, bevor du die Tabellen erstellst (optional)
-RUN apk add --no-cache postgresql-client
 
 # Führe das Skript aus
 CMD ["python", "create_tables.py"]
