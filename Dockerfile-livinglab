@@ -9,22 +9,39 @@ RUN npm install -g pm2
 # Setze das Arbeitsverzeichnis
 WORKDIR /app
 
-# Kopiere package.json und package-lock.json für Frontend und Backend
-COPY visualization/frontend/package*.json ./frontend/
-COPY visualization/server/package*.json ./backend/
+# Erstelle Frontend und Backend Verzeichnisse im Container
+RUN mkdir frontend backend
+
+# Kopiere package.json und package-lock.json für Frontend
+COPY livinglabdashboard/package*.json ./frontend/
+
+# Kopiere package.json und package-lock.json für Backend
+COPY livinglabdashboard/server/package*.json ./backend/
 
 # Setze NPM-Registry auf das Standard-Registry, um lokale Registry-Probleme zu vermeiden
 RUN npm config set registry https://registry.npmjs.org
 
-# Installiere Abhängigkeiten für Frontend
-RUN cd frontend && npm install
+# Installiere Abhängigkeiten für Frontend mit expliziter Registry
+RUN cd frontend && npm install --registry=https://registry.npmjs.org
 
-# Installiere Abhängigkeiten für Backend
-RUN cd backend && npm install
+# Installiere Abhängigkeiten für Backend mit expliziter Registry
+RUN cd backend && npm install --registry=https://registry.npmjs.org
 
-# Kopiere den gesamten Code für Frontend und Backend
-COPY visualization/frontend ./frontend
-COPY visualization/server ./backend
+# Kopiere den Frontend-Code (ohne den server-Ordner)
+COPY livinglabdashboard/ ./frontend/
+COPY livinglabdashboard/assets ./frontend/assets
+COPY livinglabdashboard/components ./frontend/components
+COPY livinglabdashboard/images ./frontend/images
+COPY livinglabdashboard/layouts ./frontend/layouts
+COPY livinglabdashboard/middleware ./frontend/middleware
+COPY livinglabdashboard/nuxt.config.js ./frontend/
+COPY livinglabdashboard/pages ./frontend/pages
+COPY livinglabdashboard/plugins ./frontend/plugins
+COPY livinglabdashboard/static ./frontend/static
+COPY livinglabdashboard/store ./frontend/store
+
+# Kopiere den Backend-Code
+COPY livinglabdashboard/server/ ./backend/
 
 # Kopiere die PM2-Konfigurationsdatei
 COPY ecosystem.config.js ./ecosystem.config.js
