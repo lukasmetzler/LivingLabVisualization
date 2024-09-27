@@ -40,7 +40,7 @@ COPY livinglabdashboard/server/ ./frontend/server
 COPY ecosystem.config.js ./ecosystem.config.js
 
 # Exponiere die benötigten Ports
-EXPOSE 3000
+EXPOSE 3001
 
 # Starte PM2, um sowohl Frontend als auch Backend zu starten
 CMD ["pm2-runtime", "ecosystem.config.js"]
