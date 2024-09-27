@@ -13,6 +13,9 @@ WORKDIR /app
 COPY visualization/frontend/package*.json ./frontend/
 COPY visualization/server/package*.json ./backend/
 
+# Setze NPM-Registry auf das Standard-Registry, um lokale Registry-Probleme zu vermeiden
+RUN npm config set registry https://registry.npmjs.org
+
 # Installiere Abhängigkeiten für Frontend
 RUN cd frontend && npm install
 
