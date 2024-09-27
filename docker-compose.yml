@@ -141,7 +141,7 @@ services:
       - kafka
       - zookeeper
     ports:
-      - "3000:3000" # Backend Port
+      - "3001:3001" # Backend Port
     volumes:
       - ./visualization/frontend:/app/frontend
       - /app/node_modules
