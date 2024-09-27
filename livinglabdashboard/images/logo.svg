@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="140px" height="29px" viewBox="0 0 140 29" version="1.1"
+    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>textlogo</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="comp/1024/header+active-search" transform="translate(-42.000000, -32.000000)">
+            <g id="header">
+                <g id="textlogo" transform="translate(42.000000, 32.385156)">
+                    <polygon id="Fill-1" fill="#1D1D1B"
+                        points="23.1362072 0 20.4425194 10.7948808 10.6634344 10.7948808 13.3535883 0.00440463556 6.64189727 0.00440463556 0 27.8135117 6.56238533 27.8135117 9.25695658 16.7111873 18.9901013 16.7111873 16.3326356 27.8135117 23.1556434 27.8135117 29.8001911 0"></polygon>
+                    <polygon id="Fill-2" fill="#1D1D1B"
+                        points="71.2463575 0 64.5670807 27.8135117 83.340306 27.8135117 84.4338748 22.1549736 72.5526138 22.1549736 77.982351 0"></polygon>
+                    <polygon id="Fill-3" fill="#1D1D1B"
+                        points="96.0798501 0 89.4005733 27.8135117 108.172912 27.8135117 109.267367 22.1549736 97.3869926 22.1549736 102.814957 0"></polygon>
+                    <path
+                        d="M127.310436,0 L112.247386,27.7906098 L118.572034,27.7906098 L121.485126,22.4949791 L131.878673,22.4949791 L132.702754,27.8135117 L139.067558,27.8135117 L133.9607,0 L127.310436,0 Z M129.55047,7.97075207 L131.120065,17.7622075 L124.126724,17.7622075 L129.55047,7.97075207 Z"
+                        id="Fill-4" fill="#1D1D1B"></path>
+                    <polygon id="Fill-5" fill="#F8AE15"
+                        points="42.0655483 0 35.7602293 5.96003822 59.2542148 5.96003822 65.5604204 0"></polygon>
+                    <polygon id="Fill-6" fill="#E52A48"
+                        points="39.0869272 10.9267367 32.7802102 16.886775 56.2736843 16.886775 62.5804013 10.9267367"></polygon>
+                    <polygon id="Fill-7" fill="#226AB2"
+                        points="36.10551 20.8601338 29.8001911 26.820172 53.2941766 26.820172 59.6003822 20.8601338"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
