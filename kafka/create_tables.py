@@ -1,17 +1,13 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from models import Base  # Stelle sicher, dass deine Modelle in models.py sind
+# create_tables.py
 
-# Datenbankverbindung
-DATABASE_URL = (
-    "postgresql://lukasmetzler:lukasmetzler@postgres_new:5432/livinglabvisualization"
-)
+from alembic import command
+from alembic.config import Config
+import os
 
-engine = create_engine(DATABASE_URL)
-Session = sessionmaker(bind=engine)
-session = Session()
+# Lade die Alembic-Konfiguration
+alembic_cfg = Config(os.path.join(os.path.dirname(__file__), "alembic.ini"))
 
-# Erstelle alle Tabellen
-Base.metadata.create_all(engine)
+# Führe die Migration aus
+command.upgrade(alembic_cfg, "head")
 
-print("Alle Tabellen wurden erfolgreich erstellt.")
+print("Migrationen erfolgreich angewendet.")
