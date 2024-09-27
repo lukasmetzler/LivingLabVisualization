@@ -172,7 +172,7 @@ services:
   db-init:
     build:
       context: .
-      dockerfile: Dockerfile-init
+      dockerfile: ./kafka/Dockerfile-init
     container_name: db-init
     environment:
       - DATABASE_URL=postgresql://lukasmetzler:lukasmetzler@postgres_new:5432/livinglabvisualization
