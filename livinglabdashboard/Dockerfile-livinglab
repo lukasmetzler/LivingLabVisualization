@@ -1,0 +1,33 @@
+# Dockerfile-livinglab
+
+# Basis-Image
+FROM node:18-alpine
+
+# Installiere PM2
+RUN npm install -g pm2
+
+# Setze das Arbeitsverzeichnis
+WORKDIR /app
+
+# Kopiere package.json und package-lock.json für Frontend und Backend
+COPY visualization/frontend/package*.json ./frontend/
+COPY visualization/server/package*.json ./backend/
+
+# Installiere Abhängigkeiten für Frontend
+RUN cd frontend && npm install
+
+# Installiere Abhängigkeiten für Backend
+RUN cd backend && npm install
+
+# Kopiere den gesamten Code für Frontend und Backend
+COPY visualization/frontend ./frontend
+COPY visualization/server ./backend
+
+# Kopiere die PM2-Konfigurationsdatei
+COPY ecosystem.config.js ./ecosystem.config.js
+
+# Exponiere die benötigten Ports
+EXPOSE 3000 3001
+
+# Starte PM2, um sowohl Frontend als auch Backend zu starten
+CMD ["pm2-runtime", "ecosystem.config.js"]

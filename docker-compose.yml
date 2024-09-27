@@ -42,7 +42,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - ./init-db.sh:/docker-entrypoint-init.d/init-db.sh
     ports:
       - "5432:5432"
     networks:
@@ -124,33 +124,28 @@ services:
     networks:
       - kafka-net
 
-  frontend:
-    image: node:18-alpine
-    container_name: frontend
-    volumes:
-      - ./visualization/frontend:/app
-      - /app/node_modules
-    working_dir: /app
-    command: sh -c "npm install && npm start"
-    ports:
-      - "3001:3000"
-    networks:
-      - kafka-net
-
-  backend:
-    image: node:18-alpine
-    container_name: backend
-    volumes:
-      - ./visualization/server:/app
-      - /app/node_modules
-    working_dir: /app
-    command: sh -c "npm install && npm start"
+  livinglab:
+    build:
+      context: .
+      dockerfile: Dockerfile-livinglab
+    container_name: livinglab
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - DB_HOST=postgres_new
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_NAME=${POSTGRES_DB}
     depends_on:
       - postgres
-    environment:
-      - JWT_SECRET=test
+      - kafka
+      - zookeeper
     ports:
-      - "3002:3000"
+      - "3000:3000" # Backend Port
+      - "3001:3001" # Frontend Port
+    volumes:
+      - ./visualization/frontend:/app/frontend
+      - ./visualization/server:/app/backend
+      - /app/node_modules
     networks:
       - kafka-net
 
@@ -165,8 +160,7 @@ services:
       - ./nginx/ssl/:/etc/nginx/ssl/:ro
       - ./www/:/var/www:ro
     depends_on:
-      - frontend
-      - backend
+      - livinglab
       - grafana
       - pgadmin
       - portainer
