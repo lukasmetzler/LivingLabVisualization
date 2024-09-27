@@ -169,6 +169,18 @@ services:
     networks:
       - kafka-net
 
+  db-init:
+    build:
+      context: .
+      dockerfile: Dockerfile-init
+    container_name: db-init
+    environment:
+      - DATABASE_URL=postgresql://lukasmetzler:lukasmetzler@postgres_new:5432/livinglabvisualization
+    depends_on:
+      - postgres
+    networks:
+      - kafka-net
+
 volumes:
   postgres_data:
   grafana_data:

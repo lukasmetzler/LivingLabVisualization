@@ -1,0 +1,18 @@
+FROM python:3.9-alpine
+
+# Installiere Abhängigkeiten
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Setze das Arbeitsverzeichnis
+WORKDIR /app
+
+# Kopiere die notwendigen Dateien
+COPY create_tables.py /app/create_tables.py
+COPY models.py /app/models.py
+COPY requirements.txt /app/requirements.txt
+
+# Warte auf PostgreSQL, bevor du die Tabellen erstellst (optional)
+RUN apk add --no-cache postgresql-client
+
+# Führe das Skript aus
+CMD ["python", "create_tables.py"]
