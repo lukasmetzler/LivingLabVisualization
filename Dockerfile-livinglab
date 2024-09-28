@@ -3,6 +3,9 @@
 # Basis-Image
 FROM node:18-alpine
 
+# Installiere PM2 und Nuxt global
+RUN npm install -g nuxt
+
 # Setze das Arbeitsverzeichnis
 WORKDIR /app
 
