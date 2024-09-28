@@ -11,7 +11,7 @@ import os
 # Füge den Pfad zu deinem Projekt hinzu
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from models import Base  # Passe den Importpfad entsprechend an
+from models import Base
 
 # Interpret the config file for Python logging.
 fileConfig(context.config.config_file_name)
