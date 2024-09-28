@@ -14,6 +14,8 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 import sqlalchemy as sa
 
+Base = declarative_base()
+
 
 class DimMetrologicalData(Base):
     __tablename__ = "dim_metrological_data"
