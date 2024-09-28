@@ -3,8 +3,8 @@
 # Basis-Image
 FROM node:18-alpine
 
-# Installiere PM2
-RUN npm install -g pm2
+# Installiere PM2 und Nuxt global
+RUN npm install -g pm2 nuxt
 
 # Setze das Arbeitsverzeichnis
 WORKDIR /app
@@ -12,7 +12,7 @@ WORKDIR /app
 # Kopiere package.json und package-lock.json für Frontend
 COPY livinglabdashboard/package*.json ./frontend/
 
-# Setze NPM-Registry auf das Standard-Registry
+# Setze NPM-Registry auf das Standard-Registry, um lokale Registry-Probleme zu vermeiden
 RUN npm config set registry https://registry.npmjs.org
 
 # Installiere Abhängigkeiten für Frontend
@@ -20,17 +20,9 @@ RUN cd frontend && npm install --registry=https://registry.npmjs.org
 
 # Kopiere den gesamten Frontend-Code
 COPY livinglabdashboard/ ./frontend/
-COPY livinglabdashboard/assets ./frontend/assets
-COPY livinglabdashboard/components ./frontend/components
-COPY livinglabdashboard/images ./frontend/images
-COPY livinglabdashboard/layouts ./frontend/layouts
-COPY livinglabdashboard/middleware ./frontend/middleware
-COPY livinglabdashboard/nuxt.config.js ./frontend/
-COPY livinglabdashboard/pages ./frontend/pages
-COPY livinglabdashboard/plugins ./frontend/plugins
-COPY livinglabdashboard/static ./frontend/static
-COPY livinglabdashboard/store ./frontend/store
-COPY livinglabdashboard/server/ ./frontend/server
+
+# Führe den Build-Prozess aus
+RUN cd frontend && nuxt build
 
 # Kopiere die PM2-Konfigurationsdatei
 COPY ecosystem.config.js ./ecosystem.config.js

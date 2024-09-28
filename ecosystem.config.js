@@ -4,9 +4,10 @@ module.exports = {
   apps: [
     {
       name: "frontend",
-      script: "./frontend/node_modules/.bin/nuxt",
-      args: "start",
-      cwd: "/app/frontend",
+      script: "frontend/.nuxt/dist/server/index.mjs",
+      cwd: "/app",
+      instances: 1,
+      autorestart: true,
       watch: false,
       env: {
         NODE_ENV: "production",
