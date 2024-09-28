@@ -143,8 +143,7 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - ./visualization/frontend:/app/frontend
-      - /app/node_modules
+      - ./livinglabdashboard:/app/frontend
     networks:
       - kafka-net
 
