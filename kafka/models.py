@@ -12,14 +12,13 @@ from sqlalchemy import (
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
-
-Base = declarative_base()
+import sqlalchemy as sa
 
 
 class DimMetrologicalData(Base):
     __tablename__ = "dim_metrological_data"
     metrological_data_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
     )
     glob_irr_ver_act = Column(Numeric)
     global_irr_hor_act = Column(Numeric)
@@ -50,7 +49,7 @@ class DimMetrologicalData(Base):
 class DimZedBodyTracking1ogR1(Base):
     __tablename__ = "dim_zed_body_tracking_1og_r1"
     zed_body_tracking_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
     )
     is_new = Column(Boolean, default=False)
     is_tracked = Column(Boolean, default=False)
@@ -64,7 +63,7 @@ class DimZedBodyTracking1ogR1(Base):
 class DimPvModulData1ogR1(Base):
     __tablename__ = "dim_pv_modul_data_1og_r1"
     pv_modul_data_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
     )
     volt_meas_act_module1 = Column(Numeric)
     curr_meas_act_module1 = Column(Numeric)
@@ -76,7 +75,7 @@ class DimPvModulData1ogR1(Base):
 class DimIlluminationDatapoints1ogR1(Base):
     __tablename__ = "dim_illumination_datapoints_1og_r1"
     illumination_datapoints_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
     )
     illum_mp1_act = Column(Numeric)
     illum_mp2_act = Column(Numeric)
@@ -88,7 +87,7 @@ class DimIlluminationDatapoints1ogR1(Base):
 class DimRaffstoreLightData(Base):
     __tablename__ = "dim_raffstore_light_data"
     raffstore_light_data_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
     )
     room_number = Column(Integer)
     slat_ang1_act = Column(Numeric)
@@ -105,7 +104,7 @@ class DimRaffstoreLightData(Base):
 class DimUserInput(Base):
     __tablename__ = "dim_user_input"
     user_input_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
     )
     mp_glare_limit = Column(Numeric)
     mp_req_illum = Column(Numeric)
@@ -117,7 +116,7 @@ class DimUserInput(Base):
 class DimLocation(Base):
     __tablename__ = "dim_location"
     location_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
     )
     room_number = Column(Integer)
     building = Column(String(50))
@@ -127,7 +126,7 @@ class DimLocation(Base):
 class DimRadiationForecast(Base):
     __tablename__ = "dim_radiation_forecast"
     radiation_forecast_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
     )
     global_irr_hor_approx = Column(Numeric)
     diff_irr_hor_act_approx = Column(Numeric)
@@ -137,7 +136,7 @@ class DimRadiationForecast(Base):
 class DimHeadPositions1ogR1(Base):
     __tablename__ = "dim_head_positions_1og_r1"
     head_positions_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
     )
     headpose_x_1 = Column(Numeric)
     headpose_y_1 = Column(Numeric)
@@ -211,7 +210,7 @@ class FactEnvironmentalDataFacts(Base):
 class FactUserInputFacts(Base):
     __tablename__ = "fact_user_input_facts"
     user_input_facts_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
     )
     location_id = Column(UUID(as_uuid=True), ForeignKey("dim_location.location_id"))
     user_input_id = Column(
@@ -225,7 +224,7 @@ class FactUserInputFacts(Base):
 class FactSensory(Base):
     __tablename__ = "fact_sensory"
     sensory_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
     )
     location_id = Column(UUID(as_uuid=True), ForeignKey("dim_location.location_id"))
     zed_body_tracking_id = Column(
@@ -240,7 +239,7 @@ class FactSensory(Base):
 class FactRaffstoreLightFacts(Base):
     __tablename__ = "fact_raffstore_light_facts"
     raffstore_light_facts_id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default="uuid_generate_v4()"
+        UUID(as_uuid=True), primary_key=True, server_default=func.uuid_generate_v4()
     )
     location_id = Column(UUID(as_uuid=True), ForeignKey("dim_location.location_id"))
     raffstore_light_data_id = Column(
