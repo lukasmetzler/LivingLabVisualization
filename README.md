@@ -1,221 +1,325 @@
-## Checklist 24.06
-- [x] Datenbank zum Laufen bringen am Remote Server (Docker Container Stand mitnehmen vom lokalen oder Möglichkeit finden diesen zu deployen)
-- [x] Grafana ini für die Produktion anpassen
-- [x] Grafana Dashboards importieren
-- [ ] Frontend bauen und anzeigen lassen, docker container sollte bereits production ready sein
-- [ ] Kafka laufen lassen und in 1 min frequenz Werte pushen
-- [ ] CI/CD aufbauen
-- [ ] Dokumentation des gesamten Deployments um für HELLA vorbereitet zu sein
-# Real-time Visualization of Building Industry Data
+# Echtzeitvisualisierung von Gebäudeindustriedaten
 
-This project provides a real-time visualization solution for building industry data. It includes components for data acquisition, storage, processing, and visualization.
+Dieses Projekt bietet eine Lösung zur Echtzeitvisualisierung von Gebäudeindustriedaten. Es umfasst Komponenten für Datenerfassung, Speicherung, Verarbeitung und Visualisierung. Docker Compose wird verwendet, um die verschiedenen Dienste (Datenbank, Kafka, Grafana, etc.) zu orchestrieren. Die Datenbankstruktur wird mithilfe von SQLAlchemy-Modellen (`models.py`) definiert und durch Alembic-Migrationen in der PostgreSQL-Datenbank angewendet.
 
-## Table of Contents
+## Inhaltsverzeichnis
 
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
-  - [Stack](#stack)
-  - [Installation](#installation)
-  - [Running the Application](#running-the-application)
-- [Project Structure](#project-structure)
-- [Technologies Used](#technologies-used)
-- [Contributing](#contributing)
-- [License](#license)
+- [Voraussetzungen](#voraussetzungen)
+- [Projektstruktur](#projektstruktur)
+- [Installation und Einrichtung](#installation-und-einrichtung)
+  - [1. Repository klonen](#1-repository-klonen)
+  - [2. Umgebungsvariablen konfigurieren](#2-umgebungsvariablen-konfigurieren)
+  - [3. Docker-Container starten](#3-docker-container-starten)
+- [Datenbankstruktur initial erstellen](#datenbankstruktur-initial-erstellen)
+  - [1. Initiale Migration erstellen](#1-initiale-migration-erstellen)
+  - [2. Migration anwenden](#2-migration-anwenden)
+  - [3. Überprüfung der Tabellen](#3-überprüfung-der-tabellen)
+- [Änderungen an der Datenbankstruktur vornehmen](#änderungen-an-der-datenbankstruktur-vornehmen)
+  - [1. Modelle anpassen](#1-modelle-anpassen)
+  - [2. Neue Migration erstellen](#2-neue-migration-erstellen)
+  - [3. Migration anwenden](#3-migration-anwenden)
+  - [4. Überprüfung der Änderungen](#4-überprüfung-der-änderungen)
+- [Deployment-Anweisungen](#deployment-anweisungen)
+  - [1. Datei außerhalb des Containers bearbeiten und mounten](#1-datei-ausserhalb-des-containers-bearbeiten-und-mounten)
+    - [1.1. Lokale Kopie der `grafana.ini` erstellen und bearbeiten](#11-lokale-kopie-der-grafanaini-erstellen-und-bearbeiten)
+    - [1.2. Container mit gemounteter Datei neu starten](#12-container-mit-gemounteter-datei-neu-starten)
+  - [2. Notwendige Installationen für den Server](#2-notwendige-installationen-für-den-server)
+    - [Docker installieren](#docker-installieren)
+    - [Python3-Pip installieren](#python3-pip-installieren)
+  - [3. Kafka-Setup](#3-kafka-setup)
+    - [Python-Abhängigkeiten installieren](#python-abhängigkeiten-installieren)
+    - [Kafka-Topics initialisieren](#kafka-topics-initialisieren)
+  - [4. Grafana-Benutzer erstellen](#4-grafana-benutzer-erstellen)
+  - [5. Datenbank-Setup](#5-datenbank-setup)
+  - [6. Dockerisierung von Producer und Consumer](#6-dockerisierung-von-producer-und-consumer)
+- [Technologien](#technologien)
+- [Lizenz](#lizenz)
+- [Fehlerbehebung](#fehlerbehebung)
 
-## Prerequisites
+## Voraussetzungen
 
-Before running this project, ensure you have the following installed:
+Stelle sicher, dass die folgenden Tools auf dem System installiert sind:
 
-- Docker: [Docker Installation Guide](https://docs.docker.com/get-docker/)
-- Docker Compose: [Docker Compose Installation Guide](https://docs.docker.com/compose/install/)
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+- [Python 3.10+](https://www.python.org/downloads/) (optional, falls lokale Skripte ausgeführt werden sollen)
 
-## Getting Started
+## Projektstruktur
 
-### Stack
+Die empfohlene Verzeichnisstruktur für das Projekt sieht wie folgt aus:
 
-![](https://gitlab.com/lukasmetzler/echtzeitvisualisierung-von-gebaeudeindustriedaten/-/raw/main/docs/Finaler_Aufbau.png?ref_type=heads)
+```
+/var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/
+├── docker-compose.yml
+├── kafka/
+│   ├── Dockerfile-init
+│   ├── Dockerfile-consumer
+│   ├── Dockerfile-producer
+│   ├── create_tables.py
+│   ├── models.py
+│   ├── alembic/
+│   │   ├── env.py
+│   │   ├── alembic.ini
+│   │   └── versions/
+│   ├── requirements.txt
+│   └── create-topic.sh
+├── init-db.sh
+├── nginx/
+│   ├── nginx.conf
+│   ├── conf.d/
+│   ├── plugins.d/
+│   ├── sites-enabled.d/
+│   └── ssl/
+├── visualization/
+│   └── frontend/
+├── portainer/
+│   └── ... (optional, falls vorhanden)
+└── ... (andere Verzeichnisse und Dateien)
+```
 
-### Installation
+## Installation und Einrichtung
 
-#### 1. Clone the repository:
+### 1. Repository klonen
+
+Repository auf den lokalen Rechner klonen:
 
 ```bash
-git clone https://gitlab.com/lukasmetzler/echtzeitvisualisierung-von-gebaeudeindustriedaten.git
+git clone https://github.com/dein-username/echtzeitvisualisierung-von-gebaeudeindustriedaten.git
 cd echtzeitvisualisierung-von-gebaeudeindustriedaten
 ```
 
-#### 2. Build the Docker images:
+### 2. Umgebungsvariablen konfigurieren
 
-```bash
- docker-compose build
+Eine `.env`-Datei im Stammverzeichnis des Projekts erstellen und die notwendigen Umgebungsvariablen hinzufügen:
+
+```env
+POSTGRES_USER=lukasmetzler
+POSTGRES_PASSWORD=lukasmetzler
+POSTGRES_DB=livinglabvisualization
+
+KAFKA_TOPICS=hella_data_topic,zed_kamera_topic
+PRODUCER_INTERVAL_SECONDS=5
+
+JWT_SECRET=dein_jwt_secret
+CONSUMER_POSTGRES_USER=lukasmetzler
+CONSUMER_POSTGRES_PASSWORD=lukasmetzler
+CONSUMER_POSTGRES_DB=livinglabvisualization
 ```
 
-### Running the Application
+Sicherstellen, dass die `.env`-Datei die korrekten Werte enthält, insbesondere für die Datenbank- und Kafka-Konfiguration.
 
-#### 1. Start the Docker containers:
+### 3. Docker-Container starten
+
+Alle Docker-Container im Hintergrund starten:
 
 ```bash
- docker-compose up -d
+docker-compose up -d
 ```
 
-#### 2. Access the application:
+Den Status der laufenden Container überprüfen:
 
-- Grafana Dashboard: http://localhost:8080
-- ReactJS: http://localhost:3000
-- PgAdmin4: http://localhost:5050
+```bash
+docker-compose ps
+```
 
-## Project Structure
+## Datenbankstruktur initial erstellen
 
-- `/grafana`: Contains the configuration files for Grafana.
-- `/kafka`: Configuration for Kafka message broker.
-- `/postgres`: Configuration for PostgreSQL database.
-- `/frontend`: Includes the ReactJS Application
-- `/db`: Includes relevant setup scripts for the Database
+Nachdem die Docker-Container laufen, muss die Datenbankstruktur basierend auf den SQLAlchemy-Modellen (`models.py`) erstellt werden. Dies geschieht mithilfe von Alembic-Migrationen.
 
-## Technologies used
+### 1. Initiale Migration erstellen
 
-- Python
-- ReactJS
-- Docker
-- Kafka
-- PostgreSQL
-- Grafana
-- Apache JMeter (coming soon...)
+In das `kafka`-Verzeichnis navigieren und eine initiale Migration erstellen:
 
-## License
+```bash
+cd kafka
+alembic -c alembic/alembic.ini revision --autogenerate -m "Initial migration"
+```
 
-This project is licensed under the [MIT License](https://opensource.org/license/mit/).
+Dieser Befehl erstellt ein Migrationsskript unter `kafka/alembic/versions/`.
 
-## Deployment Notes:
+### 2. Migration anwenden
+
+Die Migration anwenden, um die Tabellen in der Datenbank zu erstellen:
+
+```bash
+alembic -c alembic/alembic.ini upgrade head
+```
+
+Alternativ kann der `db-init`-Service verwendet werden, der automatisch die Migrationen anwendet:
+
+```bash
+docker-compose up --build db-init
+```
+
+### 3. Überprüfung der Tabellen
+
+Mit der PostgreSQL-Datenbank verbinden und die Tabellen auflisten:
+
+```bash
+docker exec -it postgres_new psql -U lukasmetzler -d livinglabvisualization
+```
+
+Im PostgreSQL-Prompt:
+
+```sql
+\dt
+```
+
+Es sollten alle Tabellen aus `models.py` sowie die `alembic_version`-Tabelle sichtbar sein.
+
+## Änderungen an der Datenbankstruktur vornehmen
+
+Wenn Änderungen an den SQLAlchemy-Modellen (`models.py`) vorgenommen werden, müssen entsprechende Alembic-Migrationen erstellt und angewendet werden, um die Datenbankstruktur zu aktualisieren.
+
+### 1. Modelle anpassen
+
+Die `models.py` ändern oder erweitern, indem neue Tabellen hinzugefügt oder bestehende Modelle modifiziert werden.
+
+### 2. Neue Migration erstellen
+
+Eine neue Migration erstellen, die die Änderungen widerspiegelt:
+
+```bash
+cd kafka
+alembic -c alembic/alembic.ini revision --autogenerate -m "Beschreibe die Änderung"
+```
+
+Dieser Befehl erstellt ein neues Migrationsskript unter `kafka/alembic/versions/`.
+
+### 3. Migration anwenden
+
+Die neue Migration anwenden:
+
+```bash
+alembic -c alembic/alembic.ini upgrade head
+```
+
+Oder den `db-init`-Service verwenden:
+
+```bash
+docker-compose up --build db-init
+```
+
+### 4. Überprüfung der Änderungen
+
+Erneut mit der PostgreSQL-Datenbank verbinden und überprüfen, ob die Änderungen übernommen wurden:
+
+```bash
+docker exec -it postgres_new psql -U lukasmetzler -d livinglabvisualization
+```
+
+Im PostgreSQL-Prompt:
+
+```sql
+\dt
+```
+
+Die neuen oder geänderten Tabellen sollten sichtbar sein.
+
+## Deployment-Anweisungen
+
 ### 1. Datei außerhalb des Containers bearbeiten und mounten
 
-1. **Lokale Kopie der `grafana.ini` erstellen und bearbeiten:**
-   - Kopiere die `grafana.ini` aus dem Container auf dein lokales Dateisystem:
+#### 1.1. Lokale Kopie der `grafana.ini` erstellen und bearbeiten
 
-     ```bash
-     docker cp <container_id_or_name>:/etc/grafana/grafana.ini ./grafana.ini
-     ```
+Die `grafana.ini` aus dem Container auf das lokale Dateisystem kopieren:
 
-   - Bearbeite die lokale `grafana.ini` Datei:
-
-     ```ini
-     [server]
-     root_url = http://85.215.59.47/grafana/
-     serve_from_sub_path = true
-     ```
-
-2. **Container mit gemounteter Datei neu starten:**
-   - Starte den Container neu und mounte die bearbeitete `grafana.ini`:
-
-     ```bash
-     docker run -d -p 8080:3000 \
-       -v $(pwd)/grafana.ini:/etc/grafana/grafana.ini \
-       --name grafana \
-       grafana/grafana
-     ```
-
-### 2. Must have installationen für Server
 ```bash
-sudo apt install nginx
+docker cp grafana_new:/etc/grafana/grafana.ini ./grafana.ini
 ```
-#### Docker:
+
+Die lokale `grafana.ini` Datei bearbeiten:
+
+```ini
+[server]
+root_url = http://85.215.59.47/grafana/
+serve_from_sub_path = true
+```
+
+#### 1.2. Container mit gemounteter Datei neu starten
+
+Den Container neu starten und die bearbeitete `grafana.ini` mounten:
+
+```bash
+docker run -d -p 3000:3000 \
+  -v $(pwd)/grafana.ini:/etc/grafana/grafana.ini \
+  --name grafana \
+  grafana/grafana
+```
+
+### 2. Notwendige Installationen für den Server
+
+#### Docker installieren
+
+Alte Docker-Pakete entfernen:
+
 ```bash
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 ```
+
+Docker's offizielles GPG-Key hinzufügen und das Repository einrichten:
+
 ```bash
-# Add Docker's official GPG key:
+# Docker's offizielles GPG-Key hinzufügen
 sudo apt-get update
 sudo apt-get install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-# Add the repository to Apt sources:
+# Repository zu Apt-Quellen hinzufügen
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 ```
+
+Docker Engine und Docker Compose installieren:
+
 ```bash
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
+
+Docker Compose separat installieren (falls nötig):
+
 ```bash
 sudo apt-get install docker-compose
 ```
-#### Etc.
+
+Python3-Pip installieren:
+
 ```bash
 sudo apt install python3-pip
 ```
-#### Kafka
+
+### 3. Kafka-Setup
+
+#### Python-Abhängigkeiten installieren
+
+In das `kafka`-Verzeichnis wechseln und die Python-Abhängigkeiten installieren:
+
 ```bash
 cd /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/kafka
 pip3 install -r requirements.txt
 ```
 
-### 3. Nginx Einstellungen (Grafana etc.)
-#### /etc/nginx/sites-available/hella
-```nginx
-server {
-    listen 80;
-    server_name 85.215.59.47;
+#### Kafka-Topics initialisieren
 
-    location /grafana/ {
-        proxy_pass http://localhost:3000/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "Upgrade";
-        proxy_http_version 1.1;
+Die benötigten Kafka-Topics erstellen:
 
-        # Add trailing slash to avoid redirects
-        rewrite ^/grafana$ /grafana/ permanent;
-    }
-
-    error_page 500 502 503 504 /50x.html;
-    location = /50x.html {
-        root /usr/share/nginx/html;
-    }
-}
-```
-#### /var/www/echtzeitvisualisierung-von-gebaeudeindustriedaten/defaults.ini
-```ini
-[server]
-protocol = http
-min_tls_version = ""
-http_addr =
-http_port = 3000
-domain = localhost
-enforce_domain = false
-# The full public facing url
-root_url = %(protocol)s://%(domain)s:%(http_port)s/grafana/
-
-# Serve Grafana from subpath specified in `root_url` setting. By default it is set to `false` for compatibility reasons.
-serve_from_sub_path = true
-router_logging = false
-```
-```ini
-[database]
-
-host = postgres_new:5432
-name = postgres
-user = lukasmetzler
-password = lukasmetzler
-```
-
-### 4. Wichtige Details
 ```bash
-docker-compose down --volumes --remove-orphans
-docker-compose --env-file local.env up -d
+docker exec -it kafka_new kafka-topics --create --topic hella_data_topic --bootstrap-server kafka_new:29092 --partitions 1 --replication-factor 1
+docker exec -it kafka_new kafka-topics --create --topic zed_kamera_topic --bootstrap-server kafka_new:29092 --partitions 1 --replication-factor 1
 ```
 
+### 4. Grafana-Benutzer erstellen
 
-### 5. Grafana Benutzer über POST Call erstellen
+Einen neuen Grafana-Benutzer über einen POST-Call erstellen:
+
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
-  "name":"New User",
+  "name":"Neuer Benutzer",
   "email":"newuser@example.com",
   "login":"newuser",
   "password":"newuserpassword",
@@ -223,34 +327,74 @@ curl -X POST -H "Content-Type: application/json" -d '{
 }' http://admin:admin@localhost:3000/api/admin/users
 ```
 
-#### Datenbank-setup
+### 5. Datenbank-Setup
+
+Mit der PostgreSQL-Datenbank verbinden und den Benutzer sowie die Datenbank einrichten:
+
 ```bash
 docker exec -it postgres_new psql -U postgres
 ```
-```SQL
+
+Im PostgreSQL-Prompt:
+
+```sql
 -- Benutzer erstellen
 CREATE USER lukasmetzler WITH PASSWORD 'lukasmetzler';
 
 -- Datenbank erstellen
-CREATE DATABASE evi OWNER lukasmetzler;
+CREATE DATABASE livinglabvisualization OWNER lukasmetzler;
 
 -- Berechtigungen erteilen
-GRANT ALL PRIVILEGES ON DATABASE evi TO lukasmetzler;
+GRANT ALL PRIVILEGES ON DATABASE livinglabvisualization TO lukasmetzler;
 ```
 
-#### Dockerization of Producer und Consumer
+### 6. Dockerisierung von Producer und Consumer
+
+Docker-Images für Producer und Consumer bauen:
+
 ```bash
 docker build -t kafka-producer -f Dockerfile-producer .
 docker build -t kafka-consumer -f Dockerfile-consumer .
 ```
+
+Docker-Container ausführen:
+
 ```bash
-docker run -d --network=echtzeitvisualisierung-von-gebaeudeindustriedaten_backend --name kafka-producer kafka-producer
-docker run -d --network=echtzeitvisualisierung-von-gebaeudeindustriedaten_backend --name kafka-consumer kafka-consumer
+docker run -d --network=kafka-net --name kafka-producer kafka-producer
+docker run -d --network=kafka-net --name kafka-consumer kafka-consumer
 ```
 
-#### Kafka setup
-##### Topic init
+## Technologien
+
+- **Python**
+- **ReactJS**
+- **Docker**
+- **Kafka**
+- **PostgreSQL**
+- **Grafana**
+- **pgAdmin4**
+- **Portainer**
+- **Nginx**
+- **Apache JMeter** (kommt bald...)
+
+## Lizenz
+
+Dieses Projekt ist unter der [MIT-Lizenz](https://opensource.org/license/mit/) lizenziert.
+
+---
+
+## Fehlerbehebung
+
+Bei Problemen die folgenden Punkte prüfen:
+
+1. **Datenbankverbindung:** Sicherstellen, dass die PostgreSQL-Container laufen und die Umgebungsvariablen korrekt gesetzt sind.
+2. **Alembic-Konfiguration:** Die `alembic.ini` und `env.py` überprüfen, um sicherzustellen, dass die `sqlalchemy.url` korrekt ist.
+3. **Docker-Netzwerk:** Sicherstellen, dass alle relevanten Container im selben Docker-Netzwerk (`kafka-net`) sind.
+4. **Logs prüfen:** Die Logs der Docker-Container überprüfen, um detaillierte Fehlermeldungen zu erhalten.
+
 ```bash
-docker exec -it kafka_new kafka-topics --create --topic hella_data_topic --bootstrap-server kafka_new:29092 --partitions 1 --replication-factor 1
-docker exec -it kafka_new kafka-topics --create --topic zed_kamera_topic --bootstrap-server kafka_new:29092 --partitions 1 --replication-factor 1
+docker-compose logs db-init
+docker-compose logs postgres_new
+docker-compose logs kafka_new
+docker-compose logs grafana_new
 ```
