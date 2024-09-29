@@ -3,21 +3,29 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+# Kopiere die package.json und package-lock.json
 COPY package*.json ./
+
+# Installiere Abhängigkeiten
 RUN npm install
 
+# Kopiere den gesamten Quellcode
 COPY . .
+
+# Führe den Build-Prozess aus
 RUN npm run build
 
-# Stage 2: Serve
+# Stage 2: Run
 FROM node:18-alpine
 
 WORKDIR /app
 
+# Kopiere die build-Artefakte aus dem Builder-Stage
+COPY --from=builder /app/dist ./dist
+
+# Installiere nur Produktionsabhängigkeiten
 COPY package*.json ./
 RUN npm install --only=production
-
-COPY --from=builder /app/dist /app/dist
 
 # Installiere PM2
 RUN npm install -g pm2
@@ -25,6 +33,8 @@ RUN npm install -g pm2
 # Kopiere die PM2-Konfigurationsdatei
 COPY ecosystem.config.js .
 
+# Exponiere den benötigten Port
 EXPOSE 3001
 
+# Starte PM2, um die Anwendung zu starten
 CMD ["pm2-runtime", "ecosystem.config.js"]

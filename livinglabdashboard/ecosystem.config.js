@@ -4,8 +4,11 @@ module.exports = {
   apps: [
     {
       name: "frontend",
-      script: "frontend/.nuxt/dist/server/index.mjs",
-      cwd: "/app",
+      script: "dist/index.html", // Für statische Dateien ist keine Node-Ausführung nötig
+      // Alternativ, wenn du einen Server verwenden möchtest, passe entsprechend an
+      // Beispiel mit einem statischen Server:
+      // script: 'server.js',
+      // environment variables if needed
       instances: 1,
       autorestart: true,
       watch: false,
@@ -13,11 +16,9 @@ module.exports = {
         NODE_ENV: "production",
       },
     },
-    // Entferne den folgenden Block, wenn kein Backend vorhanden ist:
-    /*
     {
       name: "backend",
-      cwd: "backend",
+      cwd: "/app/backend",
       script: "npm",
       args: "run start",
       watch: false,
@@ -31,6 +32,5 @@ module.exports = {
         DB_PORT: "5432",
       },
     },
-    */
   ],
 };
