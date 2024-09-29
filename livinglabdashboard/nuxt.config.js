@@ -2,6 +2,10 @@ import colors from "vuetify/es5/util/colors";
 
 export default {
   // Global page headers
+  server: {
+    port: 3001, // Standard: 3000
+    host: "0.0.0.0", // Standard: localhost
+  },
   head: {
     titleTemplate: "%s - livinglab",
     title: "livinglab",
@@ -36,7 +40,7 @@ export default {
   modules: ["@nuxtjs/axios", "@nuxtjs/auth-next"],
 
   axios: {
-    baseURL: "http://localhost:3000", // Anpassen, falls dein API-Server auf einem anderen Port läuft
+    baseURL: "http://localhost:3001", // Anpassen, falls dein API-Server auf einem anderen Port läuft
   },
   auth: {
     strategies: {
