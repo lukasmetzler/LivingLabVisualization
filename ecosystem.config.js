@@ -13,6 +13,8 @@ module.exports = {
         NODE_ENV: "production",
       },
     },
+    // Entferne den folgenden Block, wenn kein Backend vorhanden ist:
+    /*
     {
       name: "backend",
       cwd: "backend",
@@ -29,5 +31,6 @@ module.exports = {
         DB_PORT: "5432",
       },
     },
+    */
   ],
 };
