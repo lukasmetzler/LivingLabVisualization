@@ -1,32 +1,20 @@
 {
-  "name": "livinglab",
-  "version": "1.0.0",
+  "name": "livinglabdashboard",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "nuxt",
-    "build": "nuxt build",
-    "start": "nuxt start",
-    "generate": "nuxt generate"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@nuxtjs/auth-next": "^5.0.0-1667386184.dfbbb54",
-    "@nuxtjs/axios": "^5.13.6",
-    "bcrypt": "^5.1.1",
-    "body-parser": "^1.20.3",
-    "core-js": "^3.25.3",
-    "jsonwebtoken": "^9.0.2",
-    "nuxt": "^2.18.1",
-    "pg": "^8.13.0",
-    "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.3",
-    "sequelize-cli": "^6.6.2",
-    "vue": "^2.7.10",
-    "vue-server-renderer": "^2.7.10",
-    "vue-template-compiler": "^2.7.10",
-    "vue-toastification": "^1.7.14",
-    "vuetify": "^2.6.10"
+    "vue": "^3.4.37",
+    "vue-router": "^4.4.5",
+    "vuetify": "^3.7.0-beta.1"
   },
   "devDependencies": {
-    "@nuxtjs/vuetify": "^1.12.3"
+    "@vitejs/plugin-vue": "^5.1.2",
+    "vite": "^5.4.1"
   }
 }
