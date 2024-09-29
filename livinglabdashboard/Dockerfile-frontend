@@ -23,18 +23,11 @@ WORKDIR /app
 # Kopiere die build-Artefakte aus dem Builder-Stage
 COPY --from=builder /app/dist ./dist
 
-# Installiere nur Produktionsabhängigkeiten
-COPY package*.json ./
-RUN npm install --only=production
-
-# Installiere PM2
-RUN npm install -g pm2
-
-# Kopiere die PM2-Konfigurationsdatei
-COPY ecosystem.config.js .
+# Installiere `serve` als statischen Server
+RUN npm install -g serve
 
 # Exponiere den benötigten Port
 EXPOSE 3001
 
-# Starte PM2, um die Anwendung zu starten
-CMD ["pm2-runtime", "ecosystem.config.js"]
+# Starte die Anwendung mit `serve`
+CMD ["serve", "-s", "dist", "-l", "3001"]
