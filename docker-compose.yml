@@ -143,9 +143,7 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      # Entferne das Frontend-Mount
-      # - ./livinglabdashboard:/app/frontend
-      - livinglab_node_modules:/app/frontend/node_modules
+      - ./livinglabdashboard:/app/frontend
     networks:
       - kafka-net
 
