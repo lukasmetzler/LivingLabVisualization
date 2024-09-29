@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { useAuthStore } from "../stores/auth";
 import { useRouter } from "vue-router";
 
 export default {
@@ -39,19 +39,15 @@ export default {
     };
   },
   setup() {
+    const authStore = useAuthStore();
     const router = useRouter();
-    return { router };
+    return { authStore, router };
   },
   methods: {
     async login() {
       try {
-        const response = await axios.post("http://your-backend-api/login", {
-          email: this.email,
-          password: this.password,
-        });
-        const token = response.data.token;
-        localStorage.setItem("token", token);
-        this.$router.push("/dashboard");
+        await this.authStore.login(this.email, this.password);
+        this.router.push("/dashboard");
       } catch (error) {
         console.error("Login fehlgeschlagen:", error);
         alert("Login fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten.");

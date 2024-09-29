@@ -6,4 +6,10 @@ import { createPinia } from "pinia";
 
 const pinia = createPinia();
 
-createApp(App).use(router).use(vuetify).use(pinia).mount("#app");
+const app = createApp(App);
+
+app.use(router);
+app.use(vuetify);
+app.use(pinia);
+
+app.mount("#app");

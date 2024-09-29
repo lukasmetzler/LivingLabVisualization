@@ -1,7 +1,9 @@
+// src/router/index.js
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Dashboard from "../views/Dashboard.vue";
+import { useAuthStore } from "../stores/auth";
 
 const routes = [
   {
@@ -29,7 +31,9 @@ const router = createRouter({
 
 // Navigation Guard
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem("token");
+  const authStore = useAuthStore();
+  const isAuthenticated = !!authStore.token;
+
   if (to.meta.requiresAuth && !isAuthenticated) {
     next("/login");
   } else {
