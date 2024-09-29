@@ -140,7 +140,6 @@ services:
     ports:
       - "3001:3001"
     depends_on:
-      - backend
       - postgres
       - kafka
       - zookeeper
