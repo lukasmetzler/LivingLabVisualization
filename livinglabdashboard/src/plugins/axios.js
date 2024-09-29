@@ -1,8 +1,7 @@
 import axios from "axios";
-import { useRouter } from "vue-router";
 
 const apiClient = axios.create({
-  baseURL: "http://your-backend-api", // Ersetzen Sie dies durch die URL Ihres Backends
+  baseURL: import.meta.env.VITE_BACKEND_URL || "http://localhost:3001", // Ersetze dies mit der URL deines Backends
   headers: {
     "Content-Type": "application/json",
   },

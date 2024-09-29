@@ -34,5 +34,10 @@ const isAuthenticated = computed(() => !!authStore.token);
 </script>
 
 <style>
-/* Optional: Globale Stile */
+body {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+}
 </style>

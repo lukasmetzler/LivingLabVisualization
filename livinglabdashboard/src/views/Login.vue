@@ -26,34 +26,25 @@
   </v-container>
 </template>
 
-<script>
+<script setup>
 import { useAuthStore } from "../stores/auth";
 import { useRouter } from "vue-router";
+import { ref } from "vue";
 
-export default {
-  name: "Login",
-  data() {
-    return {
-      email: "",
-      password: "",
-    };
-  },
-  setup() {
-    const authStore = useAuthStore();
-    const router = useRouter();
-    return { authStore, router };
-  },
-  methods: {
-    async login() {
-      try {
-        await this.authStore.login(this.email, this.password);
-        this.router.push("/dashboard");
-      } catch (error) {
-        console.error("Login fehlgeschlagen:", error);
-        alert("Login fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten.");
-      }
-    },
-  },
+const authStore = useAuthStore();
+const router = useRouter();
+
+const email = ref("");
+const password = ref("");
+
+const login = async () => {
+  try {
+    await authStore.login(email.value, password.value);
+    router.push("/dashboard");
+  } catch (error) {
+    console.error("Login fehlgeschlagen:", error);
+    alert("Login fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten.");
+  }
 };
 </script>
 

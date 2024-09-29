@@ -1,6 +1,6 @@
 // src/stores/auth.js
 import { defineStore } from "pinia";
-import apiClient from "../plugins/axios";
+import axios from "axios";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -10,10 +10,10 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     async login(email, password) {
       try {
-        const response = await apiClient.post("/login", { email, password });
+        const response = await axios.post("/login", { email, password });
         this.token = response.data.token;
         localStorage.setItem("token", this.token);
-        // Optionally, fetch user data here
+        await this.fetchUser();
       } catch (error) {
         throw new Error("Login fehlgeschlagen");
       }
@@ -25,7 +25,7 @@ export const useAuthStore = defineStore("auth", {
     },
     async fetchUser() {
       try {
-        const response = await apiClient.get("/me"); // Endpoint zum Abrufen der Benutzerdaten
+        const response = await axios.get("/me"); // Endpoint zum Abrufen der Benutzerdaten
         this.user = response.data;
       } catch (error) {
         console.error("Fehler beim Abrufen der Benutzerdaten:", error);
