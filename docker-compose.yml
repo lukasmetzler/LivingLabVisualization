@@ -157,7 +157,6 @@ services:
       - ./nginx/ssl/:/etc/nginx/ssl/:ro
       - ./www/:/var/www:ro
     depends_on:
-      - livinglab
       - grafana
       - pgadmin
       - portainer
@@ -182,7 +181,6 @@ services:
 volumes:
   postgres_data:
   grafana_data:
-  livinglab_node_modules:
 
 networks:
   kafka-net:
