@@ -125,27 +125,25 @@ services:
     networks:
       - kafka-net
 
-  livinglab:
+  frontend:
     build:
-      context: .
-      dockerfile: Dockerfile-livinglab
-    container_name: livinglab
+      context: ./livinglabdashboard
+      dockerfile: Dockerfile-frontend
+    container_name: frontend
     environment:
+      - NODE_ENV=production
       - JWT_SECRET=${JWT_SECRET}
       - DB_HOST=postgres_new
       - DB_USER=${POSTGRES_USER}
       - DB_PASSWORD=${POSTGRES_PASSWORD}
       - DB_NAME=${POSTGRES_DB}
+    ports:
+      - "3001:3001"
     depends_on:
+      - backend
       - postgres
       - kafka
       - zookeeper
-    ports:
-      - "3001:3001"
-    volumes:
-      # Entferne das Frontend-Mount
-      # - ./livinglabdashboard:/app/frontend
-      - livinglab_node_modules:/app/frontend/node_modules
     networks:
       - kafka-net
 

@@ -1,0 +1,30 @@
+# Stage 1: Build
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+# Stage 2: Serve
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install --only=production
+
+COPY --from=builder /app/dist /app/dist
+
+# Installiere PM2
+RUN npm install -g pm2
+
+# Kopiere die PM2-Konfigurationsdatei
+COPY ecosystem.config.js .
+
+EXPOSE 3001
+
+CMD ["pm2-runtime", "ecosystem.config.js"]
