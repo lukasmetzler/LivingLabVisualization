@@ -143,7 +143,9 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - ./livinglabdashboard:/app/frontend
+      # Entferne das Frontend-Mount
+      # - ./livinglabdashboard:/app/frontend
+      - livinglab_node_modules:/app/frontend/node_modules
     networks:
       - kafka-net
 
@@ -164,7 +166,7 @@ services:
       - portainer
     ports:
       - "80:80"
-      - "443:443"
+      #- "443:443" - Für HELLA-Server
     networks:
       - kafka-net
 

@@ -3,8 +3,7 @@
 # Basis-Image
 FROM node:18-alpine
 
-# Installiere PM2 und Nuxt global
-RUN npm install -g nuxt
+# Installiere PM2
 RUN npm install -g pm2
 
 # Setze das Arbeitsverzeichnis
@@ -23,7 +22,7 @@ RUN cd frontend && npm install --registry=https://registry.npmjs.org
 COPY livinglabdashboard/ ./frontend/
 
 # Führe den Build-Prozess aus
-RUN cd frontend && nuxt build
+RUN cd frontend && npx nuxt build
 
 # Kopiere die PM2-Konfigurationsdatei
 COPY ecosystem.config.js ./ecosystem.config.js
