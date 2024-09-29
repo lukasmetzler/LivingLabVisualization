@@ -4,11 +4,8 @@ module.exports = {
   apps: [
     {
       name: "frontend",
-      script: "dist/index.html", // Für statische Dateien ist keine Node-Ausführung nötig
-      // Alternativ, wenn du einen Server verwenden möchtest, passe entsprechend an
-      // Beispiel mit einem statischen Server:
-      // script: 'server.js',
-      // environment variables if needed
+      script: "serve",
+      args: "-s dist -l 3001", // Serve die dist-Ordner auf Port 3001
       instances: 1,
       autorestart: true,
       watch: false,
@@ -16,6 +13,8 @@ module.exports = {
         NODE_ENV: "production",
       },
     },
+    // Entferne den folgenden Block, wenn kein Backend vorhanden ist:
+    /*
     {
       name: "backend",
       cwd: "/app/backend",
@@ -32,5 +31,6 @@ module.exports = {
         DB_PORT: "5432",
       },
     },
+    */
   ],
 };
