@@ -3,4 +3,8 @@ psycopg2-binary
 python-dotenv
 SQLAlchemy
 Alembic
-bcrypt
+Flask==2.0.1
+bcrypt==3.2.0
+flask-migrate==3.1.0
+jwt==1.4.0
+psycopg2==2.9.1

@@ -1,0 +1,18 @@
+# Dockerfile für das Flask-Backend (app.py)
+
+FROM python:3.9-slim
+
+# Setze das Arbeitsverzeichnis
+WORKDIR /app
+
+# Kopiere die benötigten Dateien
+COPY . /app
+
+# Installiere die Abhängigkeiten
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Exponiere den Port, auf dem Flask läuft
+EXPOSE 5000
+
+# Starte die Flask-App
+CMD ["python", "app.py"]

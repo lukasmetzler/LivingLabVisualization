@@ -178,6 +178,20 @@ services:
     networks:
       - kafka-net
 
+  flask-app:
+    build:
+      context: ./kafka
+      dockerfile: Dockerfile-flask
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres_new:5432/livinglabvisualization
+      - SECRET_KEY=your_jwt_secret
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres_new
+    networks:
+      - kafka-net
+
 volumes:
   postgres_data:
   grafana_data:
