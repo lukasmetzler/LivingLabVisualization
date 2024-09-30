@@ -261,7 +261,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String(120), unique=True, nullable=False)
     password_hash = Column(String(128), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
 
     def set_password(self, password):
         self.password_hash = bcrypt.hashpw(
