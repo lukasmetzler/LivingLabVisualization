@@ -40,7 +40,7 @@ const password = ref("");
 const login = async () => {
   try {
     await authStore.login(email.value, password.value);
-    router.push("/dashboard");
+    router.push("/home");
   } catch (error) {
     console.error("Login fehlgeschlagen:", error);
     alert("Login fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten.");

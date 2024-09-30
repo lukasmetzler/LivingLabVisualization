@@ -1,43 +1,35 @@
+<script setup>
+import { useAuthStore } from "./stores/auth";
+import { useRouter } from "vue-router";
+import { ref, computed } from "vue";
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+// Berechne, ob der Benutzer eingeloggt ist
+const isLoggedIn = computed(() => authStore.token !== "");
+
+// Logout Funktion
+const logout = () => {
+  authStore.logout();
+  router.push("/login");
+};
+</script>
+
 <template>
   <v-app>
     <v-app-bar app color="primary" dark>
       <v-toolbar-title>LivingLab Dashboard</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn text to="/">Home</v-btn>
-      <v-btn text to="/dashboard" v-if="isAuthenticated">Dashboard</v-btn>
-      <v-btn text to="/login" v-if="!isAuthenticated">Login</v-btn>
-      <v-btn text @click="logout" v-if="isAuthenticated">Logout</v-btn>
+      <v-btn v-if="isLoggedIn" @click="logout" color="error">Logout</v-btn>
     </v-app-bar>
 
     <v-main>
-      <v-container>
-        <router-view></router-view>
-      </v-container>
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
 
-<script setup>
-import { useAuthStore } from "./stores/auth";
-import { useRouter } from "vue-router";
-import { computed } from "vue";
-
-const authStore = useAuthStore();
-const router = useRouter();
-
-const logout = () => {
-  authStore.logout();
-  router.push("/login");
-};
-
-const isAuthenticated = computed(() => !!authStore.token);
-</script>
-
-<style>
-body {
-  font-family: "Roboto", sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f5f5f5;
-}
+<style scoped>
+/* Styling kann hier hinzugefügt werden */
 </style>
