@@ -183,7 +183,7 @@ services:
       context: ./kafka
       dockerfile: Dockerfile-flask
     environment:
-      - DATABASE_URL=postgresql://user:password@postgres_new:5432/livinglabvisualization
+      - DATABASE_URL=postgresql://lukasmetzler:lukasmetzler@postgres_new:5432/livinglabvisualization
       - SECRET_KEY=your_jwt_secret
     ports:
       - "5000:5000"
