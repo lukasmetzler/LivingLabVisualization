@@ -5,6 +5,7 @@ from sqlalchemy import (
     Boolean,
     JSON,
     TIMESTAMP,
+    DateTime,
     Integer,
     ForeignKey,
     func,
