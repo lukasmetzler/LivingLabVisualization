@@ -9,7 +9,7 @@ WORKDIR /app
 COPY . /app
 
 # Installiere die Abhängigkeiten
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Exponiere den Port, auf dem Flask läuft
 EXPOSE 5000
