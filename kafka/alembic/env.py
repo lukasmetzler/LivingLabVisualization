@@ -22,7 +22,7 @@ target_metadata = Base.metadata
 def get_url():
     return os.getenv(
         "DATABASE_URL",
-        "postgresql://lukasmetzler:lukasmetzler@postgres_new:5432/livinglabvisualization",
+        "postgresql://lukasmetzler:lukasmetzler@localhost:5432/livinglabvisualization",
     )
 
 
