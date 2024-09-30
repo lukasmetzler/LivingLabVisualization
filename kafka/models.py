@@ -14,7 +14,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 import sqlalchemy
 import bcrypt
-from datetime import datetime
+import datetime
 
 Base = declarative_base()
 
