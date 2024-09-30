@@ -5,6 +5,6 @@ SQLAlchemy
 Flask==2.0.1
 bcrypt==3.2.0
 flask-migrate==3.1.0
-jwt==1.4.0
+PyJWT==2.6.0
 psycopg2==2.9.1
 Alembic
