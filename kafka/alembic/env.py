@@ -1,27 +1,34 @@
-# alembic/env.py
-
+# kafka/alembic/env.py
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-from alembic import context
-
-import sys
+from models import Base  # Stelle sicher, dass Base importiert wird
 import os
 
-# Füge den Pfad zu deinem Projekt hinzu
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from alembic import context
 
-from models import Base
+config = context.config
 
-# Interpret the config file for Python logging.
-fileConfig(context.config.config_file_name)
+fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
+
+# other values from the config, defined by the needs of env.py,
+# can be acquired:
+# my_important_option = config.get_main_option("my_important_option")
+# ... etc.
+
+
+def get_url():
+    return os.getenv(
+        "DATABASE_URL",
+        "postgresql://user:password@postgres_new:5432/livinglabvisualization",
+    )
 
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode."""
-    url = context.config.get_main_option("sqlalchemy.url")
+    url = get_url()
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -35,8 +42,10 @@ def run_migrations_offline():
 
 def run_migrations_online():
     """Run migrations in 'online' mode."""
+    configuration = config.get_section(config.config_ini_section)
+    configuration["sqlalchemy.url"] = get_url()
     connectable = engine_from_config(
-        context.config.get_section(context.config.config_ini_section),
+        configuration,
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
