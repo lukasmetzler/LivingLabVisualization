@@ -1,3 +1,6 @@
+import { defineStore } from "pinia";
+import axios from "axios";
+
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     token: localStorage.getItem("token") || "",
@@ -21,7 +24,7 @@ export const useAuthStore = defineStore("auth", {
     },
     async fetchUser() {
       try {
-        const response = await axios.get("/me"); // Endpoint zum Abrufen der Benutzerdaten
+        const response = await axios.get("/me");
         this.user = response.data;
       } catch (error) {
         console.error("Fehler beim Abrufen der Benutzerdaten:", error);
